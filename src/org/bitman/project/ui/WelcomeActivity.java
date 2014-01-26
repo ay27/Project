@@ -1,10 +1,11 @@
 package org.bitman.project.ui;
 
-import org.bitman.project.R;
-
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import org.bitman.project.R;
 
 public class WelcomeActivity extends Activity {
 
@@ -14,18 +15,28 @@ public class WelcomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome_layout);
+
+        instance = this;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.welcome, menu);
-		return true;
-	}
-
-    public static WelcomeActivity getInstance()
-    {
-        return instance;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case Menu.FIRST+1:
+                Intent intent = new Intent(WelcomeActivity.this, OptionActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+            case Menu.FIRST+2:
+                instance.onBackPressed();
+                return true;
+            default:
+                return false;
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, Menu.FIRST+1, 1, "settings");
+        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "quit");
+        return true;
     }
 
 }

@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Preference xmlns:android="http://schemas.android.com/apk/res/android" >
-    
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="视频设置">
+        <ListPreference
+                android:entries="@array/videoResolutionArray"
+                android:entryValues="@array/videoResolutionArray"
+                android:key="video_resolution"
+                android:title="分辨率" />
+        <ListPreference
+                android:entries="@array/videoFramerateArray"
+                android:entryValues="@array/videoFramerateValues"
+                android:key="video_framerate"
+                android:title="帧数" />
+        <ListPreference
+                android:entries="@array/videoBitrateArray"
+                android:entryValues="@array/videoBitrateValues"
+                android:key="video_bitrate"
+                android:title="码率" />
+    </PreferenceCategory>
 
-</Preference>
+    <PreferenceCategory android:title="RTSP设置" >
+        <EditTextPreference
+                android:defaultValue="8554"
+                android:inputType="number"
+                android:key="rtsp_port"
+                android:summary="默认为8554"
+                android:title="RTSP端口" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="服务器选项">
+        <EditTextPreference
+                android:defaultValue="192.168.0.107"
+                android:key="server_ip"
+                android:title="IP地址"
+                />
+    </PreferenceCategory>
+
+</PreferenceScreen>

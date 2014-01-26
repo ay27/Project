@@ -60,7 +60,9 @@ public class HttpServer {
             return instance;
     }
 
-    private String server_address;
+    // They will have a default value. Which is used to write to preferences at the very beginning.
+    private String server_ip = "127.0.0.1";
+    private String server_address = "http://"+server_ip+":8080/Server/Servlet";
     /**
      * Must be set before the first time to use the instance.
      * @param IP the IP of remote server.
@@ -70,8 +72,10 @@ public class HttpServer {
             throw new Exception("invalid ip address, in HttpServer.setIP()");
 
         server_address = "http://"+IP+":8080/Server/Servlet";
+        server_ip = IP;
     }
 
+    public String getServer_ip() { return server_ip; }
     public String getDestination() { return server_address; }
 
     public String send(Options type, String content)
