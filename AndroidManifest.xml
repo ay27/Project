@@ -23,16 +23,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.OptionActivity"
+        <activity android:name="org.bitman.project.ui.OptionActivity"
                   android:label="settings">
          </activity>
-        <activity android:name=".ui.RecordActivity"
+        <activity android:name="org.bitman.project.ui.RecordActivity"
                   android:label="record">
         </activity>
-        <activity android:name=".ui.PlayActivity"
+        <activity android:name="org.bitman.project.ui.PlayActivity"
                   android:label="play">
         </activity>
-        <activity android:name=".ui.Play_VLC_Activity"
+        <activity android:name="org.bitman.project.ui.Play_VLC_Activity"
                   android:label="vlc">
         </activity>
     </application>

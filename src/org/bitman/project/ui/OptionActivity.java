@@ -25,6 +25,8 @@ public class OptionActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
+        final SharedPreferences.Editor editor = settings.edit();
+
         final ListPreference videoResolution = (ListPreference) findPreference("video_resolution");
         final ListPreference videoBitrate = (ListPreference) findPreference("video_bitrate");
         final ListPreference videoFramerate = (ListPreference) findPreference("video_framerate");
@@ -53,7 +55,7 @@ public class OptionActivity extends PreferenceActivity {
 
         videoResolution.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                SharedPreferences.Editor editor = settings.edit();
+                //SharedPreferences.Editor editor = settings.edit();
                 Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
                 Matcher matcher = pattern.matcher((String)newValue);
                 matcher.find();
@@ -67,6 +69,8 @@ public class OptionActivity extends PreferenceActivity {
 
         videoFramerate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                editor.putInt("video_framerate", Integer.parseInt((String)newValue));
+                editor.commit();
                 videoFramerate.setSummary(newValue+"fps");
                 return true;
             }
@@ -74,6 +78,8 @@ public class OptionActivity extends PreferenceActivity {
 
         videoBitrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
+                editor.putInt("video_bitrate", Integer.parseInt((String)newValue));
+                editor.commit();
                 videoBitrate.setSummary(newValue+"kbps");
                 return true;
             }
@@ -86,6 +92,8 @@ public class OptionActivity extends PreferenceActivity {
                 Log.i(TAG, "new port: " + port);
                 if (port<=0 || port>=65535)
                     return false;
+                editor.putInt("rtsp_port", port);
+                editor.commit();
                 rtsp_port.setSummary((String)newValue);
                 return true;
             }
@@ -96,6 +104,8 @@ public class OptionActivity extends PreferenceActivity {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if (!GetIP.isIpAddress((String)newValue))
                     return false;
+                editor.putString("server_address", (String)newValue);
+                editor.commit();
                 server_ip.setSummary((String)newValue);
                 return true;
             }
