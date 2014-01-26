@@ -1,18 +1,27 @@
 package org.bitman.project.http;
 
+import android.util.Log;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Semaphore;
 
-import android.util.Log;
-
 
 public class WorkThread implements Runnable {
 	
 	private static final String TAG = "WorkThread";
-	
+
+    public static enum Status{
+        error, ok
+    }
+    private Status status;
+
+    public Status getStatus()
+    {
+        return status;
+    }
 	
 	private static WorkThread instance = null;
 	private WorkThread() {	}
@@ -37,7 +46,8 @@ public class WorkThread implements Runnable {
 	private String receive_data;
 	private Semaphore semaphore = new Semaphore(1);
 	/**
-	 * Here is the working entry.
+	 * Here is the working entry. The semaphore guarantees that there is only one
+     *  run() thread is running.
 	 * @param data : the data waiting to send.
 	 * @return the data receive from the remote server.
 	 */
@@ -55,7 +65,7 @@ public class WorkThread implements Runnable {
 	public void run()
 	{
 		try {
-			connection = (HttpURLConnection) (new URL(HttpServer.server_address)).openConnection();
+			connection = (HttpURLConnection) (new URL(HttpServer.getInstance().getDestination())).openConnection();
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			connection.setUseCaches(false);
@@ -82,10 +92,13 @@ public class WorkThread implements Runnable {
 			
 			connection.disconnect();
 			connection = null;
-			
+
+			status = Status.ok;
+
 		} catch (Exception e) {
 			Log.e(TAG, "where: run() " + e.toString());
 			receive_data = "ERROR: "+e.toString();
+            status = Status.error;
 		}
 		finally {
 			if (connection != null)

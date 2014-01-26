@@ -8,6 +8,8 @@ import android.view.Menu;
 
 public class WelcomeActivity extends Activity {
 
+    private static WelcomeActivity instance;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -20,5 +22,10 @@ public class WelcomeActivity extends Activity {
 		getMenuInflater().inflate(R.menu.welcome, menu);
 		return true;
 	}
+
+    public static WelcomeActivity getInstance()
+    {
+        return instance;
+    }
 
 }
