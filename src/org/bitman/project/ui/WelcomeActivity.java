@@ -5,16 +5,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 import org.bitman.project.R;
+import org.bitman.project.http.HttpServer;
 
 public class WelcomeActivity extends Activity {
 
     private static WelcomeActivity instance;
 
+    private ToggleButton openHttpButton;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome_layout);
+
+        openHttpButton = (ToggleButton) findViewById(R.id.open_http);
+        openHttpButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
+                if (!value) return;
+
+                HttpServer.getInstance().open();
+            }
+        });
 
         instance = this;
 	}

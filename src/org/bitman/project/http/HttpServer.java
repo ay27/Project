@@ -78,6 +78,11 @@ public class HttpServer {
     public String getServer_ip() { return server_ip; }
     public String getDestination() { return server_address; }
 
+    public void open()
+    {
+        send(Options.Online, null);
+    }
+
     public String send(Options type, String content)
     {
         StringBuffer sBuffer = new StringBuffer();

@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.concurrent.Semaphore;
 
 
-public class WorkThread implements Runnable {
+public class WorkThread extends Thread {
 	
 	private static final String TAG = "WorkThread";
 
@@ -88,8 +88,6 @@ public class WorkThread implements Runnable {
 			receive_data = new String(bytes, "UTF-8");
 			is.close();
 			
-			semaphore.release();
-			
 			connection.disconnect();
 			connection = null;
 
@@ -106,6 +104,8 @@ public class WorkThread implements Runnable {
 				connection.disconnect();
 				connection = null;
 			}
+            semaphore.release();
+            this.interrupt();
 		}
 	
 	}
