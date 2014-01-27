@@ -9,8 +9,8 @@ public class VideoQuality {
     private int framerate = 8;
     private int resX = 176, resY = 144;
     private int bitrate = 100;
-    private final int encoder = MediaRecorder.VideoEncoder.H264;
-    private final int orientation = 90;
+    public final int encoder = MediaRecorder.VideoEncoder.H264;
+    public final int orientation = 90;
 
     private static VideoQuality instance;
 

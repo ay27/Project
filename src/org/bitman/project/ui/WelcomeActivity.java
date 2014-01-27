@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import org.bitman.project.R;
@@ -15,6 +17,7 @@ public class WelcomeActivity extends Activity {
     private static WelcomeActivity instance;
 
     private ToggleButton openHttpButton;
+    private Button record_direct;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,14 @@ public class WelcomeActivity extends Activity {
             }
         });
 
+        record_direct = (Button) findViewById(R.id.button_record_direct);
+        record_direct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(instance, RecordActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
         instance = this;
 	}
 
