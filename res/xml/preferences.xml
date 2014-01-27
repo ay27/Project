@@ -29,7 +29,7 @@
 
     <PreferenceCategory android:title="服务器选项">
         <EditTextPreference
-                android:defaultValue="192.168.0.107"
+                android:defaultValue="127.0.0.1"
                 android:key="server_ip"
                 android:title="IP地址"
                 />

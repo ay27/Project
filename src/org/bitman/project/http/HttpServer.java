@@ -61,8 +61,8 @@ public class HttpServer {
     }
 
     // They will have a default value. Which is used to write to preferences at the very beginning.
-    private String server_ip = "127.0.0.1";
-    private String server_address = "http://"+server_ip+":8080/Server/Servlet";
+    private String server_ip;
+    private String server_address;
     /**
      * Must be set before the first time to use the instance.
      * @param IP the IP of remote server.

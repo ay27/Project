@@ -25,7 +25,7 @@ public class OptionActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
-        final SharedPreferences.Editor editor = settings.edit();
+        settings.registerOnSharedPreferenceChangeListener(changeListener);
 
         final ListPreference videoResolution = (ListPreference) findPreference("video_resolution");
         final ListPreference videoBitrate = (ListPreference) findPreference("video_bitrate");
@@ -40,13 +40,12 @@ public class OptionActivity extends PreferenceActivity {
         server_ip.setEnabled(true);
 
         VideoQuality videoQuality = VideoQuality.getInstance();
-        Session session = Session.getInstance();
+        // set the default value
         videoFramerate.setValue(String.valueOf(videoQuality.getFramerate()));
         videoBitrate.setValue(String.valueOf(videoQuality.getBitrate()));
         videoResolution.setValue(videoQuality.getResX()+"x"+videoQuality.getResY());
-        rtsp_port.setText(String.valueOf(session.getRtsp_port()));
-        server_ip.setText(HttpServer.getInstance().getServer_ip());
 
+        // set the summary
         videoResolution.setSummary(videoResolution.getValue()+"px");
         videoFramerate.setSummary(videoFramerate.getValue()+"fps");
         videoBitrate.setSummary(videoBitrate.getValue()+"kbps");
@@ -55,7 +54,7 @@ public class OptionActivity extends PreferenceActivity {
 
         videoResolution.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                //SharedPreferences.Editor editor = settings.edit();
+                SharedPreferences.Editor editor = settings.edit();
                 Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
                 Matcher matcher = pattern.matcher((String)newValue);
                 matcher.find();
@@ -69,8 +68,6 @@ public class OptionActivity extends PreferenceActivity {
 
         videoFramerate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                editor.putInt("video_framerate", Integer.parseInt((String)newValue));
-                editor.commit();
                 videoFramerate.setSummary(newValue+"fps");
                 return true;
             }
@@ -78,8 +75,6 @@ public class OptionActivity extends PreferenceActivity {
 
         videoBitrate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                editor.putInt("video_bitrate", Integer.parseInt((String)newValue));
-                editor.commit();
                 videoBitrate.setSummary(newValue+"kbps");
                 return true;
             }
@@ -92,8 +87,6 @@ public class OptionActivity extends PreferenceActivity {
                 Log.i(TAG, "new port: " + port);
                 if (port<=0 || port>=65535)
                     return false;
-                editor.putInt("rtsp_port", port);
-                editor.commit();
                 rtsp_port.setSummary((String)newValue);
                 return true;
             }
@@ -102,14 +95,40 @@ public class OptionActivity extends PreferenceActivity {
         server_ip.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (!GetIP.isIpAddress((String)newValue))
+                if (!GetIP.isIpAddress((String) newValue))
                     return false;
-                editor.putString("server_address", (String)newValue);
-                editor.commit();
                 server_ip.setSummary((String)newValue);
                 return true;
             }
         });
 
     }
+
+    private SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            VideoQuality videoQuality = VideoQuality.getInstance();
+            if (key.equals("video_resX") || key.equals("video_resY")) {
+                videoQuality.setResX(sharedPreferences.getInt("video_resX", 176));
+                videoQuality.setResY(sharedPreferences.getInt("video_resY", 144));
+            }
+            else if (key.equals("video_framerate")) {
+                videoQuality.setFramerate(Integer.parseInt(sharedPreferences.getString("video_framerate", "8")));
+            }
+            else if (key.equals("video_bitrate")) {
+                videoQuality.setBitrate(Integer.parseInt(sharedPreferences.getString("video_bitrate", "100")));
+            }
+            else if (key.equals("rtsp_port")) {
+                Session.getInstance().setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
+            }
+            else if (key.equals("server_address")) {
+                String ip = sharedPreferences.getString("server_address", "127.0.0.1");
+                try {
+                    HttpServer.getInstance().setIP(ip);
+                } catch (Exception e) {
+                    Log.e(TAG, e.toString());
+                }
+            }
+        }
+    };
 }
