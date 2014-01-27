@@ -123,11 +123,7 @@ public class SettingsActivity extends PreferenceActivity {
             }
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");
-                try {
-                    HttpServer.getInstance().setIP(ip);
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                }
+                HttpServer.getInstance().setIP(ip);
             }
         }
     };

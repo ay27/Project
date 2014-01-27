@@ -9,22 +9,21 @@ import java.net.URL;
 import java.util.concurrent.Semaphore;
 
 
-public class WorkThread implements Runnable {
+public class WorkThread extends Thread {
 	
 	private static final String TAG = "WorkThread";
 
     public static enum Status{
-        error, ok
+        error, ok, waiting, init
     }
-    private Status status;
+    private Status status = Status.init;
 
-    public Status getStatus()
-    {
-        return status;
+    public Status getStatus() { return status; }
+
+    private static WorkThread instance = null;
+	private WorkThread() {
+        this.start();
     }
-	
-	private static WorkThread instance = null;
-	private WorkThread() {	}
 	
 	/**
 	 * use the Singleton Pattern
@@ -41,10 +40,13 @@ public class WorkThread implements Runnable {
 			}
 		return instance;
 	}
-	
-	private String send_data;
-	private String receive_data;
-	private Semaphore semaphore = new Semaphore(1);
+
+    private static final int MAX_LENGTH = 50;
+	private String[] send = new String[MAX_LENGTH];
+	private String[] receive = new String[MAX_LENGTH];
+    private int send_in = 0, send_out = 0;
+    private int receive_in = 0, receive_out = 0;
+    //private Semaphore semaphore = new Semaphore(MAX_LENGTH);
 	/**
 	 * Here is the working entry. The semaphore guarantees that there is only one
      *  run() thread is running.
@@ -52,18 +54,15 @@ public class WorkThread implements Runnable {
 	 * @return the data receive from the remote server.
 	 */
 	public synchronized String send(String data) {
-		send_data = data;
-		try { semaphore.acquire(); } catch (InterruptedException e) { }
-		this.run();
-		try { semaphore.acquire(); } catch (InterruptedException e) { }
-		semaphore.release();
-		return receive_data;
+        send[send_in++] = data;
+
 	}
 
 	private HttpURLConnection connection;
 	@Override
 	public void run()
 	{
+        while (semaphore.tryAcquire()) {
 		try {
 			connection = (HttpURLConnection) (new URL(HttpServer.getInstance().getDestination())).openConnection();
 			connection.setDoInput(true);
@@ -88,13 +87,10 @@ public class WorkThread implements Runnable {
 			receive_data = new String(bytes, "UTF-8");
 			is.close();
 			
-			semaphore.release();
-			
 			connection.disconnect();
 			connection = null;
 
 			status = Status.ok;
-
 		} catch (Exception e) {
 			Log.e(TAG, "where: run() " + e.toString());
 			receive_data = "ERROR: "+e.toString();
@@ -106,9 +102,11 @@ public class WorkThread implements Runnable {
 				connection.disconnect();
 				connection = null;
 			}
-		}
+            try { semaphore.acquire(); } catch (InterruptedException e) { }
+        }
 	
 	}
+    }
 	
 	
 	

@@ -1,6 +1,8 @@
 package org.bitman.project.http;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
+import org.bitman.project.ProjectApplication;
 
 public class HttpServer {
 	
@@ -44,12 +46,16 @@ public class HttpServer {
         Online, Close
     }
 
+    // They will have a default value. Which is used to write to preferences at the very beginning.
+    private String server_ip = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("server_ip", "127.0.0.1");
+    private String server_address;
+
     private static WorkThread workThread;
     private static HttpServer instance = null;
     private HttpServer()
     {
         workThread = WorkThread.getInstance();
-
+        setIP(server_ip);
     }
 
     public static HttpServer getInstance()
@@ -60,16 +66,16 @@ public class HttpServer {
             return instance;
     }
 
-    // They will have a default value. Which is used to write to preferences at the very beginning.
-    private String server_ip;
-    private String server_address;
     /**
      * Must be set before the first time to use the instance.
      * @param IP the IP of remote server.
      */
-    public void setIP(String IP) throws Exception {
+    public void setIP(String IP) {
         if (!GetIP.isIpAddress(IP))
-            throw new Exception("invalid ip address, in HttpServer.setIP()");
+        {
+            Log.e(TAG, "in setIP(): invalid IP");
+            throw new IllegalArgumentException("invalid IP");
+        }
 
         server_address = "http://"+IP+":8080/Server/Servlet";
         server_ip = IP;
@@ -77,6 +83,13 @@ public class HttpServer {
 
     public String getServer_ip() { return server_ip; }
     public String getDestination() { return server_address; }
+
+    public void open()
+    {
+        String receive = send(Options.Online, null);
+        if (WorkThread.getInstance().getStatus() == WorkThread.Status.error)
+            Log.e(TAG, receive);
+    }
 
     public String send(Options type, String content)
     {
