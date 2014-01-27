@@ -14,9 +14,9 @@ import org.bitman.project.record.VideoQuality;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OptionActivity extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity {
 
-    private static final String TAG = "OptionActivity";
+    private static final String TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

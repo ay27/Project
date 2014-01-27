@@ -22,7 +22,7 @@ public class WelcomeActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case Menu.FIRST+1:
-                Intent intent = new Intent(WelcomeActivity.this, OptionActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, SettingsActivity.class);
                 startActivityForResult(intent, 0);
                 return true;
             case Menu.FIRST+2:

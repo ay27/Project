@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.bitman.project.ui.OptionActivity"
+        <activity android:name=".ui.SettingsActivity"
                   android:label="settings">
          </activity>
         <activity android:name="org.bitman.project.ui.RecordActivity"
