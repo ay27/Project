@@ -25,9 +25,8 @@ public class WelcomeActivity extends Activity {
         openHttpButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                if (!value) return;
-
-                HttpServer.getInstance().open();
+                if (value)
+                    HttpServer.getInstance().open();
             }
         });
 

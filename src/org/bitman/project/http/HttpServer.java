@@ -1,6 +1,8 @@
 package org.bitman.project.http;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
+import org.bitman.project.ProjectApplication;
 
 public class HttpServer {
 	
@@ -49,7 +51,11 @@ public class HttpServer {
     private HttpServer()
     {
         workThread = WorkThread.getInstance();
-
+        try {
+            setIP(server_ip);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
     public static HttpServer getInstance()
@@ -61,7 +67,7 @@ public class HttpServer {
     }
 
     // They will have a default value. Which is used to write to preferences at the very beginning.
-    private String server_ip;
+    private String server_ip = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("server_ip", "127.0.0.1");
     private String server_address;
     /**
      * Must be set before the first time to use the instance.
@@ -81,6 +87,13 @@ public class HttpServer {
     public void open()
     {
         send(Options.Online, null);
+        SendOnline.getInstance().open();
+    }
+
+    public void close()
+    {
+        send(Options.Close, null);
+        SendOnline.getInstance().close();
     }
 
     public String send(Options type, String content)

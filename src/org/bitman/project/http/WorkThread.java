@@ -24,7 +24,7 @@ public class WorkThread extends Thread {
     }
 	
 	private static WorkThread instance = null;
-	private WorkThread() {	}
+	private WorkThread() { }
 	
 	/**
 	 * use the Singleton Pattern
@@ -45,6 +45,7 @@ public class WorkThread extends Thread {
 	private String send_data;
 	private String receive_data;
 	private Semaphore semaphore = new Semaphore(1);
+    private Thread mThread = null;
 	/**
 	 * Here is the working entry. The semaphore guarantees that there is only one
      *  run() thread is running.
@@ -53,8 +54,10 @@ public class WorkThread extends Thread {
 	 */
 	public synchronized String send(String data) {
 		send_data = data;
-		try { semaphore.acquire(); } catch (InterruptedException e) { }
-		this.run();
+        try { semaphore.acquire(); } catch (InterruptedException e) { }
+        if (mThread == null)
+            mThread = new Thread(this);
+        mThread.start();
 		try { semaphore.acquire(); } catch (InterruptedException e) { }
 		semaphore.release();
 		return receive_data;
@@ -65,6 +68,7 @@ public class WorkThread extends Thread {
 	public void run()
 	{
 		try {
+            Log.i(TAG, "the URL is :"+HttpServer.getInstance().getDestination());
 			connection = (HttpURLConnection) (new URL(HttpServer.getInstance().getDestination())).openConnection();
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
@@ -105,13 +109,7 @@ public class WorkThread extends Thread {
 				connection = null;
 			}
             semaphore.release();
-            this.interrupt();
+            mThread = null;
 		}
-	
 	}
-	
-	
-	
-	
-
 }
