@@ -22,9 +22,28 @@ public class RecordActivity extends Activity {
         SurfaceHolder holder = surfaceView.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         cameraWorker.setPreviewDisplay(holder);
-        //cameraWorker.start();
+
+//        InputStream is = cameraWorker.getStream();
+//        byte[] bytes = new byte[1024];
+//        try {
+//            is.read(bytes);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Log.i(TAG, new String(bytes));
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        //cameraWorker.start();
+    }
 
     @Override
     public void onBackPressed() {
