@@ -19,5 +19,8 @@ public class Session {
     public int getRtsp_port() { return rtsp_port; }
     public void setRtsp_port(int rtsp_port) { this.rtsp_port = rtsp_port; }
 
+    public void start()
+    {
 
+    }
 }
