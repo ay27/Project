@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import org.bitman.project.R;
-import org.bitman.project.http.HttpServer;
+import org.bitman.project.http.HttpClient;
 
 public class WelcomeActivity extends Activity {
 
@@ -29,7 +29,7 @@ public class WelcomeActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
                 if (value)
-                    HttpServer.getInstance().open();
+                    HttpClient.getInstance().open();
             }
         });
 

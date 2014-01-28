@@ -7,7 +7,7 @@ import android.util.Log;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 import org.bitman.project.http.GetIP;
-import org.bitman.project.http.HttpServer;
+import org.bitman.project.http.HttpClient;
 import org.bitman.project.record.Session;
 import org.bitman.project.record.VideoQuality;
 
@@ -124,7 +124,7 @@ public class SettingsActivity extends PreferenceActivity {
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");
                 try {
-                    HttpServer.getInstance().setIP(ip);
+                    HttpClient.getInstance().setIP(ip);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
                 }

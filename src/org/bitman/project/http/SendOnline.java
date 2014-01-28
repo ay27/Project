@@ -35,7 +35,7 @@ public class SendOnline implements Runnable {
             try {
                 Thread.sleep(SleepTime*1000);
             } catch (InterruptedException e) { }
-            HttpServer.getInstance().send(HttpServer.Options.Online, null);
+            HttpClient.getInstance().send(HttpClient.Options.Online, null);
         }
     }
 }

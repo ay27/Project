@@ -5,13 +5,13 @@ import junit.framework.TestCase;
 /**
  * Created by ay27 on 14-1-26.
  */
-public class WorkThread_Test extends TestCase {
+public class WorkerThread_Test extends TestCase {
 
     public void testGetInstance()
     {
-        WorkThread workThread = WorkThread.getInstance();
-        WorkThread workThread1 = WorkThread.getInstance();
-        assertEquals(workThread, workThread1);
+        WorkerThread workerThread = WorkerThread.getInstance();
+        WorkerThread workerThread1 = WorkerThread.getInstance();
+        assertEquals(workerThread, workerThread1);
     }
 
     public void testSend()

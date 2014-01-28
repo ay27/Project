@@ -9,9 +9,9 @@ import java.net.URL;
 import java.util.concurrent.Semaphore;
 
 
-public class WorkThread extends Thread {
+public class WorkerThread extends Thread {
 	
-	private static final String TAG = "WorkThread";
+	private static final String TAG = "WorkerThread";
 
     public static enum Status{
         error, ok
@@ -23,18 +23,18 @@ public class WorkThread extends Thread {
         return status;
     }
 	
-	private static WorkThread instance = null;
-	private WorkThread() { }
+	private static WorkerThread instance = null;
+	private WorkerThread() { }
 	
 	/**
 	 * use the Singleton Pattern
-	 * @return the only instance of WorkThread.
+	 * @return the only instance of WorkerThread.
 	 */
-	public static WorkThread getInstance()
+	public static WorkerThread getInstance()
 	{
 		if (instance == null)
 			try {
-				return (instance = new WorkThread());
+				return (instance = new WorkerThread());
 			} catch (Exception e)
 			{
 				Log.e(TAG, "where: getInstance() "+e.toString());
@@ -68,8 +68,8 @@ public class WorkThread extends Thread {
 	public void run()
 	{
 		try {
-            Log.i(TAG, "the URL is :"+HttpServer.getInstance().getDestination());
-			connection = (HttpURLConnection) (new URL(HttpServer.getInstance().getDestination())).openConnection();
+            Log.i(TAG, "the URL is :"+ HttpClient.getInstance().getDestination());
+			connection = (HttpURLConnection) (new URL(HttpClient.getInstance().getDestination())).openConnection();
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 			connection.setUseCaches(false);

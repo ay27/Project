@@ -4,9 +4,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import org.bitman.project.ProjectApplication;
 
-public class HttpServer {
+public class HttpClient {
 	
-	private static final String TAG = "HttpServer";
+	private static final String TAG = "HttpClient";
 
     public static class ShareData {
         private static String MEID = null;
@@ -17,7 +17,7 @@ public class HttpServer {
 
         public static String getMEID() throws Exception {
             if (MEID == null)
-                throw new Exception("Error in HttpServer/ShareData->getMEID(), you must set it before get it");
+                throw new Exception("Error in HttpClient/ShareData->getMEID(), you must set it before get it");
             return MEID;
         }
 
@@ -25,7 +25,7 @@ public class HttpServer {
 
         public static String getCity() throws Exception {
             if (city == null)
-                throw new Exception("Error in HttpServer/ShareData->getCity(), you must set it before get it");
+                throw new Exception("Error in HttpClient/ShareData->getCity(), you must set it before get it");
             return city;
         }
 
@@ -33,7 +33,7 @@ public class HttpServer {
 
         public static String getLocal_rtsp_address() throws Exception {
             if (local_rtsp_address == null)
-                throw new Exception("Error in HttpServer/ShareData->getLocal_rtsp_address(), you must set it before get it");
+                throw new Exception("Error in HttpClient/ShareData->getLocal_rtsp_address(), you must set it before get it");
             return local_rtsp_address;
         }
 
@@ -46,11 +46,11 @@ public class HttpServer {
         Online, Close
     }
 
-    private static WorkThread workThread;
-    private static HttpServer instance = null;
-    private HttpServer()
+    private static WorkerThread workerThread;
+    private static HttpClient instance = null;
+    private HttpClient()
     {
-        workThread = WorkThread.getInstance();
+        workerThread = WorkerThread.getInstance();
         try {
             setIP(server_ip);
         } catch (Exception e) {
@@ -58,10 +58,10 @@ public class HttpServer {
         }
     }
 
-    public static HttpServer getInstance()
+    public static HttpClient getInstance()
     {
         if (instance == null)
-            return (instance = new HttpServer());
+            return (instance = new HttpClient());
         else
             return instance;
     }
@@ -75,7 +75,7 @@ public class HttpServer {
      */
     public void setIP(String IP) throws Exception {
         if (!GetIP.isIpAddress(IP))
-            throw new Exception("invalid ip address, in HttpServer.setIP()");
+            throw new Exception("invalid ip address, in HttpClient.setIP()");
 
         server_address = "http://"+IP+":8080/Server/Servlet";
         server_ip = IP;
@@ -181,7 +181,7 @@ public class HttpServer {
         }
 
         Log.i(TAG, "send data: "+sBuffer.toString());
-        String receive = workThread.send(sBuffer.toString());
+        String receive = workerThread.send(sBuffer.toString());
         Log.i(TAG, "receive data: "+receive);
 
         return receive;
