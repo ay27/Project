@@ -18,6 +18,9 @@ public class RtspServer extends Service {
 
     private static final String TAG = "RtspServer";
 
+    private boolean streaming = false;
+    public boolean isStreaming() { return streaming; }
+
     private final IBinder mBinder = new LocalBinder();
     @Override
     public IBinder onBind(Intent intent) {

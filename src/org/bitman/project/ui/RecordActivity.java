@@ -11,6 +11,7 @@ public class RecordActivity extends Activity {
 
     private static final String TAG = "RecordActivity";
 
+
     private SurfaceView surfaceView;
     private CameraWorker cameraWorker = CameraWorker.getInstance();
     @Override
@@ -18,6 +19,7 @@ public class RecordActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.record_layout);
+
         surfaceView = (SurfaceView) findViewById(R.id.surface_record);
         SurfaceHolder holder = surfaceView.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
