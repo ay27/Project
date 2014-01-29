@@ -53,6 +53,7 @@ public class CameraWorker {
                 public void surfaceCreated(SurfaceHolder holder) {
                     //Status.surfaceReady = true;
                     //Log.i(TAG, "surface ready");
+                    // TODO remove it
                     start();
                 }
                 @Override
