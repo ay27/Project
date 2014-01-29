@@ -26,8 +26,8 @@ public class RtspServer extends Service {
     private static final String TAG = "RtspServer";
     private static final String SERVER_NAME = "org.bitman.ay27 rtsp server";
 
-    private boolean streaming = false;
-    public boolean isStreaming() { return streaming; }
+    //private boolean streaming = false;
+    //public boolean isStreaming() { return streaming; }
 
     private final IBinder mBinder = new LocalBinder();
     @Override
@@ -146,8 +146,6 @@ public class RtspServer extends Service {
 
             }
 
-            // Streaming stops when client disconnects
-            boolean streaming = isStreaming();
             mSession.stop();
 
             try {
@@ -173,11 +171,9 @@ public class RtspServer extends Service {
                 //mSessions.put(mSession, null);
 
                 String requestContent = mSession.getSessionDescription();
-                String requestAttributes =
-                        "Content-Base: "+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
-                                "Content-Type: application/sdp\r\n";
 
-                response.attributes = requestAttributes;
+                response.attributes = "Content-Base: "+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
+                        "Content-Type: application/sdp\r\n";
                 response.content = requestContent;
 
                 // If no exception has been thrown, we reply with OK
