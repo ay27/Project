@@ -13,36 +13,31 @@ public class Session {
     private static final String TAG = "Session";
 
     private static Session instance = null;
-    private int SSRC;
+    public int SSRC;
 
-    private InetAddress origin;
-    private InetAddress destination;
+    public final InetAddress origin;
+    public InetAddress destination;
 
-    private Session() {
-        try {
-            origin = InetAddress.getByName(GetIP.getLocalIpAddress(true));
-        } catch (UnknownHostException e) {
-            Log.e(TAG, "in Session(): "+e.toString());
-        }
+    private Session() throws UnknownHostException {
+        origin = InetAddress.getByName(GetIP.getLocalIpAddress(true));
     }
     public static Session getInstance()
     {
         if (instance == null)
-            return (instance = new Session());
+            try {
+                return (instance = new Session());
+            } catch (UnknownHostException e) {
+                Log.e(TAG, e.toString());
+                return null;
+            }
         else
             return instance;
     }
 
     // the port of the rtsp
-    private int rtsp_port = 8554;
+    public int rtsp_port = 8554;
     // the data port
     public int[] client_port, server_port;
-    public int getRtsp_port() { return rtsp_port; }
-    public void setRtsp_port(int rtsp_port) { this.rtsp_port = rtsp_port; }
-
-
-    public void setDestination(InetAddress destination) { this.destination = destination; }
-    public InetAddress getDestination() { return destination; }
 
     private CameraWorker worker = CameraWorker.getInstance();
     private RTP_Socket socket = RTP_Socket.getInstance();
@@ -66,7 +61,4 @@ public class Session {
         return null;
     }
 
-    public int getSSRC() {
-        return SSRC;
-    }
 }

@@ -6,9 +6,9 @@ public class VideoQuality {
 
     private static final String TAG = "VideoQuality";
 
-    private int framerate = 8;
-    private int resX = 176, resY = 144;
-    private int bitrate = 100;
+    public int framerate = 8;
+    public int resX = 176, resY = 144;
+    public int bitrate = 100;
     public final int encoder = MediaRecorder.VideoEncoder.H264;
     public final int orientation = 90;
 
@@ -31,19 +31,4 @@ public class VideoQuality {
         else return instance;
     }
 
-    public int getFramerate() { return framerate; }
-
-    public void setFramerate(int framerate) { this.framerate = framerate; }
-
-    public int getResX() { return resX; }
-
-    public void setResX(int resX) { this.resX = resX; }
-
-    public int getResY() { return resY; }
-
-    public void setResY(int resY) { this.resY = resY; }
-
-    public int getBitrate() { return bitrate; }
-
-    public void setBitrate(int bitrate) { this.bitrate = bitrate; }
 }

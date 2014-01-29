@@ -41,9 +41,9 @@ public class SettingsActivity extends PreferenceActivity {
 
         VideoQuality videoQuality = VideoQuality.getInstance();
         // set the default value
-        videoFramerate.setValue(String.valueOf(videoQuality.getFramerate()));
-        videoBitrate.setValue(String.valueOf(videoQuality.getBitrate()));
-        videoResolution.setValue(videoQuality.getResX()+"x"+videoQuality.getResY());
+        videoFramerate.setValue(String.valueOf(videoQuality.framerate));
+        videoBitrate.setValue(String.valueOf(videoQuality.bitrate));
+        videoResolution.setValue(videoQuality.resX+"x"+videoQuality.resY);
 
         // set the summary
         videoResolution.setSummary(videoResolution.getValue()+"px");
@@ -109,17 +109,17 @@ public class SettingsActivity extends PreferenceActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             VideoQuality videoQuality = VideoQuality.getInstance();
             if (key.equals("video_resX") || key.equals("video_resY")) {
-                videoQuality.setResX(sharedPreferences.getInt("video_resX", 176));
-                videoQuality.setResY(sharedPreferences.getInt("video_resY", 144));
+                videoQuality.resX = sharedPreferences.getInt("video_resX", 176);
+                videoQuality.resY = sharedPreferences.getInt("video_resY", 144);
             }
             else if (key.equals("video_framerate")) {
-                videoQuality.setFramerate(Integer.parseInt(sharedPreferences.getString("video_framerate", "8")));
+                videoQuality.framerate = Integer.parseInt(sharedPreferences.getString("video_framerate", "8"));
             }
             else if (key.equals("video_bitrate")) {
-                videoQuality.setBitrate(Integer.parseInt(sharedPreferences.getString("video_bitrate", "100")));
+                videoQuality.bitrate = Integer.parseInt(sharedPreferences.getString("video_bitrate", "100"));
             }
             else if (key.equals("rtsp_port")) {
-                Session.getInstance().setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
+                Session.getInstance().rtsp_port = Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554"));
             }
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");

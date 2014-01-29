@@ -59,7 +59,7 @@ public class RtspServer extends Service {
         public RequestListener()
         {
             try {
-                serverSocket = new ServerSocket(Session.getInstance().getRtsp_port());
+                serverSocket = new ServerSocket(Session.getInstance().rtsp_port);
                 start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,8 +164,8 @@ public class RtspServer extends Service {
 
                 mSession = Session.getInstance();
                 //mSession.setOrigin(mClient.getLocalAddress());
-                if (mSession.getDestination()==null) {
-                    mSession.setDestination(mClient.getInetAddress());
+                if (mSession.destination==null) {
+                    mSession.destination = mClient.getInetAddress();
                 }
                 //mSession = handleRequest(request.uri, mClient);
                 //mSessions.put(mSession, null);
@@ -224,14 +224,14 @@ public class RtspServer extends Service {
                     p2 = Integer.parseInt(m.group(2));
                 }
 
-                ssrc = mSession.getSSRC();
+                ssrc = mSession.SSRC;
                 src = mSession.server_port;
-                destination = mSession.getDestination();
+                destination = mSession.destination;
 
                 mSession.client_port = new int[]{p1, p2};
 
                 response.attributes = "Transport: RTP/AVP/UDP;"+(destination.isMulticastAddress()?"multicast":"unicast")+
-                    ";destination="+mSession.getDestination().getHostAddress()+
+                    ";destination="+mSession.destination.getHostAddress()+
                     ";client_port="+p1+"-"+p2+
                     ";server_port="+src[0]+"-"+src[1]+
                     ";ssrc="+Integer.toHexString(ssrc)+
