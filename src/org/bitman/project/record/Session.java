@@ -11,6 +11,8 @@ public class Session {
     private static final String TAG = "Session";
 
     private static Session instance = null;
+    private int SSRC;
+
     private Session() {
         try {
             origin = InetAddress.getByName(GetIP.getLocalIpAddress(true));
@@ -29,12 +31,14 @@ public class Session {
     // the port of the rtsp
     private int rtsp_port = 8554;
     // the data port
-    private int client_port, server_port;
+    public int[] client_port, server_port;
     public int getRtsp_port() { return rtsp_port; }
     public void setRtsp_port(int rtsp_port) { this.rtsp_port = rtsp_port; }
 
     private InetAddress origin;
     private InetAddress destination;
+    public void setDestination(InetAddress destination) { this.destination = destination; }
+    public InetAddress getDestination() { return destination; }
     public void start()
     {
 
@@ -48,5 +52,9 @@ public class Session {
     public String getSessionDescription()
     {
         return null;
+    }
+
+    public int getSSRC() {
+        return SSRC;
     }
 }

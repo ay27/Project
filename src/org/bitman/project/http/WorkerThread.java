@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Semaphore;
 
+// TODO add the CallbackListener!!!!!
 
 public class WorkerThread extends Thread {
 	

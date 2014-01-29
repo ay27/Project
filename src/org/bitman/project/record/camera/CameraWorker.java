@@ -214,5 +214,4 @@ public class CameraWorker {
         } catch (Exception ignore) {}
     }
 
-
 }
