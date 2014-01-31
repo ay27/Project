@@ -163,16 +163,13 @@ public class RtspServer extends Service {
             if (request.method.equalsIgnoreCase("DESCRIBE")) {
 
                 mSession = Session.getInstance();
-                //mSession.setOrigin(mClient.getLocalAddress());
                 if (mSession.destination==null) {
                     mSession.destination = mClient.getInetAddress();
                 }
-                //mSession = handleRequest(request.uri, mClient);
-                //mSessions.put(mSession, null);
 
                 String requestContent = mSession.getSessionDescription();
 
-                response.attributes = "Content-Base: "+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
+                response.attributes = "Content-Base: "+mSession.localAddress.getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
                         "Content-Type: application/sdp\r\n";
                 response.content = requestContent;
 
@@ -246,7 +243,7 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("PLAY")) {
                 String requestAttributes = "RTP-Info: ";
-                requestAttributes += "url=rtsp://"+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/trackID=0;seq=0,";
+                requestAttributes += "url=rtsp://"+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/trackID="+mSession.trackID+";seq=0,";
                 requestAttributes = requestAttributes.substring(0, requestAttributes.length()-1) + "\r\nSession: "+HttpClient.ShareData.getMEID() +"\r\n";
 
                 response.attributes = requestAttributes;

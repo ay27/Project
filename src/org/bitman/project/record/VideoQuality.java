@@ -31,4 +31,8 @@ public class VideoQuality {
         else return instance;
     }
 
+    // TODO finish it
+    public String generateDescription() {
+        return null;
+    }
 }
