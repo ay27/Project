@@ -32,7 +32,7 @@ public class VideoQuality {
     }
 
     // TODO finish it
-    public String generateDescription() {
+    public String getDescription() {
         return null;
     }
 }

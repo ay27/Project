@@ -1,11 +1,14 @@
 package org.bitman.project.record.rtp;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public class RTCP_SenderReport {
+public class RtcpSenderReport {
+    private static final String TAG = "RtcpSenderReport";
 
     public static final int MTU = 1500;
 
@@ -16,7 +19,9 @@ public class RTCP_SenderReport {
     private int ssrc, port = -1;
     private int octetCount = 0, packetCount = 0;
 
-    public RTCP_SenderReport() throws IOException {
+    private static RtcpSenderReport instance;
+
+    private RtcpSenderReport() {
 
 		/*							     Version(2)  Padding(0)					 					*/
 		/*									 ^		  ^			PT = 0	    						*/
@@ -40,9 +45,20 @@ public class RTCP_SenderReport {
 		/* Byte 20,21,22,23  ->  packet count				 	 */
 		/* Byte 24,25,26,27  ->  octet count			         */
 
-        usock = new MulticastSocket();
+        try {
+            usock = new MulticastSocket();
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
         upack = new DatagramPacket(buffer, 1);
 
+    }
+
+    public static RtcpSenderReport getInstance()
+    {
+        if (instance == null)
+            return (instance = new RtcpSenderReport());
+        else return instance;
     }
 
     public void close() {

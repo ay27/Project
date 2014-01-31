@@ -26,9 +26,6 @@ public class RtspServer extends Service {
     private static final String TAG = "RtspServer";
     private static final String SERVER_NAME = "org.bitman.ay27 rtsp server";
 
-    //private boolean streaming = false;
-    //public boolean isStreaming() { return streaming; }
-
     private final IBinder mBinder = new LocalBinder();
     @Override
     public IBinder onBind(Intent intent) {
@@ -39,7 +36,6 @@ public class RtspServer extends Service {
             return RtspServer.this;
         }
     }
-
 
     private RequestListener listenerThread = null;
 
@@ -348,7 +344,7 @@ public class RtspServer extends Service {
                     "Content-Length: " + content.length() + "\r\n" +
                     attributes + "\r\n" + content;
 
-            Log.d(TAG,response.replace("\r", ""));
+            Log.i(TAG,response.replace("\r", ""));
 
             try {
                 output.write(response.getBytes());

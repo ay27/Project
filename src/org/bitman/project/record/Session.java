@@ -3,7 +3,8 @@ package org.bitman.project.record;
 import android.util.Log;
 import org.bitman.project.http.GetIP;
 import org.bitman.project.record.camera.CameraWorker;
-import org.bitman.project.record.rtp.RTP_Socket;
+import org.bitman.project.record.rtp.Packetizer;
+import org.bitman.project.record.rtp.RtpSocket;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -15,7 +16,7 @@ public class Session {
 
     private static Session instance = null;
 
-    // SSRC will be set in rtp/Sender, will be used in rtp/RTP_Sockrt & RtspServer
+    // SSRC will be set in rtp/Packetizer, will be used in rtp/RTP_Sockrt & RtspServer
     public int SSRC;
     private final long TimeStamp;
 
@@ -43,19 +44,19 @@ public class Session {
 
     // the port of the rtsp, will be set in the ui/Settings, will be used in RtspServer.
     public int rtsp_port = 8554;
-    // client_port will be set in RtspServer->SETUP, will be used in rtp/Sender.
-    // server_port will be set in rtp/RTP_Socket or rtp/Sender, will be used in RtspServer.
+    // client_port will be set in RtspServer->SETUP, will be used in rtp/Packetizer.
+    // server_port will be set in rtp/RtpSocket or rtp/Packetizer, will be used in RtspServer.
     public int[] client_port = new int[]{0, 0}, server_port;
     public final int trackID = 1;
 
     private CameraWorker worker = CameraWorker.getInstance();
-    private RTP_Socket socket = RTP_Socket.getInstance();
+    private RtpSocket socket = RtpSocket.getInstance();
     public void start()
     {
         worker.start();
         // will delay a little time to wait the stream.
         try { Thread.sleep(10); } catch (InterruptedException e) { }
-        socket.setDataStream(worker.getStream());
+        Packetizer.getInstance().setDataStream(worker.getStream());
     }
 
     public void stop()
@@ -77,7 +78,7 @@ public class Session {
         sessionDescription.append("t=0 0\r\n");
         sessionDescription.append("a=recvonly\r\n");
 
-        sessionDescription.append(VideoQuality.getInstance().generateDescription());
+        sessionDescription.append(VideoQuality.getInstance().getDescription());
         sessionDescription.append("a=control:trackID="+trackID+"\r\n");
         return sessionDescription.toString();
     }
