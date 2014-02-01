@@ -208,7 +208,7 @@ public class RtspServer extends Service {
                 m = p.matcher(request.headers.get("transport"));
 
                 if (!m.find()) {
-                    int[] ports = mSession.client_port;
+                    int[] ports = mSession.getClient_port();
                     p1 = ports[0];
                     p2 = ports[1];
                 }
@@ -217,11 +217,11 @@ public class RtspServer extends Service {
                     p2 = Integer.parseInt(m.group(2));
                 }
 
-                ssrc = mSession.SSRC;
-                src = mSession.server_port;
+                ssrc = mSession.getSSRC();
+                src = mSession.getServer_port();
                 destination = mSession.destination;
 
-                mSession.client_port = new int[]{p1, p2};
+                mSession.setClient_port(new int[]{p1, p2});
 
                 response.attributes = "Transport: RTP/AVP/UDP;"+(destination.isMulticastAddress()?"multicast":"unicast")+
                     ";destination="+mSession.destination.getHostAddress()+

@@ -54,8 +54,8 @@ public class GetIP {
 					if (!inetAddress.isLoopbackAddress()
 							&& !inetAddress.isAnyLocalAddress()
 							&& (!removeIPv6 || isIpv4Address(inetAddress
-									.getHostAddress().toString())))
-						return inetAddress.getHostAddress().toString();
+									.getHostAddress())))
+						return inetAddress.getHostAddress();
 				}
 			}
 		} catch (SocketException ignore) {

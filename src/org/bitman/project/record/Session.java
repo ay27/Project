@@ -9,6 +9,7 @@ import org.bitman.project.record.rtp.RtpSocket;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 public class Session {
 
@@ -16,8 +17,8 @@ public class Session {
 
     private static Session instance = null;
 
-    // SSRC will be set in rtp/Packetizer, will be used in rtp/RTP_Sockrt & RtspServer
-    public int SSRC;
+    // will be used in rtp/RTP_Sockrt & RtspServer
+    private int SSRC = new Random().nextInt();
     private final long TimeStamp;
 
     public final InetAddress localAddress;
@@ -42,11 +43,35 @@ public class Session {
             return instance;
     }
 
+    public int getSSRC() {
+        return SSRC;
+    }
+
+    public int[] getClient_port() {
+        return client_port;
+    }
+
+    public int[] getServer_port() {
+        return server_port;
+    }
+
+    public void setDestination(InetAddress destination) {
+        this.destination = destination;
+    }
+
+    public void setClient_port(int[] client_port) {
+        this.client_port = client_port;
+    }
+
+    public void setServer_port(int[] server_port) {
+        this.server_port = server_port;
+    }
+
     // the port of the rtsp, will be set in the ui/Settings, will be used in RtspServer.
     public int rtsp_port = 8554;
     // client_port will be set in RtspServer->SETUP, will be used in rtp/Packetizer.
     // server_port will be set in rtp/RtpSocket or rtp/Packetizer, will be used in RtspServer.
-    public int[] client_port = new int[]{0, 0}, server_port;
+    private int[] client_port = new int[]{0, 0}, server_port;
     public final int trackID = 1;
 
     private CameraWorker worker = CameraWorker.getInstance();
@@ -56,7 +81,10 @@ public class Session {
         worker.start();
         // will delay a little time to wait the stream.
         try { Thread.sleep(10); } catch (InterruptedException e) { }
-        Packetizer.getInstance().setDataStream(worker.getStream());
+
+        Packetizer packetizer = Packetizer.getInstance();
+        packetizer.setDataStream(worker.getStream());
+        packetizer.
     }
 
     public void stop()
