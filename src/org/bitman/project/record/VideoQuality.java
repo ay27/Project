@@ -31,6 +31,13 @@ public class VideoQuality {
         else return instance;
     }
 
+    private static final String s640_10 = "";
+    private static final String s640_8 = "";
+    private static final String s320_10 = "";
+    private static final String s320_8 = "";
+    private static final String s176_10 = "";
+    private static final String s176_8 = "";
+
     // TODO finish it
     public String getDescription() {
         return null;

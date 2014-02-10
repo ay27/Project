@@ -3,5 +3,11 @@
 
     <string name="app_name">Project</string>
     <string name="action_settings">设置</string>
+	<string name = "video_player_best_fit">最优匹配</string>
+	<string name = "video_player_fit_horizontal">水平匹配</string>
+	<string name = "video_player_fit_vertical">垂直匹配</string>
+	<string name = "video_player_16x9">16x9</string>
+	<string name = "video_player_4x3">4x3</string>
+	<string name = "video_player_original">原始大小</string>
 
 </resources>

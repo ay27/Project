@@ -4,7 +4,6 @@ import android.util.Log;
 import org.bitman.project.http.GetIP;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtp.Packetizer;
-import org.bitman.project.record.rtp.RtpSocket;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -75,7 +74,6 @@ public class Session {
     public final int trackID = 1;
 
     private CameraWorker worker = CameraWorker.getInstance();
-    private RtpSocket socket = RtpSocket.getInstance();
     public void start()
     {
         worker.start();
@@ -84,13 +82,15 @@ public class Session {
 
         Packetizer packetizer = Packetizer.getInstance();
         packetizer.setDataStream(worker.getStream());
-        packetizer.
+        packetizer.setDestination(destination);
+        packetizer.setSSRC(SSRC);
+        packetizer.start();
     }
 
     public void stop()
     {
         worker.stop();
-        socket.stop();
+        Packetizer.getInstance().stop();
     }
 
     public synchronized String getSessionDescription() throws IllegalStateException, IOException {

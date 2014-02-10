@@ -225,7 +225,7 @@ Dynamic libraries:
 
 VM Arguments:
 jvm_args: -Dfile.encoding=US-ASCII -Xbootclasspath:/Users/ay27/androidADT/sdk/platforms/android-19/android.jar 
-java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 49261 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames org.bitman.project.http.GetIP_Test
+java_command: org.eclipse.jdt.internal.junit.runner.RemoteTestRunner -version 3 -port 49261 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames test.http.GetIP_Test
 Launcher Type: SUN_STANDARD
 
 Environment Variables:

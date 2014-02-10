@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Random;
 
 public class Packetizer implements Runnable {
@@ -25,6 +26,9 @@ public class Packetizer implements Runnable {
     private static final int rtphl = RtpSocket.RTP_HEADER_LENGTH;
 
     public void setDataStream(InputStream dataStream) { this.is = dataStream; }
+    public int getLocalPort() { return mSocket.getLocalPort(); }
+    public void setDestination(InetAddress dest) { mSocket.setDestination(dest); }
+    public void setSSRC(int SSRC) { mSocket.setSSRC(SSRC); }
 
 
     private static Packetizer instance;
@@ -59,6 +63,7 @@ public class Packetizer implements Runnable {
             } catch (InterruptedException e) {}
             mThread = null;
         }
+        mSocket.stop();
     }
 
     private long oldTime = 0;
