@@ -21,13 +21,17 @@ public class Session {
     private final long TimeStamp;
 
     public final InetAddress localAddress;
-    // destination will be used in the RtspServer.
-    public InetAddress destination;
+    // destination will be used in the RtspServer
+    public InetAddress getDestination() { return packetizer.getDestination(); }
+    public void setDestination(InetAddress destination) { packetizer.setDestination(destination); }
 
     private Session() throws UnknownHostException {
         localAddress = InetAddress.getByName(GetIP.getLocalIpAddress(true));
         long uptime = System.currentTimeMillis();
         TimeStamp = (uptime/1000)<<32 & (((uptime-((uptime/1000)*1000))>>32)/1000);
+
+        packetizer = new Packetizer();
+        server_port = packetizer.getPorts();
     }
     public static Session getInstance()
     {
@@ -42,29 +46,13 @@ public class Session {
             return instance;
     }
 
-    public int getSSRC() {
-        return SSRC;
-    }
+    public int getSSRC() { return SSRC; }
 
-    public int[] getClient_port() {
-        return client_port;
-    }
+    public int[] getClient_port() { return client_port; }
 
-    public int[] getServer_port() {
-        return server_port;
-    }
+    public int[] getServer_port() { return server_port; }
 
-    public void setDestination(InetAddress destination) {
-        this.destination = destination;
-    }
-
-    public void setClient_port(int[] client_port) {
-        this.client_port = client_port;
-    }
-
-    public void setServer_port(int[] server_port) {
-        this.server_port = server_port;
-    }
+    public void setClient_port(int[] client_port) { this.client_port = client_port; }
 
     // the port of the rtsp, will be set in the ui/Settings, will be used in RtspServer.
     public int rtsp_port = 8554;
@@ -74,15 +62,14 @@ public class Session {
     public final int trackID = 1;
 
     private CameraWorker worker = CameraWorker.getInstance();
+    private Packetizer packetizer;
     public void start()
     {
         worker.start();
         // will delay a little time to wait the stream.
         try { Thread.sleep(10); } catch (InterruptedException e) { }
 
-        Packetizer packetizer = Packetizer.getInstance();
-        packetizer.setDataStream(worker.getStream());
-        packetizer.setDestination(destination);
+        packetizer.setStream(worker.getStream());
         packetizer.setSSRC(SSRC);
         packetizer.start();
     }
@@ -90,11 +77,11 @@ public class Session {
     public void stop()
     {
         worker.stop();
-        Packetizer.getInstance().stop();
+        packetizer.stop();
     }
 
     public synchronized String getSessionDescription() throws IllegalStateException, IOException {
-        if (destination==null) {
+        if (getDestination()==null) {
             throw new IllegalStateException("setDestination() has not been called !");
         }
         StringBuilder sessionDescription = new StringBuilder();
@@ -102,7 +89,7 @@ public class Session {
         sessionDescription.append("o=- "+TimeStamp+" "+TimeStamp+" IN IP4 "+(localAddress==null?"127.0.0.1":localAddress.getHostAddress())+"\r\n");
         sessionDescription.append("s=Unnamed\r\n");
         sessionDescription.append("i=N/A\r\n");
-        sessionDescription.append("c=IN IP4 "+destination.getHostAddress()+"\r\n");
+        sessionDescription.append("c=IN IP4 "+getDestination().getHostAddress()+"\r\n");
         sessionDescription.append("t=0 0\r\n");
         sessionDescription.append("a=recvonly\r\n");
 

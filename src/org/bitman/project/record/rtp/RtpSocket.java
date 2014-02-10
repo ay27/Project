@@ -83,6 +83,7 @@ public class RtpSocket implements Runnable {
             packets[i].setAddress(destination);
         }
     }
+    public InetAddress getDestination() { return destination; }
 
     /* Byte 4,5,6,7    ->  Timestamp                         */
     public void updateTimeStamp(long ts) {
@@ -157,4 +158,6 @@ public class RtpSocket implements Runnable {
             n >>= 8;
         }
     }
+
+
 }

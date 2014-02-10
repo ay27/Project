@@ -25,24 +25,17 @@ public class Packetizer implements Runnable {
     private static final int MaxPacketizerSize = 1400;
     private static final int rtphl = RtpSocket.RTP_HEADER_LENGTH;
 
-    public void setDataStream(InputStream dataStream) { this.is = dataStream; }
-    public int getLocalPort() { return mSocket.getLocalPort(); }
-    public void setDestination(InetAddress dest) { mSocket.setDestination(dest); }
-    public void setSSRC(int SSRC) { mSocket.setSSRC(SSRC); }
-
-
-    private static Packetizer instance;
-    private Packetizer() {
+    public Packetizer() {
         mSocket = RtpSocket.getInstance();
         report = RtcpSenderReport.getInstance();
         ts = new Random().nextInt();
     }
-    public static Packetizer getInstance()
-    {
-        if (instance == null)
-            return (instance = new Packetizer());
-        else return instance;
-    }
+
+    public void setStream(InputStream is) { this.is = is; }
+    public void setDestination(InetAddress destination) { mSocket.setDestination(destination); }
+    public InetAddress getDestination() { return mSocket.getDestination(); }
+    public void setSSRC(int SSRC) { mSocket.setSSRC(SSRC); }
+    public int[] getPorts() { return new int[] { mSocket.getLocalPort(), report.getLocalPort() }; }
 
     private Thread mThread = null;
     public void start()

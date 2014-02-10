@@ -159,8 +159,8 @@ public class RtspServer extends Service {
             if (request.method.equalsIgnoreCase("DESCRIBE")) {
 
                 mSession = Session.getInstance();
-                if (mSession.destination==null) {
-                    mSession.destination = mClient.getInetAddress();
+                if (mSession.getDestination()==null) {
+                    mSession.setDestination(mClient.getInetAddress());
                 }
 
                 String requestContent = mSession.getSessionDescription();
@@ -219,12 +219,12 @@ public class RtspServer extends Service {
 
                 ssrc = mSession.getSSRC();
                 src = mSession.getServer_port();
-                destination = mSession.destination;
+                destination = mSession.getDestination();
 
                 mSession.setClient_port(new int[]{p1, p2});
 
                 response.attributes = "Transport: RTP/AVP/UDP;"+(destination.isMulticastAddress()?"multicast":"unicast")+
-                    ";destination="+mSession.destination.getHostAddress()+
+                    ";destination="+mSession.getDestination().getHostAddress()+
                     ";client_port="+p1+"-"+p2+
                     ";server_port="+src[0]+"-"+src[1]+
                     ";ssrc="+Integer.toHexString(ssrc)+
