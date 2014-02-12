@@ -173,7 +173,7 @@ public class PlayActivity extends Activity{
         // TODO open it
         // delete the dummy file.
 		/*try {
-			sdpFile.close();
+			sdpFile.stop();
 		} catch (Exception e)
 		{
 			e.printStackTrace();

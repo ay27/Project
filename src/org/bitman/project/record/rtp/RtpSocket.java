@@ -28,15 +28,11 @@ public class RtpSocket implements Runnable {
     private Semaphore bufferRequest;
     private Semaphore bufferCommit;
     private DatagramPacket[] packets;
-    private MulticastSocket socket;
+    private MulticastSocket socket = new MulticastSocket();
     private long[] timeStamps;
     private int bufferIn, bufferOut;
-    private int SSRC = 0;
-    private int port = 0;
-    private InetAddress destination = null;
 
-    private static RtpSocket instance = null;
-    private RtpSocket() throws IOException {
+    public RtpSocket() throws IOException {
         buffers = new byte[bufferCount][];
         bufferRequest = new Semaphore(bufferCount);
         bufferCommit = new Semaphore(0);
@@ -55,35 +51,21 @@ public class RtpSocket implements Runnable {
             buffers[i][1] = (byte) 96;
         }
 
-        socket = new MulticastSocket();
     }
 
-    public static RtpSocket getInstance()
-    {
-        if (instance == null)
-            try {
-                return (instance = new RtpSocket());
-            } catch (IOException e) {
-                Log.e(TAG, e.toString());
-                return null;
-            }
-        else return instance;
-    }
 
     public int getLocalPort() { return socket.getLocalPort(); }
     public void setPort(int port) {
-        this.port = port;
-        for (int i = 0; i < bufferCount; i++) {
+        for (int i = 0; i < bufferCount; i++)
             packets[i].setPort(port);
-        }
     }
+
+    public InetAddress getDestination() { return packets[0].getAddress(); }
     public void setDestination(InetAddress destination) {
-        this.destination = destination;
-        for (int i = 0; i < bufferCount; i++) {
+        for (int i = 0; i < bufferCount; i++)
             packets[i].setAddress(destination);
-        }
     }
-    public InetAddress getDestination() { return destination; }
+
 
     /* Byte 4,5,6,7    ->  Timestamp                         */
     public void updateTimeStamp(long ts) {
@@ -92,7 +74,6 @@ public class RtpSocket implements Runnable {
     }
     /* Byte 8,9,10,11  ->  Sync Source Identifier            */
     public void setSSRC(int SSRC) {
-        this.SSRC = SSRC;
         for (int i = 0; i < bufferCount; i++)
             setLong(buffers[i], SSRC, 8, 12);
     }

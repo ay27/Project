@@ -8,8 +8,8 @@ import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 import org.bitman.project.http.GetIP;
 import org.bitman.project.http.HttpClient;
-import org.bitman.project.record.Session;
 import org.bitman.project.record.VideoQuality;
+import org.bitman.project.record.rtsp.RtspServer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -119,7 +119,7 @@ public class SettingsActivity extends PreferenceActivity {
                 videoQuality.bitrate = Integer.parseInt(sharedPreferences.getString("video_bitrate", "100"));
             }
             else if (key.equals("rtsp_port")) {
-                Session.getInstance().rtsp_port = Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554"));
+                RtspServer.setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
             }
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");

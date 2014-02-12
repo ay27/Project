@@ -16,12 +16,9 @@ public class RtcpSenderReport {
     private DatagramPacket upack;
 
     private byte[] buffer = new byte[MTU];
-    private int ssrc, port = -1;
     private int octetCount = 0, packetCount = 0;
 
-    private static RtcpSenderReport instance;
-
-    private RtcpSenderReport() {
+    public RtcpSenderReport() {
 
 		/*							     Version(2)  Padding(0)					 					*/
 		/*									 ^		  ^			PT = 0	    						*/
@@ -54,14 +51,7 @@ public class RtcpSenderReport {
 
     }
 
-    public static RtcpSenderReport getInstance()
-    {
-        if (instance == null)
-            return (instance = new RtcpSenderReport());
-        else return instance;
-    }
-
-    public void close() {
+    public void stop() {
         usock.close();
     }
 
@@ -107,7 +97,6 @@ public class RtcpSenderReport {
     }
 
     public void setSSRC(int ssrc) {
-        this.ssrc = ssrc;
         setLong(ssrc,4,8);
         packetCount = 0;
         octetCount = 0;
@@ -115,22 +104,14 @@ public class RtcpSenderReport {
         setLong(octetCount, 24, 28);
     }
 
-    public void setDestination(InetAddress dest, int dport) {
-        port = dport;
-        upack.setPort(dport);
-        upack.setAddress(dest);
-    }
+    public void setDestination(InetAddress dest) { upack.setAddress(dest); }
 
-    public int getPort() {
-        return port;
+    public void setPort(int port) {
+        upack.setPort(port);
     }
 
     public int getLocalPort() {
         return usock.getLocalPort();
-    }
-
-    public int getSSRC() {
-        return ssrc;
     }
 
     private void setLong(long n, int begin, int end) {

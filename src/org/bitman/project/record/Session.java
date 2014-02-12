@@ -21,9 +21,31 @@ public class Session {
     private final long TimeStamp;
 
     public final InetAddress localAddress;
-    // destination will be used in the RtspServer
+    // Only has one track.
+    public final int trackID = 1;
+
+    // client_port will be set in RtspServer->SETUP, will be used in rtp/Packetizer.
+    // server_port will be set in rtp/RtpSocket or rtp/Packetizer, will be used in RtspServer.
+    private int[] client_port = new int[]{0, 0}, server_port;
+
+    private CameraWorker worker = CameraWorker.getInstance();
+    private Packetizer packetizer;
+
+    // a simple proxy.
     public InetAddress getDestination() { return packetizer.getDestination(); }
     public void setDestination(InetAddress destination) { packetizer.setDestination(destination); }
+
+    public int getSSRC() { return SSRC; }
+    public int[] getServer_port() { return server_port; }
+
+    public int[] getClient_port() { return client_port; }
+    public void setClient_port(int[] client_port) {
+        if (client_port[0] % 2 == 1)
+            this.client_port = new int[]{client_port[0]-1, client_port[0]};
+        else
+            this.client_port = client_port;
+        packetizer.setPorts(client_port[0], client_port[1]);
+    }
 
     private Session() throws UnknownHostException {
         localAddress = InetAddress.getByName(GetIP.getLocalIpAddress(true));
@@ -46,23 +68,6 @@ public class Session {
             return instance;
     }
 
-    public int getSSRC() { return SSRC; }
-
-    public int[] getClient_port() { return client_port; }
-
-    public int[] getServer_port() { return server_port; }
-
-    public void setClient_port(int[] client_port) { this.client_port = client_port; }
-
-    // the port of the rtsp, will be set in the ui/Settings, will be used in RtspServer.
-    public int rtsp_port = 8554;
-    // client_port will be set in RtspServer->SETUP, will be used in rtp/Packetizer.
-    // server_port will be set in rtp/RtpSocket or rtp/Packetizer, will be used in RtspServer.
-    private int[] client_port = new int[]{0, 0}, server_port;
-    public final int trackID = 1;
-
-    private CameraWorker worker = CameraWorker.getInstance();
-    private Packetizer packetizer;
     public void start()
     {
         worker.start();

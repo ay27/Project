@@ -301,7 +301,7 @@ public class Play_VLC_Activity extends Activity implements
 
         super.onDestroy();
 
-    // close HttpClient
+    // stop HttpClient
     HttpClient.getInstance().send(HttpClient.Options.Close, "");
     }
 

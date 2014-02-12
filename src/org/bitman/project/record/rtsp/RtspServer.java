@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import org.bitman.project.http.HttpClient;
+
 import org.bitman.project.record.Session;
 
 import java.io.BufferedReader;
@@ -18,6 +18,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,13 +26,18 @@ public class RtspServer extends Service {
 
     private static final String TAG = "RtspServer";
     private static final String SERVER_NAME = "org.bitman.ay27 rtsp server";
+    private static final String SessionId = "phone"+Integer.toHexString(new Random().nextInt());
+
+    private static int rtsp_port = 8554;
+    // Will be set in the next time, or you must set it before the service start.
+    public static void setRtsp_port(int rtsp_port) { RtspServer.rtsp_port = rtsp_port; }
 
     private final IBinder mBinder = new LocalBinder();
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-    private class LocalBinder extends Binder {
+    public class LocalBinder extends Binder {
         public RtspServer getService() {
             return RtspServer.this;
         }
@@ -44,9 +50,13 @@ public class RtspServer extends Service {
         start();
     }
 
-    private void start() {
+    public void start() {
         if (listenerThread == null)
             listenerThread = new RequestListener();
+    }
+    public void stop() {
+        if (listenerThread != null)
+            listenerThread.kill();
     }
 
     private class RequestListener extends Thread {
@@ -55,7 +65,7 @@ public class RtspServer extends Service {
         public RequestListener()
         {
             try {
-                serverSocket = new ServerSocket(Session.getInstance().rtsp_port);
+                serverSocket = new ServerSocket(rtsp_port);
                 start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -93,13 +103,12 @@ public class RtspServer extends Service {
         private final BufferedReader mInput;
 
         // Each client has an associated session
-        private Session mSession;
+        private Session mSession = Session.getInstance();
 
         public WorkerThread(final Socket client) throws IOException {
             mInput = new BufferedReader(new InputStreamReader(client.getInputStream()));
             mOutput = client.getOutputStream();
             mClient = client;
-            mSession = Session.getInstance();
         }
 
         public void run()
@@ -158,7 +167,6 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             if (request.method.equalsIgnoreCase("DESCRIBE")) {
 
-                mSession = Session.getInstance();
                 if (mSession.getDestination()==null) {
                     mSession.setDestination(mClient.getInetAddress());
                 }
@@ -229,7 +237,7 @@ public class RtspServer extends Service {
                     ";server_port="+src[0]+"-"+src[1]+
                     ";ssrc="+Integer.toHexString(ssrc)+
                     ";mode=play\r\n" +
-                    "Session: "+ HttpClient.ShareData.getMEID() + "\r\n" +
+                    "Session: "+ SessionId + "\r\n" +
                     "Cache-Control: no-cache\r\n";
                 response.status = Response.Status.OK;
             }
@@ -240,7 +248,7 @@ public class RtspServer extends Service {
             else if (request.method.equalsIgnoreCase("PLAY")) {
                 String requestAttributes = "RTP-Info: ";
                 requestAttributes += "url=rtsp://"+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/trackID="+mSession.trackID+";seq=0,";
-                requestAttributes = requestAttributes.substring(0, requestAttributes.length()-1) + "\r\nSession: "+HttpClient.ShareData.getMEID() +"\r\n";
+                requestAttributes = requestAttributes.substring(0, requestAttributes.length()-1) + "\r\nSession: "+ SessionId +"\r\n";
 
                 response.attributes = requestAttributes;
 
