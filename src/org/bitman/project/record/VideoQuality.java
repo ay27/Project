@@ -1,6 +1,9 @@
 package org.bitman.project.record;
 
+import android.content.res.Resources;
 import android.media.MediaRecorder;
+import org.bitman.project.ProjectApplication;
+import org.bitman.project.R;
 
 public class VideoQuality {
 
@@ -31,15 +34,47 @@ public class VideoQuality {
         else return instance;
     }
 
-    private static final String s640_10 = "";
-    private static final String s640_8 = "";
-    private static final String s320_10 = "";
-    private static final String s320_8 = "";
-    private static final String s176_10 = "";
-    private static final String s176_8 = "";
+    
+    public String getDescription(int rtpPort) {
 
-    // TODO finish it
-    public String getDescription() {
-        return null;
+        String[] parameter = getParameter().split(",");
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("m=video "+String.valueOf(rtpPort)+" RTP/AVP 96\r\n" +
+                "a=rtpmap:96 H264/90000\r\n" +
+                "a=fmtp:96 packetization-mode=1;");
+        sb.append("profile-level-id="+parameter[0]);
+        sb.append(";sprop-parameter-sets="+parameter[1]+","+parameter[2]+";\r\n");
+        return sb.toString();
     }
+
+    private String getParameter() {
+        Resources resources = ProjectApplication.instance.getResources();
+        if (framerate == 8)
+        {
+            switch (resX) {
+                case 176:
+                    return resources.getString(R.string.h8_176_144);
+                case 320:
+                    return resources.getString(R.string.h8_320_240);
+                case 640:
+                    return resources.getString(R.string.h8_640_480);
+                default:
+                    return null;
+            }
+        }
+        else {
+            switch (resX) {
+                case 176:
+                    return resources.getString(R.string.h10_176_144);
+                case 320:
+                    return resources.getString(R.string.h10_320_240);
+                case 640:
+                    return resources.getString(R.string.h10_640_480);
+                default:
+                    return null;
+            }
+        }
+    }
+
 }

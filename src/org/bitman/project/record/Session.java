@@ -98,7 +98,7 @@ public class Session {
         sessionDescription.append("t=0 0\r\n");
         sessionDescription.append("a=recvonly\r\n");
 
-        sessionDescription.append(VideoQuality.getInstance().getDescription());
+        sessionDescription.append(VideoQuality.getInstance().getDescription(client_port[0]));
         sessionDescription.append("a=control:trackID="+trackID+"\r\n");
         return sessionDescription.toString();
     }

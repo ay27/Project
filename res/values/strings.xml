@@ -10,4 +10,14 @@
 	<string name = "video_player_4x3">4x3</string>
 	<string name = "video_player_original">原始大小</string>
 
+
+	<string name="h8_176_144">42000a,Z0IACpZUFiYg,aM44gA==</string>
+	<string name="h10_176_144">42000a,Z0IACpZUFiYg,aM44gA==</string>
+
+	<string name="h8_320_240">42000a,Z0IACpZUCg+I,aM44gA==</string>
+	<string name="h10_320_240">42000a,Z0IACpZUCg+I,aM44gA==</string>
+
+	<string name="h10_640_480">42000a,Z0IACpZUBQHogA==,aM44gA==</string>
+	<string name="h8_640_480">42000a,Z0IACpZUBQHogA==,aM44gA==</string>
+
 </resources>
