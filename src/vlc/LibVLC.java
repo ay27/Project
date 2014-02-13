@@ -20,19 +20,18 @@
 
 package vlc;
 
-import java.util.ArrayList;
-
-import org.bitman.demeter.DemeterApplication;
-import org.bitman.demeter.R;
-
 import android.app.Activity;
 import android.content.Context;
-//import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
-//import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Surface;
+import org.bitman.project.R;
+
+import java.util.ArrayList;
+
+//import android.content.SharedPreferences;
+//import android.preference.PreferenceManager;
 
 public class LibVLC {
     private static final String TAG = "VLC/LibVLC";
@@ -206,7 +205,7 @@ public class LibVLC {
                 Log.e(TAG, Util.getErrorMsg());
                 return;
             }*/
-            Context context = DemeterApplication.getAppContext();
+            //Context context = ProjectApplication.instance;
             //SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
            // nativeInit(pref.getBoolean("enable_verbose_mode", true));
             nativeInit(true);

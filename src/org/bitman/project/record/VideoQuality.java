@@ -34,7 +34,6 @@ public class VideoQuality {
         else return instance;
     }
 
-    
     public String getDescription(int rtpPort) {
 
         String[] parameter = getParameter().split(",");

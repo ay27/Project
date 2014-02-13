@@ -51,12 +51,17 @@ public class RtspServer extends Service {
     }
 
     public void start() {
+        Log.i(TAG, "start");
         if (listenerThread == null)
             listenerThread = new RequestListener();
     }
     public void stop() {
+        Log.i(TAG, "rtsp stop");
         if (listenerThread != null)
+        {
             listenerThread.kill();
+            listenerThread = null;
+        }
     }
 
     private class RequestListener extends Thread {
@@ -77,20 +82,22 @@ public class RtspServer extends Service {
             int cc = 0;
             while (!Thread.interrupted())
             {
-                Log.i(TAG, "cc = "+cc);
+                Log.i(TAG, "cc = "+(++cc));
                 try {
                     new WorkerThread(serverSocket.accept()).start();
                 } catch (IOException e) {
-                    Log.e(TAG, "in RequestListener->run(): "+e.toString());
+                    //Log.e(TAG, "in RequestListener->run(): "+e.toString());
+                    break;
                 }
             }
         }
 
         public void kill()
         {
+            Log.i(TAG, "kill the RequestListener");
             try {
+                this.interrupt();
                 serverSocket.close();
-                this.join();
             } catch (Exception e) {
                 Log.e(TAG, "in RequestListener->kill(): "+e.toString());
             }

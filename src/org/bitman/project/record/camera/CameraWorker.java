@@ -17,13 +17,13 @@ public class CameraWorker {
 
     private static final String TAG = "CameraWorker";
 
-//    private static class Status {
-//        public static boolean streaming = false;
-//        public static boolean surfaceReady = false;
-//        public static boolean socketReady = false;
-//        public static boolean cameraLock = true;
-//        public static boolean cameraWorking = false;
-//    }
+    private static class Status {
+        public static boolean streaming = false;
+        public static boolean surfaceReady = false;
+        public static boolean socketReady = false;
+        public static boolean cameraLock = true;
+        public static boolean cameraWorking = false;
+    }
 
     private SurfaceHolder surfaceHolder = null;
     private VideoQuality videoQuality = VideoQuality.getInstance();
@@ -47,14 +47,12 @@ public class CameraWorker {
             mSurfaceHolderCallback = new SurfaceHolder.Callback() {
                 @Override
                 public void surfaceDestroyed(SurfaceHolder holder) {
-                    //Status.surfaceReady = false;
+                    Status.surfaceReady = false;
                 }
                 @Override
                 public void surfaceCreated(SurfaceHolder holder) {
-                    //Status.surfaceReady = true;
-                    //Log.i(TAG, "surface ready");
-                    // TODO remove it
-                    start();
+                    Status.surfaceReady = true;
+                    Log.i(TAG, "surface ready");
                 }
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -62,17 +60,17 @@ public class CameraWorker {
             };
             this.surfaceHolder = holder;
             surfaceHolder.addCallback(mSurfaceHolderCallback);
-            //Status.surfaceReady = true;
+            Status.surfaceReady = true;
         }
     }
 
     public synchronized void start()
     {
-//        if (Status.streaming)
-//        {
-//            Log.i(TAG, ""+Status.streaming);
-//            throw new IllegalStateException("Illegal state in CameraWorker->start()");
-//        }
+        if (Status.streaming)
+        {
+            Log.i(TAG, "you can not start the camera again");
+            throw new IllegalStateException("Illegal state in CameraWorker->start()");
+        }
 
         try {
             createSockets();
@@ -111,14 +109,14 @@ public class CameraWorker {
             Log.e(TAG, "in mediaRecorder.prepare(): "+e.toString());
         }
         mediaRecorder.start();
-//        Status.streaming = true;
-//        Status.cameraWorking = true;
+        Status.streaming = true;
+        Status.cameraWorking = true;
     }
 
     public InputStream getStream()
     {
-//        if (!Status.streaming)
-//            throw new IllegalStateException("You must start() the CameraWorker before getStream()");
+        if (!Status.streaming)
+            throw new IllegalStateException("You must start() the CameraWorker before getStream()");
         try {
             return sender.getInputStream();
         } catch (IOException e) {
@@ -138,47 +136,47 @@ public class CameraWorker {
     }
     private void lockCamera()
     {
-//        if (!Status.cameraLock)
+        if (!Status.cameraLock)
         {
             try {
                 camera.reconnect();
             } catch (IOException e) { }
-//            Status.cameraLock = true;
+            Status.cameraLock = true;
         }
     }
     private void unlockCamera()
     {
-//        if (Status.cameraLock)
+        if (Status.cameraLock)
         {
             camera.unlock();
-//            Status.cameraLock = false;
+            Status.cameraLock = false;
         }
     }
     private void stopStream()
     {
-//        if (!Status.streaming)
-//            return;
+        if (!Status.streaming)
+            return;
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
-//        Status.streaming = false;
+        Status.streaming = false;
     }
     private void stopCamera()
     {
-//        if (!Status.cameraWorking)
-//            return;
+        if (!Status.cameraWorking)
+            return;
         camera.stopPreview();
         camera.release();
         camera = null;
-//        Status.cameraWorking = false;
+        Status.cameraWorking = false;
     }
 
     private LocalServerSocket lss;
     private LocalSocket receiver;
     private LocalSocket sender;
     private void createSockets() throws IOException {
-//        if (Status.socketReady)
-//            return;
+        if (Status.socketReady)
+            return;
 
         final String LOCAL_ADDR = "org.bitman.streaming-";
 
@@ -198,12 +196,12 @@ public class CameraWorker {
         sender = lss.accept();
         sender.setSendBufferSize(500000);
 
-//        Status.socketReady = true;
+        Status.socketReady = true;
     }
 
     private void closeSockets() {
-//        if (!Status.socketReady)
-//            return;
+        if (!Status.socketReady)
+            return;
         try {
             sender.close();
             sender = null;

@@ -19,5 +19,7 @@
 
 	<string name="h10_640_480">42000a,Z0IACpZUBQHogA==,aM44gA==</string>
 	<string name="h8_640_480">42000a,Z0IACpZUBQHogA==,aM44gA==</string>
+	<string name = "aout_audiotrack">AudioTrack (native)</string>
+	<string name = "aout_opensles">OpenSL ES</string>
 
 </resources>

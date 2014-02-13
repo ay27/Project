@@ -7,9 +7,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
+import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
+import org.bitman.project.http.GetIP;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtsp.RtspServer;
 
@@ -27,10 +32,20 @@ public class RecordActivity extends Activity {
 
         setContentView(R.layout.record_layout);
 
+        TextView ipView = (TextView) findViewById(R.id.textView_ip);
+        String ip = GetIP.getLocalIpAddress(true);
+        ipView.setText("rtsp://"+ip+ ":"+PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554"));
+        Log.i(TAG, ip);
+
         surfaceView = (SurfaceView) findViewById(R.id.surface_record);
         SurfaceHolder holder = surfaceView.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         cameraWorker.setPreviewDisplay(holder);
+
+        Intent intent = new Intent();
+//        intent.setClass(RecordActivity.this, RtspServer.class);
+//        startService(intent);
+
 
         bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
 
@@ -65,21 +80,32 @@ public class RecordActivity extends Activity {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-
+            mRtspServer = null;
         }
     };
 
     @Override
     public void onBackPressed() {
         cameraWorker.stop();
-        onDestroy();
+        //onDestroy();
         super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
-        if (mRtspServer != null)
-            mRtspServer.stop();
+
+//        if (mRtspServer != null)
+//        {
+//            mRtspServer.stop();
+//            unbindService(mRtspServiceConnection);
+//        }
+
+        Log.i(TAG, "onDestroy");
         super.onDestroy();
+
+        mRtspServer.stop();
+        unbindService(mRtspServiceConnection);
     }
+
+
 }

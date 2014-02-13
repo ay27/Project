@@ -20,22 +20,6 @@
 
 package vlc;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Properties;
-
-import org.bitman.demeter.DemeterApplication;
-import org.bitman.demeter.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -46,6 +30,15 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+import org.bitman.project.ProjectApplication;
+import org.bitman.project.R;
+
+import java.io.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Properties;
 
 
 public class Util {
@@ -101,7 +94,7 @@ public class Util {
 
     public static String readAsset(String assetName, String defaultS) {
         try {
-            InputStream is = DemeterApplication.getAppResources().getAssets().open(assetName);
+            InputStream is = ProjectApplication.instance.getAssets().open(assetName);
             BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF8"));
             StringBuilder sb = new StringBuilder();
             String line = r.readLine();
@@ -194,7 +187,7 @@ public class Util {
     public static String getValue(String string, int defaultId)
     {
         return (string != null && string.length() > 0) ?
-                string : DemeterApplication.getAppContext().getString(defaultId);
+                string : ProjectApplication.instance.getString(defaultId);
     }
 
     public static void setItemBackground(View v, int position) {
@@ -204,7 +197,7 @@ public class Util {
     }
 
     public static int convertPxToDp(int px) {
-        WindowManager wm = (WindowManager)DemeterApplication.getAppContext().
+        WindowManager wm = (WindowManager)ProjectApplication.instance.
                 getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -217,7 +210,7 @@ public class Util {
     public static int convertDpToPx(int dp) {
         return Math.round(
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                DemeterApplication.getAppResources().getDisplayMetrics())
+                ProjectApplication.instance.getResources().getDisplayMetrics())
                          );
     }
 
@@ -357,7 +350,7 @@ public class Util {
     }
 
     public static boolean isPhone(){
-        TelephonyManager manager = (TelephonyManager)DemeterApplication.getAppContext().getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager manager = (TelephonyManager)ProjectApplication.instance.getSystemService(Context.TELEPHONY_SERVICE);
         if(manager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE){
             return false;
         }else{
