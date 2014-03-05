@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Semaphore;
 
-// TODO add the CallbackListener!!!!!
 
 public class WorkerThread extends Thread {
 	
@@ -45,7 +44,8 @@ public class WorkerThread extends Thread {
 	
 	private String send_data;
 	private String receive_data;
-	private Semaphore semaphore = new Semaphore(1);
+	private Semaphore semaphore_send = new Semaphore(1);
+    private Semaphore semaphore_done = new Semaphore(0);
     private Thread mThread = null;
 	/**
 	 * Here is the working entry. The semaphore guarantees that there is only one
@@ -55,12 +55,11 @@ public class WorkerThread extends Thread {
 	 */
 	public synchronized String send(String data) {
 		send_data = data;
-        try { semaphore.acquire(); } catch (InterruptedException e) { }
+        try { semaphore_send.acquire(); } catch (InterruptedException e) { }
         if (mThread == null)
             mThread = new Thread(this);
         mThread.start();
-		try { semaphore.acquire(); } catch (InterruptedException e) { }
-		semaphore.release();
+        try { semaphore_done.acquire(); } catch (InterruptedException e) { }
 		return receive_data;
 	}
 
@@ -109,7 +108,8 @@ public class WorkerThread extends Thread {
 				connection.disconnect();
 				connection = null;
 			}
-            semaphore.release();
+            semaphore_send.release();
+            semaphore_done.release();
             mThread = null;
 		}
 	}

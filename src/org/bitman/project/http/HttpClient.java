@@ -1,7 +1,9 @@
 package org.bitman.project.http;
 
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 import org.bitman.project.ProjectApplication;
 
 public class HttpClient {
@@ -175,9 +177,17 @@ public class HttpClient {
                 default:
                     break;
             }
-        } catch (Exception e)
+        } catch (final Exception e)
         {
             Log.e(TAG, e.toString());
+            // TODO: whether it is OK?
+            AsyncTask aa = new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object[] objects) {
+                    Toast.makeText(ProjectApplication.instance, "exception: "+e.toString(), Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            };
         }
 
         Log.i(TAG, "send data: "+sBuffer.toString());

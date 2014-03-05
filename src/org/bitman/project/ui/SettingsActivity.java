@@ -7,12 +7,7 @@ import android.util.Log;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 import org.bitman.project.http.GetIP;
-import org.bitman.project.http.HttpClient;
 import org.bitman.project.record.VideoQuality;
-import org.bitman.project.record.rtsp.RtspServer;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SettingsActivity extends PreferenceActivity {
 
@@ -25,7 +20,6 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
-        settings.registerOnSharedPreferenceChangeListener(changeListener);
 
         final ListPreference videoResolution = (ListPreference) findPreference("video_resolution");
         final ListPreference videoBitrate = (ListPreference) findPreference("video_bitrate");
@@ -54,13 +48,13 @@ public class SettingsActivity extends PreferenceActivity {
 
         videoResolution.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                SharedPreferences.Editor editor = settings.edit();
-                Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
-                Matcher matcher = pattern.matcher((String)newValue);
-                matcher.find();
-                editor.putInt("video_resX", Integer.parseInt(matcher.group(1)));
-                editor.putInt("video_resY", Integer.parseInt(matcher.group(2)));
-                editor.commit();
+//                SharedPreferences.Editor editor = settings.edit();
+//                Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
+//                Matcher matcher = pattern.matcher((String)newValue);
+//                matcher.find();
+//                editor.putInt("video_resX", Integer.parseInt(matcher.group(1)));
+//                editor.putInt("video_resY", Integer.parseInt(matcher.group(2)));
+//                editor.commit();
                 videoResolution.setSummary(newValue+"px");
                 return true;
             }
@@ -104,31 +98,5 @@ public class SettingsActivity extends PreferenceActivity {
 
     }
 
-    private SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            VideoQuality videoQuality = VideoQuality.getInstance();
-            if (key.equals("video_resX") || key.equals("video_resY")) {
-                videoQuality.resX = sharedPreferences.getInt("video_resX", 176);
-                videoQuality.resY = sharedPreferences.getInt("video_resY", 144);
-            }
-            else if (key.equals("video_framerate")) {
-                videoQuality.framerate = Integer.parseInt(sharedPreferences.getString("video_framerate", "8"));
-            }
-            else if (key.equals("video_bitrate")) {
-                videoQuality.bitrate = Integer.parseInt(sharedPreferences.getString("video_bitrate", "100"));
-            }
-            else if (key.equals("rtsp_port")) {
-                RtspServer.setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
-            }
-            else if (key.equals("server_address")) {
-                String ip = sharedPreferences.getString("server_address", "127.0.0.1");
-                try {
-                    HttpClient.getInstance().setIP(ip);
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                }
-            }
-        }
-    };
+
 }

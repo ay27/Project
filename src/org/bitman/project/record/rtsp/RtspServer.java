@@ -65,12 +65,14 @@ public class RtspServer extends Service {
     }
 
     private class RequestListener extends Thread {
+        private static final String TAG = "RequestListener";
         private ServerSocket serverSocket;
 
         public RequestListener()
         {
             try {
                 serverSocket = new ServerSocket(rtsp_port);
+                Log.i(TAG, "serverSocket start on "+rtsp_port);
                 start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -120,6 +122,8 @@ public class RtspServer extends Service {
 
         public void run()
         {
+            Log.i(TAG, "worker thread run.");
+
             Request request;
             Response response;
 
@@ -309,6 +313,7 @@ public class RtspServer extends Service {
             Matcher matcher;
 
             if ((line = input.readLine()) == null) throw new SocketException("Client disconnected");
+
             matcher = regexMethod.matcher(line);
             matcher.find();
             request.method = matcher.group(1);
