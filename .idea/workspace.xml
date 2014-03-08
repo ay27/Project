@@ -18,12 +18,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a8dd9b02-2a89-4df3-9488-7f22d5454bd0" name="Default" comment="Edit http/WorkThread.java&#10;Before move to intellij idea.&#10;&#10;# Please enter the commit message for your changes. Lines starting&#10;# with '#' will be ignored, and an empty message aborts the commit.&#10;# On branch master&#10;# Changes to be committed:&#10;#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)&#10;#&#10;#&#9;modified:   .classpath&#10;#&#9;modified:   .project&#10;#&#9;modified:   .settings/org.eclipse.jdt.core.prefs&#10;#&#9;modified:   AndroidManifest.xml&#10;#&#9;modified:   bin/AndroidManifest.xml&#10;#&#9;modified:   bin/Project.apk&#10;#&#9;modified:   bin/classes.dex&#10;#&#9;modified:   bin/classes/org/bitman/project/http/GetIP.class&#10;#&#9;new file:   bin/classes/org/bitman/project/http/GetIP_Test.class&#10;#&#9;modified:   bin/classes/org/bitman/project/http/HttpServer.class&#10;#&#9;new file:   bin/classes/org/bitman/project/http/HttpServer_Test.class&#10;#&#9;modified:   bin/classes/org/bitman/project/http/WorkThread.class&#10;#&#9;modified:   bin/classes/org/bitman/project/http/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/camera/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/rtp/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/rtsp/readme.txt&#10;#&#9;new file:   bin/dexedLibs/android-support-v4-d66afdfe0fc4bac78930a6ba15123399.jar&#10;#&#9;new file:   bin/jarlist.cache&#10;#&#9;modified:   bin/resources.ap_&#10;#&#9;new file:   hs_err_pid366.log&#10;#&#9;new file:   hs_err_pid368.log&#10;#&#9;modified:   project.properties&#10;#&#9;modified:   res/layout/play_layout.xml&#10;#&#9;modified:   res/layout/play_vlc_layout.xml&#10;#&#9;modified:   res/layout/record_layout.xml&#10;#&#9;modified:   res/layout/welcome_layout.xml&#10;#&#9;modified:   res/menu/welcome.xml&#10;#&#9;modified:   res/values/strings.xml&#10;#&#9;modified:   res/values/styles.xml&#10;#&#9;modified:   res/xml/preferences.xml&#10;#&#9;modified:   src/org/bitman/project/http/GetIP.java&#10;#&#9;new file:   src/org/bitman/project/http/GetIP_Test.java&#10;#&#9;modified:   src/org/bitman/project/http/HttpServer.java&#10;#&#9;new file:   src/org/bitman/project/http/HttpServer_Test.java&#10;#&#9;modified:   src/org/bitman/project/http/SendOnline.java&#10;#&#9;modified:   src/org/bitman/project/http/WorkThread.java&#10;#&#9;modified:   src/org/bitman/project/http/readme.txt&#10;#&#9;modified:   src/org/bitman/project/preference_manager/PreferenceManager.java&#10;#&#9;modified:   src/org/bitman/project/record/Session.java&#10;#&#9;modified:   src/org/bitman/project/record/VideoQuality.java&#10;#&#9;modified:   src/org/bitman/project/record/camera/CameraWorker.java&#10;#&#9;modified:   src/org/bitman/project/record/camera/readme.txt&#10;#&#9;modified:   src/org/bitman/project/record/readme.txt&#10;#&#9;modified:   src/org/bitman/project/record/rtp/RTCP_SenderReport.java&#10;#&#9;modified:   src/org/bitman/project/record/rtp/RTP_Socket.java&#10;#&#9;modified:   src/org/bitman/project/record/rtp/Sender.java&#10;#&#9;modified:   src/org/bitman/project/record/rtp/readme.txt&#10;#&#9;modified:   src/org/bitman/project/record/rtsp/RTSP_Server.java&#10;#&#9;modified:   src/org/bitman/project/record/rtsp/readme.txt&#10;#&#9;modified:   src/org/bitman/project/ui/OptionActivity.java&#10;#&#9;modified:   src/org/bitman/project/ui/PlayActivity.java&#10;#&#9;modified:   src/org/bitman/project/ui/Play_VLC_Activity.java&#10;#&#9;modified:   src/org/bitman/project/ui/RecordActivity.java&#10;#&#9;modified:   src/org/bitman/project/ui/WelcomeActivity.java&#10;#&#10;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/record/camera/CameraWorker.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/record/camera/CameraWorker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/http/GetIP.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/http/GetIP.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/RecordActivity.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/RecordActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/record/Session.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/record/Session.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Project.iws" />
@@ -110,25 +105,34 @@
       <file leaf-file-name="RtspServer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="156" column="40" selection-start="4862" selection-end="4862" vertical-scroll-proportion="0.0" vertical-offset="8788" max-vertical-offset="9698">
+            <state line="118" column="0" selection-start="3461" selection-end="3461" vertical-scroll-proportion="0.0" vertical-offset="3068" max-vertical-offset="10218">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Session.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Session.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/Session.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="11" selection-start="2306" selection-end="2306" vertical-scroll-proportion="0.0" vertical-offset="1430" max-vertical-offset="2782">
+            <state line="100" column="52" selection-start="3563" selection-end="3563" vertical-scroll-proportion="0.56873316" vertical-offset="1996" max-vertical-offset="2782">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CameraWorker.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Packetizer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtp/Packetizer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="47" column="0" selection-start="1448" selection-end="1448" vertical-scroll-proportion="0.0" vertical-offset="1222" max-vertical-offset="6474">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CameraWorker.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/camera/CameraWorker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="92" column="0" selection-start="3101" selection-end="3101" vertical-scroll-proportion="0.38544473" vertical-offset="1820" max-vertical-offset="5486">
+            <state line="25" column="5" selection-start="787" selection-end="787" vertical-scroll-proportion="0.0" vertical-offset="650" max-vertical-offset="5798">
               <folding />
             </state>
           </provider>
@@ -156,15 +160,6 @@
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="35" column="39" selection-start="1443" selection-end="1443" vertical-scroll-proportion="0.0" vertical-offset="910" max-vertical-offset="2808">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="arrays.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/values/arrays.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="29" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0" vertical-offset="130" max-vertical-offset="1430">
               <folding />
             </state>
           </provider>
@@ -234,9 +229,9 @@
         <option value="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/ui/RecordActivity.java" />
+        <option value="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/record/camera/CameraWorker.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/record/Session.java" />
-        <option value="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" />
       </list>
     </option>
   </component>
@@ -438,6 +433,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="rtp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="record" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="camera" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -542,7 +563,7 @@
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="g&lt;1" />
     <property name="full.screen.before.presentation.mode" value="true" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="new" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/哥哥的代码/实验一" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Demeter" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -992,12 +1013,14 @@
       <workItem from="1394256383248" duration="29000" />
       <workItem from="1394256620869" duration="841000" />
       <workItem from="1394257849242" duration="50000" />
-      <workItem from="1394258123251" duration="750000" />
+      <workItem from="1394258123251" duration="2134000" />
+      <workItem from="1394261070266" duration="74000" />
+      <workItem from="1394261739846" duration="176000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="122813000" />
+    <option name="totallyTimeSpent" value="124447000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1027,8 +1050,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32754344" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32462686" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32754344" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32382134" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24964234" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35074627" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1038,19 +1060,20 @@
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329602" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21316166" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3138958" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3126551" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3283582" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20958512" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21316166" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21316166" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295129" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32754344" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32506204" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1108,22 +1131,12 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.project">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1014" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/camera/readme.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="203" selection-end="203" vertical-scroll-proportion="0.13774835" vertical-offset="0" max-vertical-offset="755" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hs_err_pid366.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="0" selection-start="608" selection-end="608" vertical-scroll-proportion="-2.516129" vertical-offset="2184" max-vertical-offset="7098" />
-      </provider>
       <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
         <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="0" selection-start="608" selection-end="608" vertical-scroll-proportion="-2.516129" vertical-offset="2184" max-vertical-offset="7098" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lint.xml">
@@ -1297,11 +1310,6 @@
         <state line="23" column="0" selection-start="539" selection-end="539" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1222" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtp/Packetizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="674" selection-end="674" vertical-scroll-proportion="0.0" vertical-offset="299" max-vertical-offset="6344" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/vlc/LibVLC.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="176" column="34" selection-start="5875" selection-end="5875" vertical-scroll-proportion="-1.3975741" vertical-offset="4885" max-vertical-offset="12428" />
@@ -1424,23 +1432,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$USER_HOME$/androidADT/sdk/platforms/android-19/android.jar!/java/io/FileDescriptor.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="0" selection-start="328" selection-end="328" vertical-scroll-proportion="0.30993378" vertical-offset="0" max-vertical-offset="755" />
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/androidADT/sdk/platforms/android-19/android.jar!/android/net/LocalSocket.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="29" selection-start="2718" selection-end="2718" vertical-scroll-proportion="0.754717" vertical-offset="1104" max-vertical-offset="1846" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/camera/CameraWorker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="5" selection-start="787" selection-end="787" vertical-scroll-proportion="0.0" vertical-offset="1338" max-vertical-offset="5512">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="40" selection-start="4862" selection-end="4862" vertical-scroll-proportion="0.0" vertical-offset="8788" max-vertical-offset="9698">
+        <state line="118" column="0" selection-start="3461" selection-end="3461" vertical-scroll-proportion="0.0" vertical-offset="2262" max-vertical-offset="9698">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtp/Packetizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="0" selection-start="1448" selection-end="1448" vertical-scroll-proportion="0.0" vertical-offset="676" max-vertical-offset="6344">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/Session.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="11" selection-start="2306" selection-end="2306" vertical-scroll-proportion="0.0" vertical-offset="1430" max-vertical-offset="2782">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/camera/CameraWorker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="0" selection-start="3101" selection-end="3101" vertical-scroll-proportion="0.38544473" vertical-offset="1820" max-vertical-offset="5486">
+        <state line="100" column="52" selection-start="3563" selection-end="3563" vertical-scroll-proportion="0.56873316" vertical-offset="1996" max-vertical-offset="2782">
           <folding />
         </state>
       </provider>
@@ -1486,7 +1511,7 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>Android SDK</last-edited>
+          <last-edited>1.7</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1503,7 +1528,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

@@ -112,6 +112,7 @@ public class CameraWorker {
         mediaRecorder.start();
         Status.streaming = true;
         Status.cameraWorking = true;
+        Log.i(TAG, "recorder start.");
     }
 
     public InputStream getStream()

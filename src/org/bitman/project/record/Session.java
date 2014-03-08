@@ -71,20 +71,20 @@ public class Session {
     {
         Log.i(TAG, "Session start.");
         // TODO: for test.
-//        worker.start();
-//        // will delay a little time to wait the stream.
-//        try { Thread.sleep(10); } catch (InterruptedException e) { }
-//
-//        packetizer.setStream(worker.getStream());
-//        packetizer.setSSRC(SSRC);
-//        packetizer.start();
+        worker.start();
+        // will delay a little time to wait the stream.
+        try { Thread.sleep(10); } catch (InterruptedException e) { }
+
+        packetizer.setStream(worker.getStream());
+        packetizer.setSSRC(SSRC);
+        packetizer.start();
     }
 
     public void stop()
     {
         Log.i(TAG, "session stop.");
-//        worker.stop();
-//        packetizer.stop();
+        worker.stop();
+        packetizer.stop();
     }
 
     public synchronized String getSessionDescription() throws IllegalStateException, IOException {
