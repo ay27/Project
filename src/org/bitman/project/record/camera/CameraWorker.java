@@ -117,6 +117,7 @@ public class CameraWorker {
 
     public InputStream getStream()
     {
+        Log.i(TAG, "getStream.");
         if (!Status.streaming)
             throw new IllegalStateException("You must start() the CameraWorker before getStream()");
         try {
@@ -124,9 +125,7 @@ public class CameraWorker {
         } catch (IOException e) {
             Log.e(TAG, "getStream(): "+e.toString());
         }
-        finally {
-            return null;
-        }
+        return null;
     }
 
     public void stop()

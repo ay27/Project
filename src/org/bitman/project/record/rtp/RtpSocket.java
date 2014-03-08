@@ -28,7 +28,7 @@ public class RtpSocket implements Runnable {
     private Semaphore bufferRequest;
     private Semaphore bufferCommit;
     private DatagramPacket[] packets;
-    private MulticastSocket socket = new MulticastSocket();
+    private MulticastSocket socket;
     private long[] timeStamps;
     private int bufferIn, bufferOut;
 
@@ -39,6 +39,9 @@ public class RtpSocket implements Runnable {
         bufferIn = bufferOut = 0;
         packets = new DatagramPacket[bufferCount];
         timeStamps = new long[bufferCount];
+
+        Log.i(TAG, "the multicase socket create succeed.");
+        socket = new MulticastSocket();
 
         for (int i = 0; i < bufferCount; i++) {
             buffers[i] = new byte[MTU];
@@ -124,6 +127,7 @@ public class RtpSocket implements Runnable {
                 }
             }
             oldTimeStamp = timeStamps[bufferOut];
+            Log.i(TAG, "rtp socket send a packet.");
             socket.send(packets[bufferOut]);
             if (++bufferOut>=bufferCount) bufferOut = 0;
             bufferRequest.release();

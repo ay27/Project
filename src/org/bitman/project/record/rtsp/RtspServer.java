@@ -86,8 +86,8 @@ public class RtspServer extends Service {
             while (true)
             {
                 // We make sure that only has one client connect to us.
-                if (work != null)
-                    work.interrupt();
+//                if (work != null)
+//                    work.interrupt();
                 Log.i(TAG, "cc = "+(++cc));
                 try {
                     Socket temp = serverSocket.accept();

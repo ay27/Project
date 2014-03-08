@@ -73,7 +73,7 @@ public class Session {
         // TODO: for test.
         worker.start();
         // will delay a little time to wait the stream.
-        try { Thread.sleep(10); } catch (InterruptedException e) { }
+        //try { Thread.sleep(10); } catch (InterruptedException e) { }
 
         packetizer.setStream(worker.getStream());
         packetizer.setSSRC(SSRC);

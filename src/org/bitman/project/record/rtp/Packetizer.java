@@ -60,6 +60,7 @@ public class Packetizer implements Runnable {
     private Thread mThread = null;
     public void start()
     {
+        Log.i(TAG, "packetizer start.");
         if (mThread == null)
         {
             mThread = new Thread(this);
@@ -92,15 +93,20 @@ public class Packetizer implements Runnable {
             byte[] bytes = new byte[4];
             while (!Thread.interrupted())
             {
+                if (cameraStream == null)
+                    Log.e(TAG, "cameraStream is null.");
                 while (cameraStream.read() != 'm');
-                cameraStream.read(bytes);
-                if (bytes[0]=='m' && bytes[1]=='d' && bytes[2]=='a') break;
+                cameraStream.read(bytes, 0, 3);
+                if (bytes[0]=='d' && bytes[1]=='a' && bytes[2]=='t') break;
             }
         } catch (Exception e)
         {
+            Log.e(TAG, e.toString());
             Log.e(TAG, "could not skip the MPEG-4 header");
             return;
         }
+
+        Log.i(TAG, "skip the MPEG-4 header succeed.");
 
         // read a NAL unit from the stream and send it
         long duration = 0;
