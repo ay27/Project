@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 import org.bitman.project.http.GetIP;
@@ -33,16 +34,23 @@ public class RecordActivity extends Activity {
         setContentView(R.layout.record_layout);
 
         TextView ipView = (TextView) findViewById(R.id.textView_ip);
-        String ip = GetIP.getLocalIpAddress(true);
-        ipView.setText("rtsp://"+ip+ ":"+PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554"));
-        Log.i(TAG, ip);
+        String ip = null;
+        try {
+            //InetAddress.getLocalHost();
+            ip = GetIP.getLocalIpAddress(true);
+            ipView.setText("rtsp://"+ip+ ":"+ PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554"));
+            Log.i(TAG, ip);
+        } catch (Exception e) {
+            Toast.makeText(this, "Internet is not accessible. Please check your internet.", Toast.LENGTH_LONG).show();
+        }
+
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_record);
         SurfaceHolder holder = surfaceView.getHolder();
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         cameraWorker.setPreviewDisplay(holder);
 
-        Intent intent = new Intent();
+//        Intent intent = new Intent();
 //        intent.setClass(RecordActivity.this, RtspServer.class);
 //        startService(intent);
 

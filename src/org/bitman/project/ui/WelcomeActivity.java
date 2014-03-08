@@ -2,7 +2,9 @@ package org.bitman.project.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.*;
+import android.os.Process;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +15,8 @@ import org.bitman.project.R;
 import org.bitman.project.http.HttpClient;
 
 public class WelcomeActivity extends Activity {
+
+    private static final String TAG = "WelcomeActivity";
 
     private static WelcomeActivity instance;
 
@@ -64,4 +68,10 @@ public class WelcomeActivity extends Activity {
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "on destroy");
+        android.os.Process.killProcess(Process.myPid());
+    }
 }

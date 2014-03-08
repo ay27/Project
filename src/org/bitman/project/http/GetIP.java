@@ -2,7 +2,6 @@ package org.bitman.project.http;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +42,7 @@ public class GetIP {
 		return m1.matches();
 	}
 
-	public static String getLocalIpAddress(boolean removeIPv6) {
+	public static String getLocalIpAddress(boolean removeIPv6) throws Exception {
 		try {
 			for (Enumeration<NetworkInterface> en = NetworkInterface
 					.getNetworkInterfaces(); en.hasMoreElements();) {
@@ -58,8 +57,9 @@ public class GetIP {
 						return inetAddress.getHostAddress();
 				}
 			}
-		} catch (SocketException ignore) {
-		}
+		} catch (Exception exception) {
+            throw exception;
+        }
 		return null;
 	}
 

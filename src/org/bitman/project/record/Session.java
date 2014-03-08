@@ -7,7 +7,6 @@ import org.bitman.project.record.rtp.Packetizer;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Random;
 
 public class Session {
@@ -47,7 +46,7 @@ public class Session {
         packetizer.setPorts(client_port[0], client_port[1]);
     }
 
-    private Session() throws UnknownHostException {
+    private Session() throws Exception {
         localAddress = InetAddress.getByName(GetIP.getLocalIpAddress(true));
         long uptime = System.currentTimeMillis();
         TimeStamp = (uptime/1000)<<32 & (((uptime-((uptime/1000)*1000))>>32)/1000);
@@ -60,7 +59,7 @@ public class Session {
         if (instance == null)
             try {
                 return (instance = new Session());
-            } catch (UnknownHostException e) {
+            } catch (Exception e) {
                 Log.e(TAG, e.toString());
                 return null;
             }
@@ -70,19 +69,22 @@ public class Session {
 
     public void start()
     {
-        worker.start();
-        // will delay a little time to wait the stream.
-        try { Thread.sleep(10); } catch (InterruptedException e) { }
-
-        packetizer.setStream(worker.getStream());
-        packetizer.setSSRC(SSRC);
-        packetizer.start();
+        Log.i(TAG, "Session start.");
+        // TODO: for test.
+//        worker.start();
+//        // will delay a little time to wait the stream.
+//        try { Thread.sleep(10); } catch (InterruptedException e) { }
+//
+//        packetizer.setStream(worker.getStream());
+//        packetizer.setSSRC(SSRC);
+//        packetizer.start();
     }
 
     public void stop()
     {
-        worker.stop();
-        packetizer.stop();
+        Log.i(TAG, "session stop.");
+//        worker.stop();
+//        packetizer.stop();
     }
 
     public synchronized String getSessionDescription() throws IllegalStateException, IOException {
@@ -99,7 +101,7 @@ public class Session {
         sessionDescription.append("a=recvonly\r\n");
 
         sessionDescription.append(VideoQuality.getInstance().getDescription(client_port[0]));
-        sessionDescription.append("a=control:trackID="+trackID+"\r\n");
+        sessionDescription.append("a=control:trackID="+trackID+"\r\n\r\n");
         return sessionDescription.toString();
     }
 

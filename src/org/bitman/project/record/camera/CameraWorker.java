@@ -66,6 +66,7 @@ public class CameraWorker {
 
     public synchronized void start()
     {
+        Log.i(TAG, "start to stream a steam.");
         if (Status.streaming)
         {
             Log.i(TAG, "you can not start the camera again");

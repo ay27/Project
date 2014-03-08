@@ -75,20 +75,26 @@ public class RtspServer extends Service {
                 Log.i(TAG, "serverSocket start on "+rtsp_port);
                 start();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.i(TAG, e.toString());
             }
         }
 
         public void run()
         {
             int cc = 0;
-            while (!Thread.interrupted())
+            Thread work = null;
+            while (true)
             {
+                // We make sure that only has one client connect to us.
+                if (work != null)
+                    work.interrupt();
                 Log.i(TAG, "cc = "+(++cc));
                 try {
-                    new WorkerThread(serverSocket.accept()).start();
+                    Socket temp = serverSocket.accept();
+                    work = new WorkerThread(temp);
+                    work.start();
                 } catch (IOException e) {
-                    //Log.e(TAG, "in RequestListener->run(): "+e.toString());
+                    Log.e(TAG, "in RequestListener->run(): "+e.toString());
                     break;
                 }
             }
@@ -135,27 +141,28 @@ public class RtspServer extends Service {
                 try {
                     request = Request.parseRequest(mInput);
                 } catch (SocketException e) {
-                    break;
+                    Log.e(TAG, e.toString());
                 } catch (Exception e) {
+                    Log.e(TAG, e.toString());
                     // We don't understand the request :/
+                    request = null;
                     response = new Response();
                     response.status = Response.Status.BadRequest;
                 }
 
                 // Do something accordingly like starting the streams, sending a session description
                 if (request != null) {
+                    Log.i(TAG, "begin to process request.");
                     try {
                         response = processRequest(request);
                     }
                     catch (Exception e) {
-                        // This alerts the main thread that something has gone wrong in this thread
-//                        postError(e, ERROR_START_FAILED);
                         Log.e(TAG,e.getMessage()!=null?e.getMessage():"An error occurred");
-                        e.printStackTrace();
                         response = new Response(request);
                     }
                 }
 
+                Log.i(TAG, "begin to send the response.");
                 // We always send a response
                 // The client will receive an "INTERNAL SERVER ERROR" if an exception has been thrown at some point
                 response.send(mOutput);
@@ -258,6 +265,8 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("PLAY")) {
                 String requestAttributes = "RTP-Info: ";
+                // TODO: here, maybe has a problem.
+                // Why the second line use a subString() function.
                 requestAttributes += "url=rtsp://"+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/trackID="+mSession.trackID+";seq=0,";
                 requestAttributes = requestAttributes.substring(0, requestAttributes.length()-1) + "\r\nSession: "+ SessionId +"\r\n";
 
@@ -358,13 +367,15 @@ public class RtspServer extends Service {
                 seqid = Integer.parseInt(request.headers.get("cseq").replace(" ", ""));
             } catch (Exception e) { Log.e(TAG, "error parse cseq id"); }
 
+            content = (content == null)? new String():content;
+
             String response = 	"RTSP/1.0 "+status+"\r\n" +
                     "Server: "+SERVER_NAME+"\r\n" +
                     (seqid>=0?("Cseq: " + seqid + "\r\n"):"") +
                     "Content-Length: " + content.length() + "\r\n" +
                     attributes + "\r\n" + content;
 
-            Log.i(TAG,response.replace("\r", ""));
+            Log.i(TAG,"response: "+response.replace("\r", ""));
 
             try {
                 output.write(response.getBytes());

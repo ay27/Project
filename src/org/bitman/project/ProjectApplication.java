@@ -23,6 +23,9 @@ public class ProjectApplication extends Application {
 
     public static ProjectApplication instance;
 
+    private SharedPreferences sharedPreferences;
+    private VideoQuality videoQuality = VideoQuality.getInstance();
+
     @Override
     public void onCreate()
     {
@@ -39,22 +42,39 @@ public class ProjectApplication extends Application {
                 getBaseContext().getResources().getDisplayMetrics());
 
 
-        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
-        settings.registerOnSharedPreferenceChangeListener(changeListener);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(changeListener);
+
+        readPreference();
+    }
+
+    private void readPreference() {
+        Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
+        Matcher matcher = pattern.matcher((String)sharedPreferences.getString("video_resolution", "176x144"));
+        matcher.find();
+        videoQuality.resX = Integer.parseInt(matcher.group(1));
+        videoQuality.resY = Integer.parseInt(matcher.group(2));
+
+        videoQuality.bitrate = Integer.parseInt(sharedPreferences.getString("video_bitrate", "100"));
+        videoQuality.framerate = Integer.parseInt(sharedPreferences.getString("video_framerate", "8"));
+
+        RtspServer.setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
+
+        String ip = sharedPreferences.getString("server_address", "127.0.0.1");
+        try {
+            HttpClient.getInstance().setIP(ip);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
 
     }
 
     private SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
             Log.i(TAG, key);
 
-            VideoQuality videoQuality = VideoQuality.getInstance();
-
-            final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
             if (key.equals("video_resolution")) {
-                SharedPreferences.Editor editor = settings.edit();
                 Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
                 Matcher matcher = pattern.matcher((String)sharedPreferences.getString("video_resolution", "176x144"));
                 matcher.find();
