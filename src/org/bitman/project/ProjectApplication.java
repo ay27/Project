@@ -58,7 +58,7 @@ public class ProjectApplication extends Application {
         videoQuality.bitrate = Integer.parseInt(sharedPreferences.getString("video_bitrate", "100"));
         videoQuality.framerate = Integer.parseInt(sharedPreferences.getString("video_framerate", "8"));
 
-        RtspServer.setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
+        RtspServer.setRtspPort(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
 
         String ip = sharedPreferences.getString("server_address", "127.0.0.1");
         try {
@@ -88,7 +88,7 @@ public class ProjectApplication extends Application {
                 videoQuality.bitrate = Integer.parseInt(sharedPreferences.getString("video_bitrate", "100"));
             }
             else if (key.equals("rtsp_port")) {
-                RtspServer.setRtsp_port(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
+                RtspServer.setRtspPort(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
             }
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");

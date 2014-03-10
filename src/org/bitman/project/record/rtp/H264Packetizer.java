@@ -45,6 +45,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 			} catch (InterruptedException e) {}
 			t = null;
 		}
+        socket.close();
 	}
 
 	public void run() {

@@ -100,9 +100,9 @@ public class CameraWorker {
         mediaRecorder.setVideoEncoder(videoQuality.encoder);
         mediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
         mediaRecorder.setVideoSize(videoQuality.resX, videoQuality.resY);
-//        mediaRecorder.setVideoFrameRate(videoQuality.framerate);
-//        mediaRecorder.setVideoEncodingBitRate(videoQuality.bitrate);
-        mediaRecorder.setVideoEncodingBitRate(5000);
+        mediaRecorder.setVideoFrameRate(videoQuality.framerate);
+        mediaRecorder.setVideoEncodingBitRate(videoQuality.bitrate);
+//        mediaRecorder.setVideoEncodingBitRate(5000);
         mediaRecorder.setOutputFile(sender.getFileDescriptor());
 
         try {

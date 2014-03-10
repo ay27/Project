@@ -70,6 +70,7 @@ public class Session {
 
 
     private WifiManager.MulticastLock mLock;
+    private boolean isStreaming = false;
     public synchronized void start()
     {
         Log.i(TAG, "Session start.");
@@ -96,6 +97,12 @@ public class Session {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        isStreaming = true;
+    }
+
+    public boolean isStreaming() {
+        return isStreaming;
     }
 
     public synchronized void stop()
@@ -108,6 +115,8 @@ public class Session {
         }
         packetizer.stop();
         worker.stop();
+
+        isStreaming = false;
     }
 
     public synchronized String getSessionDescription() throws IllegalStateException, IOException {

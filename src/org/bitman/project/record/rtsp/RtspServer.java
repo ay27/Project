@@ -5,117 +5,265 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-
 import org.bitman.project.record.Session;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Implementation of a subset of the RTSP protocol (RFC 2326).
+ *
+ * It allows remote control of an android device cameras & microphone.
+ * For each connected client, a Session is instantiated.
+ * The Session will start or stop streams according to what the client wants.
+ *
+ */
 public class RtspServer extends Service {
 
-    private static final String TAG = "RtspServer";
-    private static final String SERVER_NAME = "org.bitman.ay27 rtsp server";
-    private static final String SessionId = "phone"+Integer.toHexString(new Random().nextInt());
+    public final static String TAG = "RtspServer";
 
-    private static int rtsp_port = 8554;
-    // Will be set in the next time, or you must set it before the service start.
-    public static void setRtsp_port(int rtsp_port) { RtspServer.rtsp_port = rtsp_port; }
+    /** The server name that will appear in responses. */
+    public static String SERVER_NAME = "Bitman_ay27 RTSP Server";
 
-    private Vector<Session> mSessions = new Vector<Session>(2);
+    /** Port used by default. */
+    public static final int DEFAULT_RTSP_PORT = 8554;
 
+    /** Port already in use. */
+    public final static int ERROR_BIND_FAILED = 0x00;
 
+    /** A stream could not be started. */
+    public final static int ERROR_START_FAILED = 0x01;
+
+    /** Streaming started. */
+    public final static int MESSAGE_STREAMING_STARTED = 0X00;
+
+    /** Streaming stopped. */
+    public final static int MESSAGE_STREAMING_STOPPED = 0X01;
+
+    private static final String SessionID = "Phone"+Integer.toHexString(new Random().nextInt());
+
+    protected static int mPort = DEFAULT_RTSP_PORT;
+    protected WeakHashMap<Session,Object> mSessions = new WeakHashMap<Session,Object>(2);
+
+    private RequestListener mListenerThread;
     private final IBinder mBinder = new LocalBinder();
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
+    private boolean mRestart = false;
+    private final LinkedList<CallbackListener> mListeners = new LinkedList<CallbackListener>();
+
+
+    /** Be careful: those callbacks won't necessarily be called from the ui thread ! */
+    public interface CallbackListener {
+
+        /** Called when an error occurs. */
+        void onError(RtspServer server, Exception e, int error);
+
+        /** Called when streaming starts/stops. */
+        void onMessage(RtspServer server, int message);
+
     }
-    public class LocalBinder extends Binder {
-        public RtspServer getService() {
-            return RtspServer.this;
+
+    /**
+     * See {@link RtspServer.CallbackListener} to check out what events will be fired once you set up a listener.
+     * @param listener The listener
+     */
+    public void addCallbackListener(CallbackListener listener) {
+        synchronized (mListeners) {
+            if (mListeners.size() > 0) {
+                for (CallbackListener cl : mListeners) {
+                    if (cl == listener) return;
+                }
+            }
+            mListeners.add(listener);
         }
     }
 
-    private RequestListener listenerThread = null;
+    /**
+     * Removes the listener.
+     * @param listener The listener
+     */
+    public void removeCallbackListener(CallbackListener listener) {
+        synchronized (mListeners) {
+            mListeners.remove(listener);
+        }
+    }
+
+    public static void setRtspPort(int port) {
+        mPort = port;
+    }
+
+    /**
+     * Starts (or restart if needed, if for example the configuration
+     * of the server has been modified) the RTSP server.
+     */
+    public void start() {
+        if (mRestart) stop();
+        if (mListenerThread == null) {
+            try {
+                mListenerThread = new RequestListener();
+            } catch (Exception e) {
+                mListenerThread = null;
+            }
+        }
+        mRestart = false;
+    }
+
+    /**
+     * Stops the RTSP server but not the Android Service.
+     * To stop the Android Service you need to call {@link android.content.Context#stopService(Intent)};
+     */
+    public void stop() {
+        if (mListenerThread != null) {
+            try {
+                mListenerThread.kill();
+                for ( Session session : mSessions.keySet() ) {
+                    if ( session != null ) {
+                        if (session.isStreaming()) session.stop();
+                    }
+                }
+            } catch (Exception e) {
+            } finally {
+                mListenerThread = null;
+            }
+        }
+    }
+
+    /** Returns whether or not the RTSP server is streaming to some client(s). */
+    public boolean isStreaming() {
+        for ( Session session : mSessions.keySet() ) {
+            if ( session != null ) {
+                if (session.isStreaming()) return true;
+            }
+        }
+        return false;
+    }
+
+    /** Returns the bandwidth consumed by the RTSP server in bits per second. */
+//    public long getBitrate() {
+//        long bitrate = 0;
+//        for ( Session session : mSessions.keySet() ) {
+//            if ( session != null ) {
+//                if (session.isStreaming()) bitrate += session.getBitrate();
+//            }
+//        }
+//        return bitrate;
+//    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
 
     @Override
     public void onCreate() {
         start();
     }
 
-    public void start() {
-        Log.i(TAG, "start");
-        if (listenerThread == null)
-            listenerThread = new RequestListener();
-    }
-    public void stop() {
-        Log.i(TAG, "rtsp stop");
-        if (listenerThread != null)
-        {
-            listenerThread.kill();
-            listenerThread = null;
-        }
-        for (Session session: mSessions)
-            session.stop();
+    @Override
+    public void onDestroy() {
+        stop();
     }
 
-    private class RequestListener extends Thread {
-        private static final String TAG = "RequestListener";
-        private ServerSocket serverSocket;
-
-        public RequestListener()
-        {
-            try {
-                serverSocket = new ServerSocket(rtsp_port);
-                Log.i(TAG, "serverSocket start on "+rtsp_port);
-                start();
-            } catch (IOException e) {
-                Log.i(TAG, e.toString());
-            }
+    /** The Binder you obtain when a connection with the Service is established. */
+    public class LocalBinder extends Binder {
+        public RtspServer getService() {
+            return RtspServer.this;
         }
+    }
 
-        public void run()
-        {
-            int cc = 0;
-            Thread work = null;
-            while (true)
-            {
-                // We make sure that only has one client connect to us.
-//                if (work != null)
-//                    work.interrupt();
-                Log.i(TAG, "cc = "+(++cc));
-                try {
-                    Socket temp = serverSocket.accept();
-                    work = new WorkerThread(temp);
-                    work.start();
-                } catch (IOException e) {
-                    Log.e(TAG, "in RequestListener->run(): "+e.toString());
-                    break;
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    protected void postMessage(int id) {
+        synchronized (mListeners) {
+            if (mListeners.size() > 0) {
+                for (CallbackListener cl : mListeners) {
+                    cl.onMessage(this, id);
                 }
             }
         }
+    }
 
-        public void kill()
-        {
-            Log.i(TAG, "kill the RequestListener");
-            try {
-                this.interrupt();
-                serverSocket.close();
-            } catch (Exception e) {
-                Log.e(TAG, "in RequestListener->kill(): "+e.toString());
+    protected void postError(Exception exception, int id) {
+        synchronized (mListeners) {
+            if (mListeners.size() > 0) {
+                for (CallbackListener cl : mListeners) {
+                    cl.onError(this, exception, id);
+                }
             }
         }
     }
 
-    private class WorkerThread extends Thread {
+//    /**
+//     * By default the RTSP uses {@link UriParser} to parse the URI requested by the client
+//     * but you can change that behavior by override this method.
+//     * @param uri The uri that the client has requested
+//     * @param client The socket associated to the client
+//     * @return A proper session
+//     */
+	/*protected Session handleRequest(String uri, Socket client) throws IllegalStateException, IOException {
+		Session session = UriParser.parse(uri);
+		session.setOrigin(client.getLocalAddress());
+		if (session.getDestination()==null) {
+			session.setDestination(client.getInetAddress());
+		}
+		return session;
+	}
+	*/
+    class RequestListener extends Thread implements Runnable {
+
+        private final ServerSocket mServer;
+
+        public RequestListener() throws IOException {
+            try {
+                mServer = new ServerSocket(mPort);
+                start();
+            } catch (BindException e) {
+                Log.e(TAG,"Port already in use !");
+                postError(e, ERROR_BIND_FAILED);
+                throw e;
+            }
+        }
+
+        public void run() {
+            Log.i(TAG,"RTSP server listening on port "+mServer.getLocalPort());
+            int cc = 0;
+            while (!Thread.interrupted()) {
+                try {
+                    Log.i("cc", Integer.toString(++cc));
+                    new WorkerThread(mServer.accept()).start();
+                } catch (SocketException e) {
+                    break;
+                } catch (IOException e) {
+                    Log.e(TAG,e.getMessage());
+                    continue;
+                }
+            }
+            Log.i(TAG,"RTSP server stopped !");
+
+        }
+
+        public void kill() {
+            try {
+                mServer.close();
+            } catch (IOException e) {}
+            try {
+                this.join();
+            } catch (InterruptedException ignore) {}
+        }
+
+    }
+
+    // One thread per client
+    class WorkerThread extends Thread implements Runnable {
+
         private final Socket mClient;
         private final OutputStream mOutput;
         private final BufferedReader mInput;
@@ -127,18 +275,17 @@ public class RtspServer extends Service {
             mInput = new BufferedReader(new InputStreamReader(client.getInputStream()));
             mOutput = client.getOutputStream();
             mClient = client;
-
             mSession = new Session();
         }
 
-        public void run()
-        {
-            Log.i(TAG, "worker thread run.");
-
+        public void run() {
             Request request;
             Response response;
 
+            Log.i(TAG, "Connection from "+mClient.getInetAddress().getHostAddress());
+
             while (!Thread.interrupted()) {
+
                 request = null;
                 response = null;
 
@@ -146,43 +293,56 @@ public class RtspServer extends Service {
                 try {
                     request = Request.parseRequest(mInput);
                 } catch (SocketException e) {
-                    Log.e(TAG, e.toString());
+                    // Client has left
+                    break;
                 } catch (Exception e) {
-                    Log.e(TAG, e.toString());
                     // We don't understand the request :/
-                    request = null;
                     response = new Response();
-                    response.status = Response.Status.BadRequest;
+                    response.status = Response.STATUS_BAD_REQUEST;
                 }
 
                 // Do something accordingly like starting the streams, sending a session description
                 if (request != null) {
-                    Log.i(TAG, "begin to process request.");
                     try {
                         response = processRequest(request);
                     }
                     catch (Exception e) {
+                        // This alerts the main thread that something has gone wrong in this thread
+                        postError(e, ERROR_START_FAILED);
                         Log.e(TAG,e.getMessage()!=null?e.getMessage():"An error occurred");
+                        e.printStackTrace();
                         response = new Response(request);
                     }
                 }
 
-                Log.i(TAG, "begin to send the response.");
                 // We always send a response
                 // The client will receive an "INTERNAL SERVER ERROR" if an exception has been thrown at some point
-                response.send(mOutput);
+                try {
+                    response.send(mOutput);
+                } catch (IOException e) {
+                    Log.e(TAG,"Response was not sent properly");
+                    break;
+                }
 
             }
 
+            // Streaming stops when client disconnects
+            boolean streaming = isStreaming();
             mSession.stop();
+            if (streaming && !isStreaming()) {
+                postMessage(MESSAGE_STREAMING_STOPPED);
+            }
+//            mSession.flush();
 
             try {
                 mClient.close();
             } catch (IOException ignore) {}
+
             Log.i(TAG, "Client disconnected");
+
         }
 
-        private Response processRequest(Request request) throws Exception {
+        public Response processRequest(Request request) throws IllegalStateException, IOException {
             Response response = new Response(request);
 
 			/* ********************************************************************************** */
@@ -190,21 +350,25 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             if (request.method.equalsIgnoreCase("DESCRIBE")) {
 
+//                mSession = SessionBuilder.getInstance().build();
+//                mSession.setOrigin(mClient.getLocalAddress());
                 if (mSession.getDestination()==null) {
                     Log.i(TAG, "client address: "+mClient.getInetAddress());
                     mSession.setDestination(mClient.getInetAddress());
                 }
-
-                mSessions.add(mSession);
+                //mSession = handleRequest(request.uri, mClient);
+                mSessions.put(mSession, null);
 
                 String requestContent = mSession.getSessionDescription();
+                String requestAttributes =
+                        "Content-Base: "+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
+                                "Content-Type: application/sdp\r\n";
 
-                response.attributes = "Content-Base: "+mSession.localAddress.getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
-                        "Content-Type: application/sdp\r\n";
+                response.attributes = requestAttributes;
                 response.content = requestContent;
 
                 // If no exception has been thrown, we reply with OK
-                response.status = Response.Status.OK;
+                response.status = Response.STATUS_OK;
 
             }
 
@@ -212,9 +376,9 @@ public class RtspServer extends Service {
 			/* ********************************* Method OPTIONS ********************************* */
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("OPTIONS")) {
-                response.status = Response.Status.OK;
+                response.status = Response.STATUS_OK;
                 response.attributes = "Public: DESCRIBE,SETUP,TEARDOWN,PLAY,PAUSE\r\n";
-                response.status = Response.Status.OK;
+                response.status = Response.STATUS_OK;
             }
 
 			/* ********************************************************************************** */
@@ -222,16 +386,18 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("SETUP")) {
                 Pattern p; Matcher m;
-                int p2, p1, ssrc, src[];
+                int p2, p1, ssrc, trackId, src[];
                 InetAddress destination;
 
                 p = Pattern.compile("trackID=(\\w+)",Pattern.CASE_INSENSITIVE);
                 m = p.matcher(request.uri);
 
                 if (!m.find()) {
-                    response.status = Response.Status.BadRequest;
+                    response.status = Response.STATUS_BAD_REQUEST;
                     return response;
                 }
+
+                trackId = Integer.parseInt(m.group(1));
 
 //                if (!mSession.trackExists()) {
 //                    response.status = Response.STATUS_NOT_FOUND;
@@ -242,6 +408,7 @@ public class RtspServer extends Service {
                 m = p.matcher(request.headers.get("transport"));
 
                 if (!m.find()) {
+//                    int[] ports = mSession.getTrack().getDestinationPorts();
                     int[] ports = mSession.getClient_port();
                     p1 = ports[0];
                     p2 = ports[1];
@@ -251,21 +418,36 @@ public class RtspServer extends Service {
                     p2 = Integer.parseInt(m.group(2));
                 }
 
+//                ssrc = mSession.getTrack().getSSRC();
+//                src = mSession.getTrack().getLocalPorts();
                 ssrc = mSession.SSRC;
                 src = mSession.getServer_port();
                 destination = mSession.getDestination();
 
+                Log.i(TAG, "ports: "+p1+" "+p2);
+//                mSession.getTrack().setDestinationPorts(p1, p2);
                 mSession.setClient_port(new int[]{p1, p2});
+                boolean streaming = isStreaming();
+                // ����������rtp������������������
+                mSession.start();
+                if (!streaming && isStreaming()) {
+                    postMessage(MESSAGE_STREAMING_STARTED);
+                }
 
                 response.attributes = "Transport: RTP/AVP/UDP;"+(destination.isMulticastAddress()?"multicast":"unicast")+
-                    ";destination="+mSession.getDestination().getHostAddress()+
-                    ";client_port="+p1+"-"+p2+
-                    ";server_port="+src[0]+"-"+src[1]+
-                    ";ssrc="+Integer.toHexString(ssrc)+
-                    ";mode=play\r\n" +
-                    "Session: "+ SessionId + "\r\n" +
-                    "Cache-Control: no-cache\r\n";
-                response.status = Response.Status.OK;
+                        ";destination="+mSession.getDestination().getHostAddress()+
+                        ";client_port="+p1+"-"+p2+
+                        ";server_port="+src[0]+"-"+src[1]+
+                        ";ssrc="+Integer.toHexString(ssrc)+
+                        ";mode=play\r\n" +
+                        // ����������������MEID����������������
+                        "Session: "+ SessionID + "\r\n" +
+                        "Cache-Control: no-cache\r\n";
+                response.status = Response.STATUS_OK;
+
+                // If no exception has been thrown, we reply with OK
+                response.status = Response.STATUS_OK;
+
             }
 
 			/* ********************************************************************************** */
@@ -273,18 +455,13 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("PLAY")) {
                 String requestAttributes = "RTP-Info: ";
-                // TODO: here, maybe has a problem.
-                // Why the second line use a subString() function.
                 requestAttributes += "url=rtsp://"+mClient.getLocalAddress().getHostAddress()+":"+mClient.getLocalPort()+"/trackID="+mSession.trackID+";seq=0,";
-                requestAttributes = requestAttributes.substring(0, requestAttributes.length()-1) + "\r\nSession: "+ SessionId +"\r\n";
+                requestAttributes = requestAttributes.substring(0, requestAttributes.length()-1) + "\r\nSession: "+SessionID+"\r\n";
 
                 response.attributes = requestAttributes;
 
-                // Here start the stream.
-                mSession.start();
-
                 // If no exception has been thrown, we reply with OK
-                response.status = Response.Status.OK;
+                response.status = Response.STATUS_OK;
 
             }
 
@@ -292,14 +469,14 @@ public class RtspServer extends Service {
 			/* ********************************** Method PAUSE ********************************** */
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("PAUSE")) {
-                response.status = Response.Status.OK;
+                response.status = Response.STATUS_OK;
             }
 
 			/* ********************************************************************************** */
 			/* ********************************* Method TEARDOWN ******************************** */
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("TEARDOWN")) {
-                response.status = Response.Status.OK;
+                response.status = Response.STATUS_OK;
             }
 
 			/* ********************************************************************************** */
@@ -307,89 +484,99 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             else {
                 Log.e(TAG,"Command unknown: "+request);
-                response.status = Response.Status.BadRequest;
+                response.status = Response.STATUS_BAD_REQUEST;
             }
 
             return response;
 
         }
+
     }
 
-    private static class Request
-    {
-        private static final Pattern regexMethod = Pattern.compile("(\\w+) (\\S+) RTSP", Pattern.CASE_INSENSITIVE);
-        private static final Pattern regexHeader = Pattern.compile("(\\S+):(.+)", Pattern.CASE_INSENSITIVE);
+    static class Request {
 
-        private String method;
-        private String uri;
-        private HashMap<String, String> headers = new HashMap<String, String>();
+        // Parse method & uri
+        public static final Pattern regexMethod = Pattern.compile("(\\w+) (\\S+) RTSP",Pattern.CASE_INSENSITIVE);
+        // Parse a request header
+        public static final Pattern rexegHeader = Pattern.compile("(\\S+):(.+)",Pattern.CASE_INSENSITIVE);
 
-        public static Request parseRequest(BufferedReader input) throws IOException {
+        public String method;
+        public String uri;
+        public HashMap<String,String> headers = new HashMap<String,String>();
+
+        /** Parse the method, uri & headers of a RTSP request */
+        public static Request parseRequest(BufferedReader input) throws IOException, IllegalStateException, SocketException {
             Request request = new Request();
             String line;
             Matcher matcher;
 
-            if ((line = input.readLine()) == null) throw new SocketException("Client disconnected");
-
+            // Parsing request method & uri
+            if ((line = input.readLine())==null) throw new SocketException("Client disconnected");
             matcher = regexMethod.matcher(line);
             matcher.find();
             request.method = matcher.group(1);
             request.uri = matcher.group(2);
 
-            while ((line = input.readLine()) != null && line.length()>3)
-            {
-                matcher = regexHeader.matcher(line);
+            // Parsing headers of the request
+            while ( (line = input.readLine()) != null && line.length()>3 ) {
+                matcher = rexegHeader.matcher(line);
                 matcher.find();
-                request.headers.put(matcher.group(1).toLowerCase(Locale.US), matcher.group(2));
+                request.headers.put(matcher.group(1).toLowerCase(Locale.US),matcher.group(2));
             }
-            if (line == null) throw new SocketException("Client disconnected");
+            if (line==null) throw new SocketException("Client disconnected");
 
-            Log.i(TAG, "request: "+request.method+" "+request.uri);
+            // It's not an error, it's just easier to follow what's happening in logcat with the request in red
+            Log.e(TAG,request.method+" "+request.uri);
 
             return request;
         }
     }
 
-    private static class Response {
+    static class Response {
+
+        // Status code definitions
+        public static final String STATUS_OK = "200 OK";
+        public static final String STATUS_BAD_REQUEST = "400 Bad Request";
+        public static final String STATUS_NOT_FOUND = "404 Not Found";
+        public static final String STATUS_INTERNAL_SERVER_ERROR = "500 Internal Server Error";
+
+        public String status = STATUS_INTERNAL_SERVER_ERROR;
+        public String content = "";
+        public String attributes = "";
+
+        private final Request mRequest;
+
+        public Response(Request request) {
+            this.mRequest = request;
+        }
+
         public Response() {
-            request = null;
+            // Be carefull if you modify the send() method because request might be null !
+            mRequest = null;
         }
 
-        public static class Status {
-            public static final String OK = "200 OK";
-            public static final String BadRequest = "400 Bad Request";
-            public static final String NotFound = "404 Not Found";
-            public static final String InternelServerError = "500 Internel Server Error";
-        }
-
-        public String status = Status.InternelServerError;
-        public String content = null;
-        public String attributes = null;
-        private final Request request;
-        public Response(Request request) { this.request = request; }
-
-        public void send(OutputStream output)
-        {
+        public void send(OutputStream output) throws IOException {
             int seqid = -1;
-            try {
-                seqid = Integer.parseInt(request.headers.get("cseq").replace(" ", ""));
-            } catch (Exception e) { Log.e(TAG, "error parse cseq id"); }
 
-            content = (content == null)? new String():content;
+            try {
+                seqid = Integer.parseInt(mRequest.headers.get("cseq").replace(" ",""));
+            } catch (Exception e) {
+                Log.e(TAG,"Error parsing CSeq: "+(e.getMessage()!=null?e.getMessage():""));
+            }
 
             String response = 	"RTSP/1.0 "+status+"\r\n" +
                     "Server: "+SERVER_NAME+"\r\n" +
                     (seqid>=0?("Cseq: " + seqid + "\r\n"):"") +
                     "Content-Length: " + content.length() + "\r\n" +
-                    attributes + "\r\n" + content;
+                    attributes +
+                    "\r\n" +
+                    content;
 
-            Log.i(TAG,"response: "+response.replace("\r", ""));
+            Log.d(TAG,response.replace("\r", ""));
 
-            try {
-                output.write(response.getBytes());
-            } catch (IOException e) {
-                Log.e(TAG, "error to send the response");
-            }
+            output.write(response.getBytes());
+
         }
     }
+
 }

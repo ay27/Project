@@ -198,8 +198,10 @@ public class RtpSocket implements Runnable {
 		Statistics stats = new Statistics(50,3300);
 		try {
 			// Caches mCacheSize milliseconds of the stream in the FIFO.
-			Thread.sleep(mCacheSize);
-			while (mBufferCommitted.tryAcquire(4,TimeUnit.SECONDS)) {
+
+            // TODO: here
+			//Thread.sleep(mCacheSize);
+			while (mBufferCommitted.tryAcquire(2,TimeUnit.SECONDS)) {
 				if (mOldTimestamp != 0) {
 					// We use our knowledge of the clock rate of the stream and the difference between to timestamp to
 					// compute the temporal length of the packet.
@@ -217,7 +219,7 @@ public class RtpSocket implements Runnable {
 					}*/
 				}
 				mOldTimestamp = mTimestamps[mBufferOut];
-				Log.i(TAG, "send a package over: "+mPackets[mBufferOut].getAddress()+" "+mPackets[mBufferOut].getPort());
+//				Log.i(TAG, "send a package over: "+mPackets[mBufferOut].getAddress()+" "+mPackets[mBufferOut].getPort());
 				mSocket.send(mPackets[mBufferOut]);
 				if (++mBufferOut>=mBufferCount) mBufferOut = 0;
 				mBufferRequested.release();
