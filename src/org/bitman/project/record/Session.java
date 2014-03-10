@@ -5,7 +5,8 @@ import android.util.Log;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.http.GetIP;
 import org.bitman.project.record.camera.CameraWorker;
-import org.bitman.project.record.rtp.Packetizer;
+import org.bitman.project.record.rtp.AbstractPacketizer;
+import org.bitman.project.record.rtp.H264Packetizer;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -21,7 +22,7 @@ public class Session {
     private InetAddress destination = null;
 
     private CameraWorker worker = CameraWorker.getInstance();
-    private Packetizer packetizer;
+    private AbstractPacketizer packetizer;
 
     // will be used in rtp/RTP_Sockrt & RtspServer
     public final int SSRC;
@@ -37,14 +38,23 @@ public class Session {
 
         SSRC = new Random().nextInt();
 
-        packetizer = new Packetizer();
-        server_port = packetizer.getPorts();
+        try {
+            packetizer = new H264Packetizer();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, e.toString());
+            return;
+        }
+        server_port = new int[] {
+                this.packetizer.getRtpSocket().getLocalPort(),
+                this.packetizer.getRtcpSocket().getLocalPort()
+        };
     }
 
     public InetAddress getDestination() { return destination; }
     public void setDestination(InetAddress destination) {
         this.destination = destination;
-        packetizer.setDestination(destination);
+//        packetizer.setDestination(destination, ports[0], ports[1]);
     }
 
     public int[] getServer_port() { return server_port; }
@@ -55,7 +65,7 @@ public class Session {
             this.client_port = new int[]{client_port[0]-1, client_port[0]};
         else
             this.client_port = client_port;
-        packetizer.setPorts(client_port[0], client_port[1]);
+//        packetizer.setPorts(client_port[0], client_port[1]);
     }
 
 
@@ -76,11 +86,16 @@ public class Session {
         // will delay a little time to wait the stream.
         //try { Thread.sleep(10); } catch (InterruptedException e) { }
 
-        packetizer.setStream(worker.getStream());
+        packetizer.setInputStream(worker.getStream());
+//        packetizer.setStream(worker.getStream());
         packetizer.setSSRC(SSRC);
-        packetizer.setDestination(destination);
-        packetizer.setPorts(client_port[0], client_port[1]);
-        packetizer.start();
+        packetizer.setDestination(destination, client_port[0], client_port[1]);
+//        packetizer.setPorts(client_port[0], client_port[1]);
+        try {
+            packetizer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void stop()
@@ -91,8 +106,8 @@ public class Session {
                 mLock.release();
             mLock = null;
         }
-        worker.stop();
         packetizer.stop();
+        worker.stop();
     }
 
     public synchronized String getSessionDescription() throws IllegalStateException, IOException {

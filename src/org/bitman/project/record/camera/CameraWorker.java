@@ -81,6 +81,7 @@ public class CameraWorker {
 
         camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
         Camera.Parameters params = camera.getParameters();
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         camera.setParameters(params);
         camera.setDisplayOrientation(videoQuality.orientation);
         try {
@@ -99,9 +100,9 @@ public class CameraWorker {
         mediaRecorder.setVideoEncoder(videoQuality.encoder);
         mediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
         mediaRecorder.setVideoSize(videoQuality.resX, videoQuality.resY);
-        mediaRecorder.setVideoFrameRate(videoQuality.framerate);
-        mediaRecorder.setVideoEncodingBitRate(videoQuality.bitrate);
-
+//        mediaRecorder.setVideoFrameRate(videoQuality.framerate);
+//        mediaRecorder.setVideoEncodingBitRate(videoQuality.bitrate);
+        mediaRecorder.setVideoEncodingBitRate(5000);
         mediaRecorder.setOutputFile(sender.getFileDescriptor());
 
         try {
