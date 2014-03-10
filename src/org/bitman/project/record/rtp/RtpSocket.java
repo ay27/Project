@@ -65,6 +65,7 @@ public class RtpSocket implements Runnable {
 
     public InetAddress getDestination() { return packets[0].getAddress(); }
     public void setDestination(InetAddress destination) {
+        Log.i(TAG, "set destination: "+destination);
         for (int i = 0; i < bufferCount; i++)
             packets[i].setAddress(destination);
     }
@@ -95,9 +96,12 @@ public class RtpSocket implements Runnable {
         buffers[bufferIn][1] |= 0x80;
     }
 
-    private Thread thread;
+    private Thread thread = null;
     public void commitBuffer(int length) {
         /* Byte 2,3        ->  Sequence Number                   */
+
+        Log.i(TAG, "start to commit a packet.");
+
         setLong(buffers[bufferIn], ++seqNumber, 2, 4);
 
         packets[bufferIn].setLength(length);
@@ -106,8 +110,10 @@ public class RtpSocket implements Runnable {
         if (++bufferIn>=bufferOut) bufferIn = 0;
 
         if (thread == null)
+        {
             thread = new Thread(this);
-        thread.start();
+            thread.start();
+        }
     }
 
     public void stop() { socket.close(); }
@@ -119,22 +125,26 @@ public class RtpSocket implements Runnable {
         try {
             Thread.sleep(cacheSize);
             while (bufferCommit.tryAcquire(4, TimeUnit.SECONDS)) {
-                if (oldTimeStamp > 0 && timeStamps[bufferOut]-oldTimeStamp > 0)
-                {
-                    stats.push(timeStamps[bufferOut]-oldTimeStamp);
-                    long d = stats.average()/1000000;
-                    Thread.sleep(d);
+                if (oldTimeStamp != 0) {
+                    if (oldTimeStamp > 0 && timeStamps[bufferOut]-oldTimeStamp > 0)
+                    {
+                        stats.push(timeStamps[bufferOut]-oldTimeStamp);
+                        long d = stats.average()/1000000;
+                        Log.i(TAG, "sleep d: "+ d);
+                        Thread.sleep(d);
+                    }
                 }
+                oldTimeStamp = timeStamps[bufferOut];
+                Log.i(TAG, packets[bufferOut].getAddress().toString());
+                Log.i(TAG, "rtp socket send a packet."+packets[bufferOut].getAddress()+" "+packets[bufferOut].getPort());
+                socket.send(packets[bufferOut]);
+                Log.i(TAG, "A packet send succeed.");
+                if (++bufferOut>=bufferCount) bufferOut = 0;
+                bufferRequest.release();
             }
-            oldTimeStamp = timeStamps[bufferOut];
-            Log.i(TAG, "rtp socket send a packet.");
-            socket.send(packets[bufferOut]);
-            if (++bufferOut>=bufferCount) bufferOut = 0;
-            bufferRequest.release();
         } catch (Exception e)
         { Log.e(TAG, e.toString()); }
 
-        thread = null;
     }
 
     private void setLong(byte[] bytes, long n, int begin, int end) {

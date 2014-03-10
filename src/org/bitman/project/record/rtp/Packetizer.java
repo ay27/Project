@@ -31,13 +31,14 @@ public class Packetizer implements Runnable {
             e.printStackTrace();
         }
         report = new RtcpSenderReport();
-        ts = new Random().nextInt();
+        ts = Math.abs(new Random().nextInt());
     }
 
     public void setStream(InputStream is) { this.cameraStream = is; }
 
     public InetAddress getDestination() { return rtpSocket.getDestination(); }
     public void setDestination(InetAddress destination) {
+        Log.i(TAG, "set destination: "+destination);
         rtpSocket.setDestination(destination);
         report.setDestination(destination);
     }
@@ -88,10 +89,11 @@ public class Packetizer implements Runnable {
     public void run() {
         statistics.reset();
 
+        Log.i(TAG, "start to skip the MPEG-4 header.");
         // skip the MPEG-4 header
         try {
             byte[] bytes = new byte[4];
-            while (!Thread.interrupted())
+            while (true)
             {
                 if (cameraStream == null)
                     Log.e(TAG, "cameraStream is null.");
@@ -139,16 +141,17 @@ public class Packetizer implements Runnable {
     // read a NAL-unit from the FIFO and send it.
     // if a NAL-unit cameraStream too large, it will be spilt in FU-A units.
     private byte[] header;
+    private int naluLength;
     private void send() throws IOException {
         header = new byte[5];
         // read a NAL-unit length (4 bytes) & a NAL-unit type (1 byte)
         fill(header, 0, 5);
         Log.i(TAG, "NAL header: "+header[0]+header[1]+header[2]+header[3]+header[4]);
 
-        int naluLength = (header[3]&0xFF) | (header[2]&0xFF)<<8 | (header[1]&0xFF)<<16 | (header[0]&0xFF)<<24;
+        naluLength = header[3]&0xFF | (header[2]&0xFF)<<8 | (header[1]&0xFF)<<16 | (header[0]&0xFF)<<24;
         Log.i(TAG, "naluLength = "+naluLength);
         //if the NAL-unit cameraStream too large, it may be out of sync!
-        if (naluLength>(2<<16) || naluLength<0) naluLength = resync();
+        if (naluLength>100000 || naluLength<0) resync();
 
         ts += delay;
         Log.i(TAG, "ts = "+ts);
@@ -196,6 +199,7 @@ public class Packetizer implements Runnable {
                     rtpSocket.markNextPacket();
                 }
                 // send it
+                Log.i(TAG, "send data use rtpSocket");
                 rtpSocket.commitBuffer(len + rtphl + 2);
                 report.update(len+rtphl+2);
 
@@ -205,45 +209,47 @@ public class Packetizer implements Runnable {
         }
     }
 
-    private int fill(byte[] buffer, int offset, int length) throws IOException {
+    private int fill(byte[] buffer, int offset,int length) throws IOException {
         int sum = 0, len;
-        while (sum<length)
-        {
+
+        while (sum<length) {
             len = cameraStream.read(buffer, offset+sum, length-sum);
-            if (len < 0)
-                throw new IOException("end of stream");
-            sum += len;
+            if (len<0) {
+                throw new IOException("End of stream");
+            }
+            else sum+=len;
         }
 
         return sum;
+
     }
 
-    private int resync() throws IOException {
+
+    private void resync() throws IOException {
         byte[] header = new byte[5];
         int type;
 
-        Log.i(TAG, "fuck, trying to resync");
+        Log.e(TAG,"Packetizer out of sync ! Let's try to fix that...");
 
-        while (true)
-        {
+        while (true) {
+
             header[0] = header[1];
             header[1] = header[2];
             header[2] = header[3];
             header[3] = header[4];
             header[4] = (byte) cameraStream.read();
 
-            type = header[4] & 0x1F;
-            if (type == 1 || type == 5)
-            {
-                int naluLength = header[3]&0xFF | (header[2]&0xFF)<<8 | (header[1]&0xFF)<<16 | (header[0]&0xFF)<<24;
-                if (naluLength>0 && naluLength<(2<<16))
-                {
+            type = header[4]&0x1F;
+
+            if (type == 5 || type == 1) {
+                naluLength = header[3]&0xFF | (header[2]&0xFF)<<8 | (header[1]&0xFF)<<16 | (header[0]&0xFF)<<24;
+                if (naluLength>0 && naluLength<100000) {
                     oldTime = System.nanoTime();
-                    Log.i(TAG, "OH! It may be a NAL-unit in the stream!");
-                    return naluLength;
+                    Log.e(TAG,"A NAL unit may have been found in the bit stream !");
+                    break;
                 }
             }
+
         }
     }
-
 }

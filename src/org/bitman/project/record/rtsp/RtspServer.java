@@ -186,6 +186,7 @@ public class RtspServer extends Service {
             if (request.method.equalsIgnoreCase("DESCRIBE")) {
 
                 if (mSession.getDestination()==null) {
+                    Log.i(TAG, "client address: "+mClient.getInetAddress());
                     mSession.setDestination(mClient.getInetAddress());
                 }
 

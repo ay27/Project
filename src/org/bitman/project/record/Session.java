@@ -1,6 +1,8 @@
 package org.bitman.project.record;
 
+import android.net.wifi.WifiManager;
 import android.util.Log;
+import org.bitman.project.ProjectApplication;
 import org.bitman.project.http.GetIP;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtp.Packetizer;
@@ -30,9 +32,12 @@ public class Session {
     private CameraWorker worker = CameraWorker.getInstance();
     private Packetizer packetizer;
 
-    // a simple proxy.
-    public InetAddress getDestination() { return packetizer.getDestination(); }
-    public void setDestination(InetAddress destination) { packetizer.setDestination(destination); }
+    private InetAddress destination = null;
+    public InetAddress getDestination() { return destination; }
+    public void setDestination(InetAddress destination) {
+        this.destination = destination;
+        packetizer.setDestination(destination);
+    }
 
     public int getSSRC() { return SSRC; }
     public int[] getServer_port() { return server_port; }
@@ -67,22 +72,39 @@ public class Session {
             return instance;
     }
 
-    public void start()
+    private WifiManager.MulticastLock mLock;
+    public synchronized void start()
     {
         Log.i(TAG, "Session start.");
         // TODO: for test.
+        if (packetizer.getDestination().isMulticastAddress()) {
+                // Aquire a MulticastLock to allow multicasted UDP packet
+                WifiManager wifi = (WifiManager) ProjectApplication.instance.getSystemService(ProjectApplication.instance.WIFI_SERVICE);
+                if(wifi != null){
+                    mLock = wifi.createMulticastLock("org.bitman.streaming");
+                    mLock.acquire();
+                }
+        }
+
         worker.start();
         // will delay a little time to wait the stream.
         //try { Thread.sleep(10); } catch (InterruptedException e) { }
 
         packetizer.setStream(worker.getStream());
         packetizer.setSSRC(SSRC);
+        //packetizer.setDestination(destination);
+        packetizer.setPorts(client_port[0], client_port[1]);
         packetizer.start();
     }
 
-    public void stop()
+    public synchronized void stop()
     {
         Log.i(TAG, "session stop.");
+        if (mLock != null) {
+            if (mLock.isHeld())
+                mLock.release();
+            mLock = null;
+        }
         worker.stop();
         packetizer.stop();
     }

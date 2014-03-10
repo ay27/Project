@@ -121,7 +121,7 @@ public class CameraWorker {
         if (!Status.streaming)
             throw new IllegalStateException("You must start() the CameraWorker before getStream()");
         try {
-            return sender.getInputStream();
+            return receiver.getInputStream();
         } catch (IOException e) {
             Log.e(TAG, "getStream(): "+e.toString());
         }
