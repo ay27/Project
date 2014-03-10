@@ -37,7 +37,7 @@ public class RecordActivity extends Activity {
         String ip = null;
         try {
             //InetAddress.getLocalHost();
-            ip = GetIP.getLocalIpAddress(true);
+            ip = GetIP.getLocalIpAddress(true).getHostAddress();
             ipView.setText("rtsp://"+ip+ ":"+ PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554"));
             Log.i(TAG, ip);
         } catch (Exception e) {

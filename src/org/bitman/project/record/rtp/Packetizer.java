@@ -36,7 +36,7 @@ public class Packetizer implements Runnable {
 
     public void setStream(InputStream is) { this.cameraStream = is; }
 
-    public InetAddress getDestination() { return rtpSocket.getDestination(); }
+    //public InetAddress getDestination() { return rtpSocket.getDestination(); }
     public void setDestination(InetAddress destination) {
         Log.i(TAG, "set destination: "+destination);
         rtpSocket.setDestination(destination);
@@ -87,126 +87,126 @@ public class Packetizer implements Runnable {
 
     @Override
     public void run() {
+        long duration = 0;
+        Log.d(TAG,"H264 packetizer started !");
         statistics.reset();
-
-        Log.i(TAG, "start to skip the MPEG-4 header.");
-        // skip the MPEG-4 header
+        // This will skip the MPEG4 header if this step fails we can't stream anything :(
         try {
-            byte[] bytes = new byte[4];
-            while (true)
-            {
-                if (cameraStream == null)
-                    Log.e(TAG, "cameraStream is null.");
+            byte buffer[] = new byte[4];
+            // Skip all atoms preceding mdat atom
+            while (!Thread.interrupted()) {
                 while (cameraStream.read() != 'm');
-                cameraStream.read(bytes, 0, 3);
-                if (bytes[0]=='d' && bytes[1]=='a' && bytes[2]=='t') break;
+                cameraStream.read(buffer, 0, 3);
+                if (buffer[0] == 'd' && buffer[1] == 'a' && buffer[2] == 't') break;
             }
-        } catch (Exception e)
-        {
-            Log.e(TAG, e.toString());
-            Log.e(TAG, "could not skip the MPEG-4 header");
+        } catch (IOException e) {
+            Log.e(TAG,"Couldn't skip mp4 header :/");
             return;
         }
 
-        Log.i(TAG, "skip the MPEG-4 header succeed.");
-
-        // read a NAL unit from the stream and send it
-        long duration = 0;
+        // We read a NAL units from the input stream and we send them
         try {
-            while (!Thread.interrupted())
-            {
+            while (!Thread.interrupted()) {
+
+                // We measure how long it takes to receive the NAL unit from the phone
                 oldTime = System.nanoTime();
                 send();
                 duration = System.nanoTime() - oldTime;
-                Log.i(TAG, "duration = "+duration);
 
-                // calculate the delta time and prepare to send a rtcp sender-report.
-                reportDelta += duration;
-                if (reportDelta>=intervalBetweenReports)
-                    report.send(oldTime+duration, ts*9/100000);
+                reportDelta += duration/1000000;
+                if (intervalBetweenReports>0) {
+                    if (reportDelta>=intervalBetweenReports) {
+                        // We send a Sender Report
+                        report.send(oldTime+duration,ts*90/1000000);
+                    }
+                }
 
                 statistics.push(duration);
-
-                // TODO: try to use the duration directly.
+                // Computes the average duration of a NAL unit
                 delay = statistics.average();
-                Log.i(TAG, "delay = "+delay);
+                Log.i(TAG,"duration: "+duration/1000000+" delay: "+delay/1000000);
+
             }
-        } catch (Exception e)
-        {
-            Log.e(TAG, e.toString());
-        }
+        } catch (IOException e) {
+        } catch (InterruptedException e) {}
+
+        Log.d(TAG,"H264 packetizer stopped !");
 
     }
 
-    // read a NAL-unit from the FIFO and send it.
-    // if a NAL-unit cameraStream too large, it will be spilt in FU-A units.
+    /**
+     * Reads a NAL unit in the FIFO and sends it.
+     * If it is too big, we split it in FU-A units (RFC 3984).
+     */
     private byte[] header;
-    private int naluLength;
-    private void send() throws IOException {
-        header = new byte[5];
-        // read a NAL-unit length (4 bytes) & a NAL-unit type (1 byte)
-        fill(header, 0, 5);
-        Log.i(TAG, "NAL header: "+header[0]+header[1]+header[2]+header[3]+header[4]);
+    private int naluLength = 0;
+    private byte[] buffer;
+    private void send() throws IOException, InterruptedException {
 
+        int sum = 1, len = 0, type;
+        header = new byte[5];
+
+        // Read NAL unit length (4 bytes) and NAL unit header (1 byte)
+        fill(header,0,5);
+        Log.i(TAG, "NAL header: "+header[0]+header[1]+header[2]+header[3]+header[4]);
         naluLength = header[3]&0xFF | (header[2]&0xFF)<<8 | (header[1]&0xFF)<<16 | (header[0]&0xFF)<<24;
-        Log.i(TAG, "naluLength = "+naluLength);
-        //if the NAL-unit cameraStream too large, it may be out of sync!
+        //naluLength = is.available();
+
         if (naluLength>100000 || naluLength<0) resync();
 
-        ts += delay;
-        Log.i(TAG, "ts = "+ts);
+        // Parses the NAL unit type
+        type = header[4]&0x1F;
 
-        byte[] buffer;
-        // small unit, Single NAL-unit
-        if (naluLength <= MaxPacketizerSize-rtphl-2)
-        {
-            Log.i(TAG, "Single NAL-unit");
+        // Updates the timestamp
+        ts += delay;
+
+        Log.i(TAG, Long.toString(ts));
+        Log.i(TAG,"- Nal unit length: " + naluLength + " delay: "+delay/1000000+" type: "+type);
+
+        // Small NAL unit => Single NAL unit
+        if (naluLength<=MaxPacketizerSize-rtphl-2) {
             buffer = rtpSocket.requestBuffer();
             buffer[rtphl] = header[4];
-            fill(buffer, rtphl + 1, naluLength - 1);
-            rtpSocket.updateTimeStamp(ts);
+            len = fill(buffer, rtphl+1,  naluLength-1);
+            rtpSocket.updateTimestamp(ts);
             rtpSocket.markNextPacket();
-            // send it
-            rtpSocket.commitBuffer(naluLength + rtphl);
-            report.update(naluLength+rtphl);
+            this.send(naluLength + rtphl);
+            Log.i(TAG,"----- Single NAL unit - len:"+len+" delay: "+delay);
         }
-        // the NAL-unit cameraStream too large, FU-A
+        // Large NAL unit => Split nal unit
         else {
-            Log.i(TAG, "FU-A");
-            // set FU-A header
-            header[1] = (byte)(header[4]&0x1F); // header type
-            header[1] |= 0x80;      // start bit
+
+            // Set FU-A header
+            header[1] = (byte) (header[4] & 0x1F);  // FU header type
+            header[1] += 0x80; // Start bit
             // Set FU-A indicator
             header[0] = (byte) ((header[4] & 0x60) & 0xFF); // FU indicator NRI
-            // 28 cameraStream the FU-A indicator type.
+            // ������+��������|
             header[0] |= 28;
 
-            int sum = 1, len;
             while (sum < naluLength) {
                 buffer = rtpSocket.requestBuffer();
                 buffer[rtphl] = header[0];
                 buffer[rtphl+1] = header[1];
-                rtpSocket.updateTimeStamp(ts);
-                int readLength = naluLength-sum > MaxPacketizerSize-rtphl-2 ? MaxPacketizerSize-rtphl-2 : naluLength-sum;
-                len = fill(buffer, rtphl+2, readLength);
-                if (len < 0) return;
-                sum += len;
+                rtpSocket.updateTimestamp(ts);
+                if ((len = fill(buffer, rtphl+2,  naluLength-sum > MaxPacketizerSize-rtphl-2 ? MaxPacketizerSize-rtphl-2 : naluLength-sum  ))<0) return; sum += len;
                 // Last packet before next NAL
                 if (sum >= naluLength) {
                     // End bit on
-                    // TODO, why cameraStream 0x40 ?!
                     buffer[rtphl+1] += 0x40;
                     rtpSocket.markNextPacket();
                 }
-                // send it
-                Log.i(TAG, "send data use rtpSocket");
-                rtpSocket.commitBuffer(len + rtphl + 2);
-                report.update(len+rtphl+2);
-
+                this.send(len + rtphl + 2);
                 // Switch start bit
                 header[1] = (byte) (header[1] & 0x7F);
+                Log.i(TAG,"----- FU-A unit, sum:"+sum);
             }
-        }
+          }
+    }
+
+    private void send(int length) throws IOException {
+        rtpSocket.commitBuffer(length);
+        report.update(length);
     }
 
     private int fill(byte[] buffer, int offset,int length) throws IOException {
@@ -223,7 +223,6 @@ public class Packetizer implements Runnable {
         return sum;
 
     }
-
 
     private void resync() throws IOException {
         byte[] header = new byte[5];
@@ -251,5 +250,6 @@ public class Packetizer implements Runnable {
             }
 
         }
+
     }
 }

@@ -12,34 +12,41 @@ import java.net.InetAddress;
 import java.util.Random;
 
 public class Session {
-
     private static final String TAG = "Session";
 
-    private static Session instance = null;
-
-    // will be used in rtp/RTP_Sockrt & RtspServer
-    private int SSRC = new Random().nextInt();
     private final long TimeStamp;
-
-    public final InetAddress localAddress;
-    // Only has one track.
-    public final int trackID = 1;
-
     // client_port will be set in RtspServer->SETUP, will be used in rtp/Packetizer.
     // server_port will be set in rtp/RtpSocket or rtp/Packetizer, will be used in RtspServer.
     private int[] client_port = new int[]{0, 0}, server_port;
+    private InetAddress destination = null;
 
     private CameraWorker worker = CameraWorker.getInstance();
     private Packetizer packetizer;
 
-    private InetAddress destination = null;
+    // will be used in rtp/RTP_Sockrt & RtspServer
+    public final int SSRC;
+    public final InetAddress localAddress;
+    // Only has one track.
+    public final int trackID = 1;
+
+
+    public Session() {
+        localAddress = GetIP.getLocalIpAddress(true);
+        long uptime = System.currentTimeMillis();
+        TimeStamp = (uptime/1000)<<32 & (((uptime-((uptime/1000)*1000))>>32)/1000);
+
+        SSRC = new Random().nextInt();
+
+        packetizer = new Packetizer();
+        server_port = packetizer.getPorts();
+    }
+
     public InetAddress getDestination() { return destination; }
     public void setDestination(InetAddress destination) {
         this.destination = destination;
         packetizer.setDestination(destination);
     }
 
-    public int getSSRC() { return SSRC; }
     public int[] getServer_port() { return server_port; }
 
     public int[] getClient_port() { return client_port; }
@@ -51,33 +58,12 @@ public class Session {
         packetizer.setPorts(client_port[0], client_port[1]);
     }
 
-    private Session() throws Exception {
-        localAddress = InetAddress.getByName(GetIP.getLocalIpAddress(true));
-        long uptime = System.currentTimeMillis();
-        TimeStamp = (uptime/1000)<<32 & (((uptime-((uptime/1000)*1000))>>32)/1000);
-
-        packetizer = new Packetizer();
-        server_port = packetizer.getPorts();
-    }
-    public static Session getInstance()
-    {
-        if (instance == null)
-            try {
-                return (instance = new Session());
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-                return null;
-            }
-        else
-            return instance;
-    }
 
     private WifiManager.MulticastLock mLock;
     public synchronized void start()
     {
         Log.i(TAG, "Session start.");
-        // TODO: for test.
-        if (packetizer.getDestination().isMulticastAddress()) {
+        if (destination.isMulticastAddress()) {
                 // Aquire a MulticastLock to allow multicasted UDP packet
                 WifiManager wifi = (WifiManager) ProjectApplication.instance.getSystemService(ProjectApplication.instance.WIFI_SERVICE);
                 if(wifi != null){
@@ -92,7 +78,7 @@ public class Session {
 
         packetizer.setStream(worker.getStream());
         packetizer.setSSRC(SSRC);
-        //packetizer.setDestination(destination);
+        packetizer.setDestination(destination);
         packetizer.setPorts(client_port[0], client_port[1]);
         packetizer.start();
     }

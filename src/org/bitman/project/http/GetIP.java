@@ -42,7 +42,7 @@ public class GetIP {
 		return m1.matches();
 	}
 
-	public static String getLocalIpAddress(boolean removeIPv6) throws Exception {
+	public static InetAddress getLocalIpAddress(boolean removeIPv6) {
 		try {
 			for (Enumeration<NetworkInterface> en = NetworkInterface
 					.getNetworkInterfaces(); en.hasMoreElements();) {
@@ -54,11 +54,11 @@ public class GetIP {
 							&& !inetAddress.isAnyLocalAddress()
 							&& (!removeIPv6 || isIpv4Address(inetAddress
 									.getHostAddress())))
-						return inetAddress.getHostAddress();
+						return inetAddress;
 				}
 			}
 		} catch (Exception exception) {
-            throw exception;
+            exception.printStackTrace();
         }
 		return null;
 	}

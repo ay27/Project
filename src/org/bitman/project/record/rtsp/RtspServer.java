@@ -16,9 +16,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +29,9 @@ public class RtspServer extends Service {
     private static int rtsp_port = 8554;
     // Will be set in the next time, or you must set it before the service start.
     public static void setRtsp_port(int rtsp_port) { RtspServer.rtsp_port = rtsp_port; }
+
+    private Vector<Session> mSessions = new Vector<Session>(2);
+
 
     private final IBinder mBinder = new LocalBinder();
     @Override
@@ -62,6 +63,8 @@ public class RtspServer extends Service {
             listenerThread.kill();
             listenerThread = null;
         }
+        for (Session session: mSessions)
+            session.stop();
     }
 
     private class RequestListener extends Thread {
@@ -118,12 +121,14 @@ public class RtspServer extends Service {
         private final BufferedReader mInput;
 
         // Each client has an associated session
-        private Session mSession = Session.getInstance();
+        private Session mSession;
 
         public WorkerThread(final Socket client) throws IOException {
             mInput = new BufferedReader(new InputStreamReader(client.getInputStream()));
             mOutput = client.getOutputStream();
             mClient = client;
+
+            mSession = new Session();
         }
 
         public void run()
@@ -190,6 +195,8 @@ public class RtspServer extends Service {
                     mSession.setDestination(mClient.getInetAddress());
                 }
 
+                mSessions.add(mSession);
+
                 String requestContent = mSession.getSessionDescription();
 
                 response.attributes = "Content-Base: "+mSession.localAddress.getHostAddress()+":"+mClient.getLocalPort()+"/\r\n" +
@@ -244,7 +251,7 @@ public class RtspServer extends Service {
                     p2 = Integer.parseInt(m.group(2));
                 }
 
-                ssrc = mSession.getSSRC();
+                ssrc = mSession.SSRC;
                 src = mSession.getServer_port();
                 destination = mSession.getDestination();
 
