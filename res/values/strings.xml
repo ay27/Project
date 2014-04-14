@@ -21,5 +21,17 @@
 	<string name="h8_640_480">42000a,Z0IACpZUBQHogA==,aM44gA==</string>
 	<string name = "aout_audiotrack">AudioTrack (native)</string>
 	<string name = "aout_opensles">OpenSL ES</string>
+	<string name="checkOnlineOK">connect to server ok</string>
+	<string name="checkOnlineFailure">connect to server failed</string>
+	<string name="record_page1_address">地点</string>
+	<string name="record_page1_search_button">搜索</string>
+	<string name="record_page_start">start</string>
+	<string name="record_page_hint">请输入地点名进行搜索</string>
+	<string name="record_page1_timeHint">定时（s）</string>
+	<string name="record_page1_hint_init">请输入地点搜索</string>
+	<string name="record_page1_addressHint">地点</string>
+	<string name="record_page1_search_button_text">搜索</string>
+	<string name="record_page1_title">填写数据</string>
+	<string name="record_page2_title">实时录像</string>
 
 </resources>

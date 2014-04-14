@@ -19,7 +19,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         addPreferencesFromResource(R.xml.preferences);
 
-        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
+//        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
 
         final ListPreference videoResolution = (ListPreference) findPreference("video_resolution");
         final ListPreference videoBitrate = (ListPreference) findPreference("video_bitrate");

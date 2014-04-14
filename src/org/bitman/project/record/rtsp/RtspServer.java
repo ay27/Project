@@ -328,7 +328,6 @@ public class RtspServer extends Service {
 
             // Streaming stops when client disconnects
             boolean streaming = isStreaming();
-            mSession.stop();
             if (streaming && !isStreaming()) {
                 postMessage(MESSAGE_STREAMING_STOPPED);
             }
@@ -477,6 +476,7 @@ public class RtspServer extends Service {
 			/* ********************************************************************************** */
             else if (request.method.equalsIgnoreCase("TEARDOWN")) {
                 response.status = Response.STATUS_OK;
+                mSession.stop();
             }
 
 			/* ********************************************************************************** */

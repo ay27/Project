@@ -46,27 +46,6 @@ public class PlayActivity extends Activity{
         player = new MediaPlayer();
 
         playAddr = this.getIntent().getStringExtra("play_address");
-        //playAddr = "rtsp://121.49.83.42:8554/";
-
-        // open the rtsp client.
-        //TODO check it .
-		/*try {
-			testFile = new File(Environment.getExternalStorageDirectory()+"/test.sdp");
-			sdpFile = new RandomAccessFile(testFile, "rw");
-
-			Log.i("sdpfile", "ok");
-
-			client = new RTSP_Client(playAddr, sdpFile);
-
-			Log.i("client", "ok");
-
-			client.Play();
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-			*/
-
 
         startButton.setOnClickListener(new View.OnClickListener() {
 

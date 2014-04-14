@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.bitman.project.R;
-import org.bitman.project.http.HttpClient;
 import vlc.*;
 
 import java.text.DecimalFormat;
@@ -301,8 +300,6 @@ public class Play_VLC_Activity extends Activity implements
 
         super.onDestroy();
 
-    // stop HttpClient
-    HttpClient.getInstance().send(HttpClient.Options.Close, "");
     }
 
     private static class VideoPlayerHandler extends

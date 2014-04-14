@@ -1,119 +1,94 @@
 package org.bitman.project.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.widget.TextView;
-import android.widget.Toast;
-import org.bitman.project.ProjectApplication;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.*;
+import android.widget.*;
 import org.bitman.project.R;
-import org.bitman.project.http.GetIP;
-import org.bitman.project.record.camera.CameraWorker;
-import org.bitman.project.record.rtsp.RtspServer;
 
-public class RecordActivity extends Activity {
+
+public class RecordActivity extends FragmentActivity {
 
     private static final String TAG = "RecordActivity";
 
-
-    private SurfaceView surfaceView;
-    private CameraWorker cameraWorker = CameraWorker.getInstance();
+    private ViewPager mViewPager;
+    private SectionPagerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // here must be set, because the ActionBar.
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.record);
 
-        setContentView(R.layout.record_layout);
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
 
-        TextView ipView = (TextView) findViewById(R.id.textView_ip);
-        String ip = null;
-        try {
-            //InetAddress.getLocalHost();
-            ip = GetIP.getLocalIpAddress(true).getHostAddress();
-            ipView.setText("rtsp://"+ip+ ":"+ PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554"));
-            Log.i(TAG, ip);
-        } catch (Exception e) {
-            Toast.makeText(this, "Internet is not accessible. Please check your internet.", Toast.LENGTH_LONG).show();
-        }
-
-
-        surfaceView = (SurfaceView) findViewById(R.id.surface_record);
-        SurfaceHolder holder = surfaceView.getHolder();
-        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        cameraWorker.setPreviewDisplay(holder);
-
-//        Intent intent = new Intent();
-//        intent.setClass(RecordActivity.this, RtspServer.class);
-//        startService(intent);
-
-
-        bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
-
-//        InputStream is = cameraWorker.getStream();
-//        byte[] bytes = new byte[1024];
-//        try {
-//            is.read(bytes);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Log.i(TAG, new String(bytes));
-
+        mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.record_pager);
+        mViewPager.setAdapter(mAdapter);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        //cameraWorker.start();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.onBackPressed();
+            return true;
+        }
+        else
+           return super.onOptionsItemSelected(item);
     }
 
-    private RtspServer mRtspServer;
-    private ServiceConnection mRtspServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mRtspServer = (RtspServer) ((RtspServer.LocalBinder)service).getService();
+    class SectionPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mRtspServer = null;
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    RecordPage1 fragment = new RecordPage1();
+                    return fragment;
+                case 1:
+                    RecordPage2 fragment1 = new RecordPage2();
+                    return fragment1;
+            }
+            return null;
         }
-    };
 
-    @Override
-    public void onBackPressed() {
-        cameraWorker.stop();
-        //onDestroy();
-        super.onBackPressed();
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        public RecordPage1 getRecordPage1() {
+            return (RecordPage1) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.record_pager+":0");
+        }
+
+        public RecordPage2 getRecordPage2() {
+
+            return (RecordPage2) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.record_pager+":1");
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0: return getResources().getString(R.string.record_page1_title);
+                case 1: return getResources().getString(R.string.record_page2_title);
+            }
+            return null;
+        }
+
     }
-
-    @Override
-    protected void onDestroy() {
-
-//        if (mRtspServer != null)
-//        {
-//            mRtspServer.stop();
-//            unbindService(mRtspServiceConnection);
-//        }
-
-        Log.i(TAG, "onDestroy");
-        super.onDestroy();
-
-        mRtspServer.stop();
-        unbindService(mRtspServiceConnection);
-    }
-
-
 }

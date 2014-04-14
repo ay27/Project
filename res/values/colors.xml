@@ -7,5 +7,6 @@
     <color name="orange">#FFF48B00</color>
     <color name="darkorange">#FF824600</color>
     <color name="transparent_gray">#A000</color>
+	<color name="red">#FF0000</color>
 
 </resources>

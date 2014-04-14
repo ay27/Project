@@ -10,9 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import org.apache.http.Header;
+import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
-import org.bitman.project.http.HttpClient;
+import org.bitman.project.http.AsyncInetClient;
 
 public class WelcomeActivity extends Activity {
 
@@ -27,13 +31,16 @@ public class WelcomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome_layout);
+//        setContentView(R.layout.record_page1);
+
 
         openHttpButton = (ToggleButton) findViewById(R.id.open_http);
         openHttpButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                if (value)
-                    HttpClient.getInstance().open();
+                if (value) {
+                    AsyncInetClient.getInstance().sendMessage(AsyncInetClient.Type.Online, new AsyncInetClient.SendData().setIMEI(ProjectApplication.instance.IMEI), checkOnLineHandler);
+                }
             }
         });
 
@@ -47,6 +54,18 @@ public class WelcomeActivity extends Activity {
         });
         instance = this;
 	}
+
+    private AsyncHttpResponseHandler checkOnLineHandler = new AsyncHttpResponseHandler() {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            Toast.makeText(WelcomeActivity.this, getResources().getString(R.string.checkOnlineOK), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            Toast.makeText(WelcomeActivity.this, getResources().getString(R.string.checkOnlineFailure)+". the reason is "+statusCode, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

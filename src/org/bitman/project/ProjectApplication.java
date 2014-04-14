@@ -6,7 +6,7 @@ import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import org.bitman.project.http.HttpClient;
+import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.record.VideoQuality;
 import org.bitman.project.record.rtsp.RtspServer;
 
@@ -26,14 +26,14 @@ public class ProjectApplication extends Application {
     private SharedPreferences sharedPreferences;
     private VideoQuality videoQuality = VideoQuality.getInstance();
 
+    public String IMEI;
+
     @Override
     public void onCreate()
     {
         instance = this;
 
-        // The meid must be set at first.
-        String meid = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-        HttpClient.ShareData.setMEID(meid);
+        IMEI = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
 
         Locale.setDefault(Locale.CHINA);
         Configuration config = new Configuration();
@@ -46,6 +46,10 @@ public class ProjectApplication extends Application {
         sharedPreferences.registerOnSharedPreferenceChangeListener(changeListener);
 
         readPreference();
+    }
+
+    private String getPath(String ip) {
+        return "http://"+ip+":8080/Servlet/";
     }
 
     private void readPreference() {
@@ -61,11 +65,7 @@ public class ProjectApplication extends Application {
         RtspServer.setRtspPort(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
 
         String ip = sharedPreferences.getString("server_address", "127.0.0.1");
-        try {
-            HttpClient.getInstance().setIP(ip);
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
+        AsyncInetClient.getInstance().setServer(getPath(ip));
 
     }
 
@@ -92,11 +92,7 @@ public class ProjectApplication extends Application {
             }
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");
-                try {
-                    HttpClient.getInstance().setIP(ip);
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                }
+                AsyncInetClient.getInstance().setServer(getPath(ip));
             }
         }
     };

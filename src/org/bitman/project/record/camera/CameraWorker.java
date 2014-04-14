@@ -11,6 +11,7 @@ import org.bitman.project.record.VideoQuality;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Random;
 
 public class CameraWorker {
@@ -61,6 +62,7 @@ public class CameraWorker {
             this.surfaceHolder = holder;
             surfaceHolder.addCallback(mSurfaceHolderCallback);
             Status.surfaceReady = true;
+
         }
     }
 
@@ -81,7 +83,8 @@ public class CameraWorker {
 
         camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
         Camera.Parameters params = camera.getParameters();
-        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        params.setRotation(90);
         camera.setParameters(params);
         camera.setDisplayOrientation(videoQuality.orientation);
         try {
@@ -211,6 +214,7 @@ public class CameraWorker {
             receiver = null;
             lss.close();
             lss = null;
+            Status.socketReady = false;
         } catch (Exception ignore) {}
     }
 
