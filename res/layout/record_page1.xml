@@ -20,7 +20,10 @@
 		<EditText
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/record_page1_addressEdit" android:layout_weight="1"/>
+				android:id="@+id/record_page1_addressEdit" android:layout_weight="1"
+				android:singleLine="true"
+				android:imeOptions="actionSearch"
+				android:focusableInTouchMode="true"/>
 		<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -38,6 +41,13 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:layout_above="@+id/relativeLayout"
 			android:layout_alignParentLeft="true" android:id="@+id/linearLayout2">
+	</LinearLayout>
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/linearLayout3" android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true">
 		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -47,7 +57,11 @@
 		<EditText
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/record_page1_timeEdit" android:layout_weight="1"/>
+				android:id="@+id/record_page1_timeEdit" android:layout_weight="1"
+				android:inputType="number"
+				android:singleLine="true"
+				android:imeOptions="actionGo"
+				android:focusableInTouchMode="true"/>
 		<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -55,9 +69,20 @@
 				android:id="@+id/record_page1_start" android:layout_alignParentTop="true" android:layout_alignParentRight="true"
 				android:layout_alignParentEnd="true"/>
 	</LinearLayout>
-	<ListView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/record_page1_listView" android:layout_below="@+id/linearLayout" android:layout_alignParentLeft="true"
-			android:layout_alignParentStart="true" android:layout_above="@+id/linearLayout2"/>
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_below="@+id/linearLayout"
+			android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+			android:id="@+id/linearLayout3">
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="@string/inputAddressHint"
+				android:textColor="@color/red"
+				android:id="@+id/record_page1_hint"
+				android:gravity="center"
+			/>
+	</LinearLayout>
 </RelativeLayout>

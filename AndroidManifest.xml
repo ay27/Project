@@ -41,7 +41,7 @@
          </activity>
         <activity android:name="org.bitman.project.ui.RecordActivity"
                   android:label="record"
-				android:windowSoftInputMode="stateHidden">
+				android:windowSoftInputMode="stateHidden|adjustUnspecified|adjustPan">
         </activity>
         <activity android:name="org.bitman.project.ui.PlayActivity"
                   android:label="play">

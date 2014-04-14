@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
+import org.bitman.project.http.GetIP;
 import org.bitman.project.record.VideoQuality;
 import org.bitman.project.record.rtsp.RtspServer;
 
@@ -26,7 +27,7 @@ public class ProjectApplication extends Application {
     private SharedPreferences sharedPreferences;
     private VideoQuality videoQuality = VideoQuality.getInstance();
 
-    public String IMEI;
+    public static String IMEI;
 
     @Override
     public void onCreate()
@@ -46,6 +47,15 @@ public class ProjectApplication extends Application {
         sharedPreferences.registerOnSharedPreferenceChangeListener(changeListener);
 
         readPreference();
+    }
+
+    public String getRtspUrl() {
+        try {
+            String ip = GetIP.getLocalIpAddress(true).getHostAddress();
+            return "rtsp://"+ip+ ":"+ PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554");
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private String getPath(String ip) {

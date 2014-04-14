@@ -36,13 +36,11 @@ public class RecordPage2 extends Fragment {
 
         TextView ipView = (TextView) root.findViewById(R.id.textView_ip);
         String ip = null;
-        try {
-            ip = GetIP.getLocalIpAddress(true).getHostAddress();
-            ipView.setText("rtsp://"+ip+ ":"+ PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554"));
-            Log.i(TAG, ip);
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Internet is not accessible. Please check your internet.", Toast.LENGTH_LONG).show();
-        }
+        String rtspUrl = ProjectApplication.instance.getRtspUrl();
+        if (rtspUrl != null)
+            ipView.setText(rtspUrl);
+        else
+            Toast.makeText(this.getActivity(), getResources().getString(R.string.checkYourInternet), Toast.LENGTH_SHORT).show();
 
         surfaceView = (SurfaceView) root.findViewById(R.id.surface_record);
         SurfaceHolder holder = surfaceView.getHolder();

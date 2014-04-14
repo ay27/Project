@@ -134,16 +134,20 @@ public class AsyncInetClient {
         return client;
     }
 
-    public void searchCity(final String IMEI, final String keyword, final JsonHttpResponseHandler jsonHttpResponseHandler) {
-        sendMessage(Type.SearchCity, new SendData().setIMEI(IMEI).setKeyword(keyword), jsonHttpResponseHandler);
+    public void searchCity(final String IMEI, final String keyword, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.SearchCity, new SendData().setIMEI(IMEI).setKeyword(keyword), httpResponseHandler);
     }
 
     public void listPast(final String IMEI, final String cityId, final ResponseHandlerInterface responseHandler) {
         sendMessage(Type.ListPast, new SendData().setIMEI(IMEI).setCityID(cityId), responseHandler);
     }
 
-    public void listNow(final String IMEI, final String cityId, final JsonHttpResponseHandler jsonHttpResponseHandler) {
-        sendMessage(Type.ListNow, new SendData().setIMEI(IMEI).setCityID(cityId), jsonHttpResponseHandler);
+    public void listNow(final String IMEI, final String cityId, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.ListNow, new SendData().setIMEI(IMEI).setCityID(cityId), httpResponseHandler);
+    }
+
+    public void record(final String IMEI, final String cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Record, new SendData().setIMEI(IMEI).setCityID(cityId).setRtspUrl(RtspUrl), httpResponseHandler);
     }
 
 

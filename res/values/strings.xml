@@ -29,9 +29,17 @@
 	<string name="record_page_hint">请输入地点名进行搜索</string>
 	<string name="record_page1_timeHint">定时（s）</string>
 	<string name="record_page1_hint_init">请输入地点搜索</string>
-	<string name="record_page1_addressHint">地点</string>
+	<string name="record_page1_addressHint">  地点  </string>
 	<string name="record_page1_search_button_text">搜索</string>
 	<string name="record_page1_title">填写数据</string>
 	<string name="record_page2_title">实时录像</string>
+	<string name="fatalError">应用出现了大问题</string>
+	<string name="youMustInputSomething">请输入地点</string>
+	<string name="inputAddressHint">请输入地点进行搜索并选择你所在的地点</string>
+	<string name="searchCityFalied">失败！原因是：</string>
+	<string name="checkYourInternet">无网络连接，请检查你的网络</string>
+	<string name="startRecord">开始录像</string>
+	<string name="choosedCity">你选择的地点是：</string>
+	<string name="youMustChooseACity">请先选择一个地点</string>
 
 </resources>

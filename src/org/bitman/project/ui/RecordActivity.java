@@ -25,8 +25,8 @@ public class RecordActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         // here must be set, because the ActionBar.
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.record);
 
         ActionBar actionBar = getActionBar();
