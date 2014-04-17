@@ -4,6 +4,7 @@ import android.media.AsyncPlayer;
 import android.util.Log;
 import com.loopj.android.http.*;
 import org.apache.http.Header;
+import org.bitman.project.ProjectApplication;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -18,6 +19,8 @@ public class AsyncInetClient {
     private AsyncHttpClient client;
     private String url;
     private static AsyncInetClient instance = null;
+
+    public static final String RecordOK = "Record_OK";
 
     /**
      * The Message-Type. The user's message must be based on in.
@@ -34,9 +37,14 @@ public class AsyncInetClient {
         private String Keyword;
         private String FilePath;
         private String RtspUrl;
+        private String DeviceId;
 
-        public SendData setIMEI(String IMEI) {
-            this.IMEI = IMEI;
+        public SendData() {
+            IMEI = ProjectApplication.IMEI;
+        }
+
+        public SendData setDeviceId(String deviceId) {
+            this.DeviceId = deviceId;
             return this;
         }
 
@@ -134,23 +142,41 @@ public class AsyncInetClient {
         return client;
     }
 
-    public void searchCity(final String IMEI, final String keyword, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.SearchCity, new SendData().setIMEI(IMEI).setKeyword(keyword), httpResponseHandler);
+    public void searchCity(final String keyword, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.SearchCity, new SendData().setKeyword(keyword), httpResponseHandler);
     }
 
-    public void listPast(final String IMEI, final String cityId, final ResponseHandlerInterface responseHandler) {
-        sendMessage(Type.ListPast, new SendData().setIMEI(IMEI).setCityID(cityId), responseHandler);
+    public void listPast(final String cityId, final ResponseHandlerInterface responseHandler) {
+        sendMessage(Type.ListPast, new SendData().setCityID(cityId), responseHandler);
     }
 
-    public void listNow(final String IMEI, final String cityId, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.ListNow, new SendData().setIMEI(IMEI).setCityID(cityId), httpResponseHandler);
+    public void listNow(final String cityId, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.ListNow, new SendData().setCityID(cityId), httpResponseHandler);
     }
 
-    public void record(final String IMEI, final String cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Record, new SendData().setIMEI(IMEI).setCityID(cityId).setRtspUrl(RtspUrl), httpResponseHandler);
+    public void listFile(final String cityId, final String deviceId, AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.ListFile, new SendData().setCityID(cityId).setDeviceId(deviceId), httpResponseHandler);
     }
 
+    public void playFile(final String filePath, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.PlayFile, new SendData().setFilePath(filePath), httpResponseHandler);
+    }
 
+    public void playNow(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.PlayNow, new SendData().setDeviceId(deviceId), httpResponseHandler);
+    }
+
+    public void record(final String cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Record, new SendData().setCityID(cityId).setRtspUrl(RtspUrl), httpResponseHandler);
+    }
+
+    public void close(final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Close, new SendData(), httpResponseHandler);
+    }
+
+    public void online(final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Online, new SendData(), httpResponseHandler);
+    }
 
     public void sendMessage(final Type type,
                             final SendData data,

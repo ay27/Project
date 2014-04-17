@@ -22,26 +22,15 @@ public class WelcomeActivity extends FragmentActivity {
 
     private static final String TAG = "WelcomeActivity";
 
-    private ViewPager viewPager;
-    private SectionPagerAdapter mAdapter;
-
-    private ToggleButton openHttpButton;
-    private Button record_direct;
-
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.welcome_layout);
 
-//        Intent intent = new Intent(this, RecordActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivityForResult(intent, 0);
-
-        mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
-        viewPager = (ViewPager)findViewById(R.id.welcome_pager);
+        SectionPagerAdapter mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
+        ViewPager viewPager = (ViewPager) findViewById(R.id.welcome_pager);
         viewPager.setAdapter(mAdapter);
-//        viewPager.setSaveEnabled(false);
 	}
 
     class SectionPagerAdapter extends FragmentPagerAdapter {
@@ -67,15 +56,6 @@ public class WelcomeActivity extends FragmentActivity {
             return 2;
         }
 
-//        public WelcomePage1 getWelcomePage1() {
-//            return (WelcomePage1) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.welcome_pager+":0");
-//        }
-//
-//        public WelcomePage2 getWelcomePage2() {
-//
-//            return (WelcomePage2) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.welcome_pager+":1");
-//        }
-
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
@@ -87,30 +67,6 @@ public class WelcomeActivity extends FragmentActivity {
         }
 
     }
-
-
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case Menu.FIRST+1:
-//                Intent intent = new Intent(WelcomeActivity.this, SettingsActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivityForResult(intent, 0);
-//                return true;
-//            case Menu.FIRST+2:
-//                this.onBackPressed();
-//                return true;
-//            default:
-//                return false;
-//        }
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        menu.add(Menu.NONE, Menu.FIRST+1, 1, "settings");
-//        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "quit");
-//        return true;
-//    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,9 +83,7 @@ public class WelcomeActivity extends FragmentActivity {
 
         switch (item.getItemId()) {
             case R.id.options:
-                // Starts QualityListActivity where user can change the streaming quality
                 intent = new Intent(this.getBaseContext(), SettingsActivity.class);
-//                startActivityFromFragment(mAdapter.getWelcomePage1(), intent, 0);
                 startActivity(intent);
                 return true;
             case R.id.quit:

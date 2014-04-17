@@ -31,16 +31,25 @@ public class WelcomePage1 extends Fragment {
 
     private static final String TAG = "WelcomePage1";
 
-    private static final String RecordOK = "Record_OK";
-
     private EditText addressEdit;
     private Button searchButton;
+
+    private LinearLayout chooseCityLayout;
+    private Spinner chooseCitySpinner;
+
+    private LinearLayout timeLayout;
     private EditText timeEdit;
+
     private Button startButton;
+
     private TextView myHint;
+
+
     private AsyncInetClient httpClient = AsyncInetClient.getInstance();
     private ArrayList<String> cityListName;
     private ArrayList<Integer> cityListId;
+
+    // some flags
     private int selectedCity = -1;
     private boolean cityChoice = false;
 
@@ -50,25 +59,41 @@ public class WelcomePage1 extends Fragment {
         InputMethodManager imm =
                 (InputMethodManager)getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
 
+        /* ************************* register some view **************************** */
         View root = inflater.inflate(R.layout.welcome_page1, null);
 
         addressEdit = (EditText)root.findViewById(R.id.welcome_page1_addressEdit);
-        // hide the input window
         imm.hideSoftInputFromWindow(addressEdit.getWindowToken(), 0);
+        searchButton = (Button)root.findViewById(R.id.welcome_page1_search);
 
+        chooseCityLayout = (LinearLayout)root.findViewById(R.id.welcome_page1_chooseCity_layout);
+        chooseCitySpinner = (Spinner)root.findViewById(R.id.welcome_page1_chooseCity_spinner);
+
+        timeLayout = (LinearLayout)root.findViewById(R.id.welcome_page1_time_layout);
         timeEdit = (EditText)root.findViewById(R.id.welcome_page1_timeEdit);
         imm.hideSoftInputFromWindow(timeEdit.getWindowToken(), 0);
 
-        addressEdit.setOnKeyListener(keyListener);
-        timeEdit.setOnKeyListener(keyListener);
+        startButton = (Button)root.findViewById(R.id.welcome_page1_start);
 
         myHint = (TextView)root.findViewById(R.id.welcome_page1_hint);
 
+        /* ************************* end of register some view **************************** */
+
+        /* ************************* register some listener to the view ************************ */
+        addressEdit.setOnKeyListener(keyListener);
         searchButton = (Button)root.findViewById(R.id.welcome_page1_search);
-        startButton = (Button)root.findViewById(R.id.welcome_page1_start);
-        startButton.setOnClickListener(clickListener);
         searchButton.setOnClickListener(clickListener);
 
+        timeEdit.setOnKeyListener(keyListener);
+
+        startButton.setOnClickListener(clickListener);
+        /* ************************* end of register some listener to the view ************************ */
+
+        /* ******************* set the visibility *************************** */
+        chooseCityLayout.setVisibility(View.INVISIBLE);
+        timeLayout.setVisibility(View.INVISIBLE);
+        startButton.setVisibility(View.INVISIBLE);
+        /* ********************* end of set the visibility ***************** */
 
         return root;
     }
@@ -77,6 +102,7 @@ public class WelcomePage1 extends Fragment {
         @Override
         public void onClick(View view) {
             if (view.getId() == searchButton.getId()) {
+
                 Editable value = addressEdit.getText();
                 if (value == null) {
                     makeToast(getResources().getString(R.string.fatalError));
@@ -87,11 +113,11 @@ public class WelcomePage1 extends Fragment {
                     makeToast(getResources().getString(R.string.youMustInputSomething));
                     return;
                 }
-                httpClient.searchCity(ProjectApplication.IMEI, str, searchCityResponseHandler);
+                httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == startButton.getId()) {
                 if (cityChoice) {
-                    httpClient.record(ProjectApplication.IMEI, Integer.toString(cityListId.get(selectedCity)), ProjectApplication.instance.getRtspUrl(), recordResponseHandler);
+                    httpClient.record(Integer.toString(cityListId.get(selectedCity)), ProjectApplication.instance.getRtspUrl(), recordResponseHandler);
                 }
                 else {
                     makeToast(getResources().getString(R.string.youMustChooseACity));
@@ -105,7 +131,7 @@ public class WelcomePage1 extends Fragment {
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
             String str = new String(responseBody);
             makeToast("receive from server: "+str);
-            if (str.equals(RecordOK)) {
+            if (str.equals(AsyncInetClient.RecordOK)) {
                 makeToast(getResources().getString(R.string.startRecord));
                 Intent intent = new Intent(getActivity(), RecordActivity.class);
                 startActivity(intent);
@@ -114,9 +140,10 @@ public class WelcomePage1 extends Fragment {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            makeToast(error.toString());
+            makeToast(getResources().getString(R.string.fatalError)+" "+error.toString());
         }
     };
+
 
     private AsyncHttpResponseHandler searchCityResponseHandler = new AsyncHttpResponseHandler() {
         @Override
@@ -127,12 +154,14 @@ public class WelcomePage1 extends Fragment {
             try {
                 JSONParser.parseCity(data, cityListId, cityListName);
             } catch (JSONException e) {
-                makeToast(e.toString());
+                makeToast("search city receive error: "+e.toString());
                 return;
             }
 
-            showChooseCityDialog();
-
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.id.welcome_page1_chooseCity_spinner, cityListName);
+            chooseCitySpinner.setAdapter(adapter);
+            chooseCitySpinner.setOnItemSelectedListener(chooseCitySpinnerListener);
+            chooseCitySpinner.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -141,20 +170,21 @@ public class WelcomePage1 extends Fragment {
         }
     };
 
-    private void showChooseCityDialog() {
-        DialogInterface.OnClickListener chooseCityListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int position) {
-                selectedCity = position;
-                cityChoice = true;
-                myHint.setTextColor(Color.BLUE);
-                myHint.setText(getResources().getString(R.string.choosedCity)+" "+cityListName.get(position));
-            }
-        };
+    private AdapterView.OnItemSelectedListener chooseCitySpinnerListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            selectedCity = position;
+            makeToast(getResources().getString(R.string.choosedCity)+" "+cityListName.get(selectedCity));
+            timeLayout.setVisibility(View.VISIBLE);
+            startButton.setVisibility(View.VISIBLE);
+        }
 
-        AlertDialog.Builder chooseCityDialog = new AlertDialog.Builder(getActivity());
-        chooseCityDialog.setSingleChoiceItems(cityListName.toArray(new String[cityListName.size()]), 0, chooseCityListener).show();
-    }
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
 
     private View.OnKeyListener keyListener = new View.OnKeyListener() {
         @Override

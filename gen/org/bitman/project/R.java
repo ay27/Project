@@ -52,10 +52,10 @@ public final class R {
         public static final int editText3=0x7f0a001b;
         public static final int information=0x7f0a000b;
         public static final int linearLayout1=0x7f0a000d;
-        public static final int linearLayout2=0x7f0a0010;
-        public static final int linearLayout3=0x7f0a0013;
-        public static final int linearLayout4=0x7f0a0016;
-        public static final int linearLayout5=0x7f0a0019;
+        public static final int welcome_page2_chooseMode_layout =0x7f0a0010;
+        public static final int welcome_page2_chooseCity_layout =0x7f0a0013;
+        public static final int welcome_page2_chooseDevice_layout =0x7f0a0016;
+        public static final int welcome_page2_chooseFile_layout =0x7f0a0019;
         public static final int linearLayout6=0x7f0a001c;
         public static final int main=0x7f0a0009;
         public static final int main_surface=0x7f0a0003;

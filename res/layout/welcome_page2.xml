@@ -34,9 +34,10 @@
 	<LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_below="@+id/linearLayout"
-			android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
-			android:id="@+id/linearLayout2">
+			android:layout_height="wrap_content"
+			android:id="@+id/welcome_page2_chooseMode_layout"
+			android:layout_below="@+id/welcome_page2_chooseCity_layout" android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true">
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 				  android:textAppearance="?android:attr/textAppearanceLarge"
 				  android:layout_gravity="center"
@@ -45,7 +46,8 @@
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:id="@+id/welcome_page2_radioGroup">
+				android:id="@+id/welcome_page2_radioGroup"
+				>
 			<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:text="@string/welcome_page2_choose_old"
 					android:id="@+id/welcome_page2_choose_old"/>
@@ -54,10 +56,78 @@
 					android:id="@+id/welcome_page2_choose_now"/>
 		</RadioGroup>
 	</LinearLayout>
-	<Spinner
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/linearLayout" android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true" android:id="@+id/welcome_page2_chooseCity_layout">
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="@string/welcome_chooseCity_text"
+				android:layout_gravity="center"
+				/>
+		<Spinner
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/welcome_page2_chooseCity_spinner"
+				android:layout_weight="1"
+				/>
+	</LinearLayout>
+
+	<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/welcome_page2_chooseCity_spinner" android:layout_below="@+id/linearLayout2" android:layout_alignParentLeft="true"
-			android:layout_alignParentStart="true"/>
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/inputAddressHint"
+			android:textColor="@color/red"
+			android:id="@+id/welcome_page2_hint"
+			android:gravity="center"
+			android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"/>
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_below="@+id/welcome_page2_chooseMode_layout"
+			android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+			android:id="@+id/welcome_page2_chooseDevice_layout">
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="@string/welcome_page2_chooseDevice_text"
+				android:layout_gravity="center"
+				/>
+		<Spinner
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/welcome_page2_chooseDevice_spinner" android:layout_weight="1"/>
+	</LinearLayout>
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_below="@+id/welcome_page2_chooseDevice_layout"
+			android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+			android:id="@+id/welcome_page2_chooseFile_layout">
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="@string/welcome_page2_chooseFile_text"
+				android:layout_gravity="center"
+				/>
+		<Spinner
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/welcome_page2_chooseFile_spinner" android:layout_weight="1"/>
+	</LinearLayout>
+	<Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/welcome_page2_play_button_text"
+			android:textSize="30sp"
+			android:id="@+id/welcome_page2_play_button" android:layout_below="@+id/welcome_page2_chooseFile_layout" android:layout_centerHorizontal="true"
+			android:layout_marginTop="62dp"/>
 
 </RelativeLayout>

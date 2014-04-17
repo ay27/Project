@@ -23,6 +23,8 @@
 	<string name = "aout_opensles">OpenSL ES</string>
 	<string name="checkOnlineOK">connect to server ok</string>
 	<string name="checkOnlineFailure">connect to server failed</string>
+
+
 	<string name="welcome_page1_address">地点</string>
 	<string name="welcome_page1_search_button">搜索</string>
 	<string name="welcome_page_start">start</string>
@@ -33,7 +35,7 @@
 	<string name="welcome_page1_search_button_text">搜索</string>
 	<string name="fatalError">应用出现了大问题</string>
 	<string name="youMustInputSomething">请输入地点</string>
-	<string name="inputAddressHint">请输入地点进行搜索并选择你所在的地点</string>
+	<string name="inputAddressHint">请输入地点进行搜索</string>
 	<string name="searchCityFalied">失败！原因是：</string>
 	<string name="checkYourInternet">无网络连接，请检查你的网络</string>
 	<string name="startRecord">开始录像</string>
@@ -46,5 +48,11 @@
 	<string name="welcome_page2_chooseText">选择查看模式</string>
 	<string name="welcome_page2_choose_old">查看过去</string>
 	<string name="welcome_page2_choose_now">查看现在</string>
+	<string name="welcome_chooseCity_text">选择地点</string>
+	<string name="welcome_page2_chooseFile_text">选择文件</string>
+	<string name="welcome_page2_chooseDevice_text">选择设备</string>
+	<string name="welcome_page2_play_button_text">play</string>
+	<string name="welcome_page2_chooseTimeOK_button">ok</string>
+	<string name="welcome_page2_chooseTimeCancel_button">cancel</string>
 
 </resources>
