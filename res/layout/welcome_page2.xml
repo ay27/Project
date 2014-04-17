@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:focusable="false"
+		>
+
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_alignParentTop="true"
+			android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+			android:id="@+id/linearLayout">
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:text="@string/welcome_page2_addressHint"
+				/>
+		<EditText
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/welcome_page2_addressEdit" android:layout_weight="1"
+				android:singleLine="true"
+				android:imeOptions="actionSearch"
+				android:focusableInTouchMode="true"/>
+		<Button
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/welcome_page2_search_button_text"
+				android:id="@+id/welcome_page2_search"/>
+	</LinearLayout>
+	<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_below="@+id/linearLayout"
+			android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+			android:id="@+id/linearLayout2">
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+				  android:textAppearance="?android:attr/textAppearanceLarge"
+				  android:layout_gravity="center"
+				android:text="@string/welcome_page2_chooseText"/>
+		<RadioGroup
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:id="@+id/welcome_page2_radioGroup">
+			<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="@string/welcome_page2_choose_old"
+					android:id="@+id/welcome_page2_choose_old"/>
+			<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+						 android:text="@string/welcome_page2_choose_now"
+					android:id="@+id/welcome_page2_choose_now"/>
+		</RadioGroup>
+	</LinearLayout>
+	<Spinner
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/welcome_page2_chooseCity_spinner" android:layout_below="@+id/linearLayout2" android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"/>
+
+</RelativeLayout>

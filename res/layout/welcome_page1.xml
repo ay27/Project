@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-		android:focusable="false"
+				android:focusable="false"
 		>
 
 	<LinearLayout
@@ -15,32 +15,20 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="@string/record_page1_addressHint"
+				android:text="@string/welcome_page1_addressHint"
 				/>
 		<EditText
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/record_page1_addressEdit" android:layout_weight="1"
+				android:id="@+id/welcome_page1_addressEdit" android:layout_weight="1"
 				android:singleLine="true"
 				android:imeOptions="actionSearch"
 				android:focusableInTouchMode="true"/>
 		<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/record_page1_search_button_text"
-				android:id="@+id/record_page1_search"/>
-	</LinearLayout>
-	<RelativeLayout
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentBottom="true" android:id="@+id/relativeLayout">
-	</RelativeLayout>
-	<LinearLayout
-			android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:layout_above="@+id/relativeLayout"
-			android:layout_alignParentLeft="true" android:id="@+id/linearLayout2">
+				android:text="@string/welcome_page1_search_button_text"
+				android:id="@+id/welcome_page1_search"/>
 	</LinearLayout>
 	<LinearLayout
 			android:orientation="horizontal"
@@ -52,21 +40,22 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="@string/record_page1_timeHint"
+				android:text="@string/welcome_page1_timeHint"
 				/>
 		<EditText
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/record_page1_timeEdit" android:layout_weight="1"
+				android:id="@+id/welcome_page1_timeEdit" android:layout_weight="1"
 				android:inputType="number"
 				android:singleLine="true"
 				android:imeOptions="actionGo"
-				android:focusableInTouchMode="true"/>
+				android:focusableInTouchMode="true"
+				android:text="0"/>
 		<Button
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/record_page_start"
-				android:id="@+id/record_page1_start" android:layout_alignParentTop="true" android:layout_alignParentRight="true"
+				android:text="@string/welcome_page_start"
+				android:id="@+id/welcome_page1_start" android:layout_alignParentTop="true" android:layout_alignParentRight="true"
 				android:layout_alignParentEnd="true"/>
 	</LinearLayout>
 	<LinearLayout
@@ -79,10 +68,22 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:text="@string/inputAddressHint"
-				android:textColor="@color/red"
-				android:id="@+id/record_page1_hint"
-				android:gravity="center"
-			/>
+				android:text="选择地点"
+				/>
+		<Spinner
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/welcome_page1_chooseCity_spinner"
+				/>
 	</LinearLayout>
+	<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="@string/inputAddressHint"
+			android:textColor="@color/red"
+			android:id="@+id/welcome_page1_hint"
+			android:gravity="center"
+			android:layout_alignParentBottom="true" android:layout_alignParentLeft="true"
+			android:layout_alignParentStart="true"/>
 </RelativeLayout>

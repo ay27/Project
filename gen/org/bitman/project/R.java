@@ -84,7 +84,7 @@ public final class R {
         public static final int welcome_layout=0x7f030003;
     }
     public static final class menu {
-        public static final int welcome=0x7f090000;
+        public static final int menu =0x7f090000;
     }
     public static final class string {
         public static final int action_settings=0x7f070001;

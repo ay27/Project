@@ -1,94 +1,69 @@
 package org.bitman.project.ui;
 
-import android.app.ActionBar;
-import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.*;
 import android.widget.*;
+import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
+import org.bitman.project.record.camera.CameraWorker;
+import org.bitman.project.record.rtsp.RtspServer;
 
 
 public class RecordActivity extends FragmentActivity {
 
     private static final String TAG = "RecordActivity";
 
-    private ViewPager mViewPager;
-    private SectionPagerAdapter mAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // here must be set, because the ActionBar.
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.record);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        setContentView(R.layout.record_layout);
 
-        mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.record_pager);
-        mViewPager.setAdapter(mAdapter);
+        TextView ipView = (TextView) findViewById(R.id.textView_ip);
+
+        String rtspUrl = ProjectApplication.instance.getRtspUrl();
+        if (rtspUrl != null)
+            ipView.setText(rtspUrl);
+        else
+            Toast.makeText(this, getResources().getString(R.string.checkYourInternet), Toast.LENGTH_SHORT).show();
+
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surface_record);
+        SurfaceHolder holder = surfaceView.getHolder();
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        CameraWorker cameraWorker = CameraWorker.getInstance();
+        cameraWorker.setPreviewDisplay(holder);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.onBackPressed();
-            return true;
-        }
-        else
-           return super.onOptionsItemSelected(item);
+    public void onResume() {
+        super.onResume();
+        bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    class SectionPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int i) {
-            switch (i) {
-                case 0:
-                    RecordPage1 fragment = new RecordPage1();
-                    return fragment;
-                case 1:
-                    RecordPage2 fragment1 = new RecordPage2();
-                    return fragment1;
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        public RecordPage1 getRecordPage1() {
-            return (RecordPage1) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.record_pager+":0");
-        }
-
-        public RecordPage2 getRecordPage2() {
-
-            return (RecordPage2) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.record_pager+":1");
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0: return getResources().getString(R.string.record_page1_title);
-                case 1: return getResources().getString(R.string.record_page2_title);
-            }
-            return null;
-        }
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        mRtspServer.stop();
+        unbindService(mRtspServiceConnection);
     }
+
+    private RtspServer mRtspServer;
+    private ServiceConnection mRtspServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            mRtspServer = (RtspServer) ((RtspServer.LocalBinder)service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mRtspServer = null;
+        }
+    };
 }

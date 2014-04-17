@@ -1,28 +1,29 @@
 package org.bitman.project.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.*;
 import android.os.Process;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.ToggleButton;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import org.apache.http.Header;
-import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
-import org.bitman.project.http.AsyncInetClient;
 
-public class WelcomeActivity extends Activity {
+public class WelcomeActivity extends FragmentActivity {
 
     private static final String TAG = "WelcomeActivity";
 
-    private static WelcomeActivity instance;
+    private ViewPager viewPager;
+    private SectionPagerAdapter mAdapter;
 
     private ToggleButton openHttpButton;
     private Button record_direct;
@@ -30,62 +31,115 @@ public class WelcomeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.welcome_layout);
-//        setContentView(R.layout.record_page1);
 
+//        Intent intent = new Intent(this, RecordActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivityForResult(intent, 0);
 
-        openHttpButton = (ToggleButton) findViewById(R.id.open_http);
-        openHttpButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                if (value) {
-                    AsyncInetClient.getInstance().sendMessage(AsyncInetClient.Type.Online, new AsyncInetClient.SendData().setIMEI(ProjectApplication.instance.IMEI), checkOnLineHandler);
-                }
-            }
-        });
-
-        record_direct = (Button) findViewById(R.id.button_record_direct);
-        record_direct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(instance, RecordActivity.class);
-                startActivityForResult(intent, 0);
-            }
-        });
-        instance = this;
+        mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager)findViewById(R.id.welcome_pager);
+        viewPager.setAdapter(mAdapter);
+//        viewPager.setSaveEnabled(false);
 	}
 
-    private AsyncHttpResponseHandler checkOnLineHandler = new AsyncHttpResponseHandler() {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-            Toast.makeText(WelcomeActivity.this, getResources().getString(R.string.checkOnlineOK), Toast.LENGTH_SHORT).show();
+    class SectionPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            Toast.makeText(WelcomeActivity.this, getResources().getString(R.string.checkOnlineFailure)+". the reason is "+statusCode, Toast.LENGTH_SHORT).show();
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    return new WelcomePage1();
+                case 1:
+                    return new WelcomePage2();
+                default:
+                    return null;
+            }
         }
-    };
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case Menu.FIRST+1:
-                Intent intent = new Intent(WelcomeActivity.this, SettingsActivity.class);
-                startActivityForResult(intent, 0);
-                return true;
-            case Menu.FIRST+2:
-                instance.onBackPressed();
-                return true;
-            default:
-                return false;
+        @Override
+        public int getCount() {
+            return 2;
         }
+
+//        public WelcomePage1 getWelcomePage1() {
+//            return (WelcomePage1) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.welcome_pager+":0");
+//        }
+//
+//        public WelcomePage2 getWelcomePage2() {
+//
+//            return (WelcomePage2) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.welcome_pager+":1");
+//        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0: return getResources().getString(R.string.welcome_page1_title);
+                case 1: return getResources().getString(R.string.welcome_page2_title);
+                default:
+                    return null;
+            }
+        }
+
     }
+
+
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case Menu.FIRST+1:
+//                Intent intent = new Intent(WelcomeActivity.this, SettingsActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivityForResult(intent, 0);
+//                return true;
+//            case Menu.FIRST+2:
+//                this.onBackPressed();
+//                return true;
+//            default:
+//                return false;
+//        }
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        menu.add(Menu.NONE, Menu.FIRST+1, 1, "settings");
+//        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "quit");
+//        return true;
+//    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, Menu.FIRST+1, 1, "settings");
-        menu.add(Menu.NONE, Menu.FIRST + 2, 2, "quit");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        MenuItemCompat.setShowAsAction(menu.findItem(R.id.quit), 1);
+        MenuItemCompat.setShowAsAction(menu.findItem(R.id.options), 1);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+
+        switch (item.getItemId()) {
+            case R.id.options:
+                // Starts QualityListActivity where user can change the streaming quality
+                intent = new Intent(this.getBaseContext(), SettingsActivity.class);
+//                startActivityFromFragment(mAdapter.getWelcomePage1(), intent, 0);
+                startActivity(intent);
+                return true;
+            case R.id.quit:
+                this.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     @Override
     protected void onDestroy() {

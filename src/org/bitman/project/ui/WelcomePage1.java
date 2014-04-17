@@ -2,6 +2,7 @@ package org.bitman.project.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,9 +27,9 @@ import java.util.ArrayList;
  * Proudly to use Intellij IDEA.
  * Created by ay27 on 14-4-14.
  */
-public class RecordPage1 extends Fragment {
+public class WelcomePage1 extends Fragment {
 
-    private static final String TAG = "RecordPage1";
+    private static final String TAG = "WelcomePage1";
 
     private static final String RecordOK = "Record_OK";
 
@@ -49,22 +50,22 @@ public class RecordPage1 extends Fragment {
         InputMethodManager imm =
                 (InputMethodManager)getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
 
-        View root = inflater.inflate(R.layout.record_page1, null);
+        View root = inflater.inflate(R.layout.welcome_page1, null);
 
-        addressEdit = (EditText)root.findViewById(R.id.record_page1_addressEdit);
+        addressEdit = (EditText)root.findViewById(R.id.welcome_page1_addressEdit);
         // hide the input window
         imm.hideSoftInputFromWindow(addressEdit.getWindowToken(), 0);
 
-        timeEdit = (EditText)root.findViewById(R.id.record_page1_timeEdit);
+        timeEdit = (EditText)root.findViewById(R.id.welcome_page1_timeEdit);
         imm.hideSoftInputFromWindow(timeEdit.getWindowToken(), 0);
 
         addressEdit.setOnKeyListener(keyListener);
         timeEdit.setOnKeyListener(keyListener);
 
-        myHint = (TextView)root.findViewById(R.id.record_page1_hint);
+        myHint = (TextView)root.findViewById(R.id.welcome_page1_hint);
 
-        searchButton = (Button)root.findViewById(R.id.record_page1_search);
-        startButton = (Button)root.findViewById(R.id.record_page1_start);
+        searchButton = (Button)root.findViewById(R.id.welcome_page1_search);
+        startButton = (Button)root.findViewById(R.id.welcome_page1_start);
         startButton.setOnClickListener(clickListener);
         searchButton.setOnClickListener(clickListener);
 
@@ -103,8 +104,11 @@ public class RecordPage1 extends Fragment {
         @Override
         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
             String str = new String(responseBody);
+            makeToast("receive from server: "+str);
             if (str.equals(RecordOK)) {
                 makeToast(getResources().getString(R.string.startRecord));
+                Intent intent = new Intent(getActivity(), RecordActivity.class);
+                startActivity(intent);
             }
         }
 
@@ -127,18 +131,8 @@ public class RecordPage1 extends Fragment {
                 return;
             }
 
-            DialogInterface.OnClickListener chooseCityListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int position) {
-                    selectedCity = position;
-                    cityChoice = true;
-                    myHint.setTextColor(Color.BLUE);
-                    myHint.setText(getResources().getString(R.string.choosedCity)+" "+cityListName.get(position));
-                }
-            };
+            showChooseCityDialog();
 
-            AlertDialog.Builder chooseCityDialog = new AlertDialog.Builder(getActivity());
-            chooseCityDialog.setSingleChoiceItems(cityListName.toArray(new String[cityListName.size()]), 0, chooseCityListener).show();
         }
 
         @Override
@@ -146,6 +140,21 @@ public class RecordPage1 extends Fragment {
             makeToast(getResources().getString(R.string.fatalError)+" "+error.toString());
         }
     };
+
+    private void showChooseCityDialog() {
+        DialogInterface.OnClickListener chooseCityListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                selectedCity = position;
+                cityChoice = true;
+                myHint.setTextColor(Color.BLUE);
+                myHint.setText(getResources().getString(R.string.choosedCity)+" "+cityListName.get(position));
+            }
+        };
+
+        AlertDialog.Builder chooseCityDialog = new AlertDialog.Builder(getActivity());
+        chooseCityDialog.setSingleChoiceItems(cityListName.toArray(new String[cityListName.size()]), 0, chooseCityListener).show();
+    }
 
     private View.OnKeyListener keyListener = new View.OnKeyListener() {
         @Override

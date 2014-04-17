@@ -9,9 +9,12 @@ import org.bitman.project.R;
 import org.bitman.project.http.GetIP;
 import org.bitman.project.record.VideoQuality;
 
+
+@SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity {
 
     private static final String TAG = "SettingsActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
