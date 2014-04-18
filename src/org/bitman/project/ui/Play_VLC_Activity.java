@@ -14,8 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import org.bitman.project.R;
+import org.bitman.project.networkmiscellaneous.RTSP_Client;
 import vlc.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -97,12 +103,35 @@ public class Play_VLC_Activity extends Activity implements
         return time;
     }
 
+
+    private RTSP_Client client;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.play_vlc_layout);
         setupView();
+
+
+        // TODO: test it
+        String pathUri=this.getIntent().getStringExtra("play_address");
+        RandomAccessFile rfile = null;
+        File file = new File(getCacheDir(), "sdpfile");
+        try {
+            rfile = new RandomAccessFile(file, "wr");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            client = new RTSP_Client(pathUri, rfile);
+            client.Play();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         if(Util.isICSOrLater())
             getWindow()
@@ -128,8 +157,7 @@ public class Play_VLC_Activity extends Activity implements
         try {
             mLibVLC = LibVLC.getInstance();
             if (mLibVLC != null) {
-                String pathUri=this.getIntent().getStringExtra("play_address");
-                mLibVLC.readMedia(pathUri, false);
+                mLibVLC.readMedia(file.getAbsolutePath(), false);
                 handler.sendEmptyMessageDelayed(0, 1000);
             }
         } catch (LibVlcException e) {
@@ -289,7 +317,7 @@ public class Play_VLC_Activity extends Activity implements
         mLibVLC.detachSurface();
     }
 
-@Override
+    @Override
     protected void onDestroy() {
         if (mLibVLC != null) {
             mLibVLC.stop();
@@ -297,6 +325,13 @@ public class Play_VLC_Activity extends Activity implements
 
         EventManager em = EventManager.getInstance();
         em.removeHandler(eventHandler);
+
+        // TODO: test it
+        try {
+            client.Teardown();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         super.onDestroy();
 

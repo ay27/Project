@@ -42,22 +42,19 @@ public class WelcomePage2 extends Fragment {
 
     private Button playButton;
 
-    private MyTimePicker timePickerDialog;
+//    private MyTimePicker timePickerDialog;
 
     private TextView myHint;
 
     private AsyncInetClient httpClient = AsyncInetClient.getInstance();
 
     private static class Status {
-        public static final long selectedNothingL = -1;
-        public static final int selectedNothingI = -1;
         public static int selectedCity_index = -1;
         public static long selectedMode_id = -1;
         public static int selectedDevice_index = -1;
         public static int selectedFile_index = -1;
-        public static String selectedTime_str = null;
-        public static boolean selectedCam = false;
-        public static boolean selectedPhone = false;
+//        public static String selectedTime_str = null;
+        public static String rtspUrl = null;
     }
 
     private ArrayList<Integer> cityId;
@@ -127,23 +124,25 @@ public class WelcomePage2 extends Fragment {
             modeGroup.setOnCheckedChangeListener(modeChangeListener);
             chooseModeLayout.setVisibility(View.VISIBLE);
         }
-        else if (view.getId() == chooseModeLayout.getId()) {
+        else if (view.getId() == modeGroup.getId()) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), chooseDeviceSpinner.getId(), deviceList);
             chooseDeviceSpinner.setAdapter(adapter);
+            chooseDeviceSpinner.setOnItemSelectedListener(chooseDeviceListener);
             chooseDeviceLayout.setVisibility(View.VISIBLE);
         }
         else if (view.getId() == chooseDeviceLayout.getId()) {
             if (Status.selectedMode_id == modeChooseOld.getId()) {
-                if (Status.selectedPhone) {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), chooseFileSpinner.getId(), fileList);
-                    chooseFileSpinner.setAdapter(adapter);
-                    chooseFileLayout.setVisibility(View.VISIBLE);
-                }
-                else if (Status.selectedCam) {
-                    timePickerDialog = new MyTimePicker(getActivity());
-                    timePickerDialog.setCallbackListener(pickTimeCallback);
-                    timePickerDialog.show();
-                }
+//                if (Status.selectedPhone) {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), chooseFileSpinner.getId(), fileList);
+                chooseFileSpinner.setAdapter(adapter);
+                chooseFileSpinner.setOnItemSelectedListener(chooseFileListener);
+                chooseFileLayout.setVisibility(View.VISIBLE);
+//                }
+//                else if (Status.selectedCam) {
+//                    timePickerDialog = new MyTimePicker(getActivity());
+//                    timePickerDialog.setCallbackListener(pickTimeCallback);
+//                    timePickerDialog.show();
+//                }
             } else if (Status.selectedMode_id == modeChooseNow.getId()) {
                 playButton.setOnClickListener(buttonClickListener);
                 playButton.setVisibility(View.VISIBLE);
@@ -153,14 +152,14 @@ public class WelcomePage2 extends Fragment {
             playButton.setVisibility(View.VISIBLE);
     }
 
-    private MyTimePicker.CallbackListener pickTimeCallback = new MyTimePicker.CallbackListener() {
-        @Override
-        public void onSelectTimeFinish(String time) {
-            Status.selectedTime_str = time;
-            playButton.setOnClickListener(buttonClickListener);
-            playButton.setVisibility(View.VISIBLE);
-        }
-    };
+//    private MyTimePicker.CallbackListener pickTimeCallback = new MyTimePicker.CallbackListener() {
+//        @Override
+//        public void onSelectTimeFinish(String time) {
+//            Status.selectedTime_str = time;
+//            playButton.setOnClickListener(buttonClickListener);
+//            playButton.setVisibility(View.VISIBLE);
+//        }
+//    };
 
 
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
@@ -180,32 +179,15 @@ public class WelcomePage2 extends Fragment {
                 httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == playButton.getId()) {
-                if (Status.selectedFile_index != Status.selectedNothingI) {
-                    httpClient.playFile(fileList.get(Status.selectedFile_index), playFileResponseListener);
+                if (Status.rtspUrl != null) {
+                    Intent intent = new Intent(getActivity(), Play_VLC_Activity.class);
+                    intent.putExtra("rtsp_address", Status.rtspUrl);
+                    startActivity(intent);
                 }
             }
         }
     };
 
-
-    private AsyncHttpResponseHandler playFileResponseListener = new AsyncHttpResponseHandler() {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-            String str = new String(responseBody);
-            if (str.startsWith("rtsp://")) {
-                Intent intent = new Intent(getActivity(), Play_VLC_Activity.class);
-                intent.putExtra("play_address", str);
-                startActivity(intent);
-            }
-            else
-                makeToast("receive: "+str);
-        }
-
-        @Override
-        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            makeToast(error.toString());
-        }
-    };
 
     private AsyncHttpResponseHandler searchCityResponseHandler = new AsyncHttpResponseHandler() {
         @Override
@@ -220,6 +202,7 @@ public class WelcomePage2 extends Fragment {
                 return;
             }
 
+            // TODO: test it, maybe it's a fault.
             handleUIVisibility(getView());
         }
 
@@ -240,7 +223,72 @@ public class WelcomePage2 extends Fragment {
                 return;
             }
 
+            // TODO: test it
             handleUIVisibility(getView());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+    private AdapterView.OnItemSelectedListener chooseDeviceListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, final int position, long id) {
+
+            AsyncHttpResponseHandler listFileResponseHandler = new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    String str = new String(responseBody);
+                    try {
+                        JSONParser.parseFileList(str, fileList);
+                    } catch (JSONException e) {
+                        makeToast("receive error in list file: "+str);
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    if (position>=0 && position<deviceList.size())
+                        Status.selectedDevice_index = position;
+                    else {
+                        makeToast("fatal error in selected device");
+                        return;
+                    }
+
+                    handleUIVisibility(getView());
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    makeToast(getResources().getString(R.string.fatalError) + " " + error.toString());
+                }
+            };
+
+            AsyncHttpResponseHandler playFileResponseListener = new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    String str = new String(responseBody);
+                    if (str.startsWith(AsyncInetClient.StartOfRtsp)) {
+                        Status.rtspUrl = str;
+                        handleUIVisibility(getView());
+                    }
+                    else
+                        makeToast("receive: "+str);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    makeToast(error.toString());
+                }
+            };
+
+            if (Status.selectedMode_id == modeChooseOld.getId()) {
+                httpClient.listFile(deviceList.get(Status.selectedDevice_index), listFileResponseHandler);
+            }
+            else if (Status.selectedMode_id == modeChooseNow.getId()) {
+                httpClient.playNow(deviceList.get(Status.selectedDevice_index), playFileResponseListener);
+            }
         }
 
         @Override
@@ -251,10 +299,73 @@ public class WelcomePage2 extends Fragment {
 
     private RadioGroup.OnCheckedChangeListener modeChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
-        public void onCheckedChanged(RadioGroup radioGroup, int checkId) {
+        public void onCheckedChanged(final RadioGroup radioGroup, int checkId) {
             makeToast("choose "+checkId);
-            Status.selectedMode_id = radioGroup.getCheckedRadioButtonId();
-            handleUIVisibility(getView());
+
+            AsyncHttpResponseHandler listDeviceResponseHandler = new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    String str = new String(responseBody);
+                    try {
+                        JSONParser.parseCamList(str, deviceList);
+                    } catch (JSONException e) {
+                        makeToast("receive error in list device: "+str);
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    Status.selectedMode_id = radioGroup.getCheckedRadioButtonId();
+                    handleUIVisibility(getView());
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    makeToast(getResources().getString(R.string.fatalError) + " " + error.toString());
+                }
+            };
+
+            if (radioGroup.getCheckedRadioButtonId() == modeChooseOld.getId()) {
+                httpClient.listPast(cityId.get(Status.selectedCity_index), listDeviceResponseHandler);
+            }
+            else if (radioGroup.getCheckedRadioButtonId() == modeChooseNow.getId()) {
+                httpClient.listNow(cityId.get(Status.selectedCity_index), listDeviceResponseHandler);
+            }
+        }
+    };
+
+    private AdapterView.OnItemSelectedListener chooseFileListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, final int position, long id) {
+
+            AsyncHttpResponseHandler playFileResponseHandler = new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    String str = new String(responseBody);
+                    if (str.startsWith(AsyncInetClient.StartOfRtsp)) {
+                        Status.rtspUrl = str;
+                        handleUIVisibility(getView());
+                    }
+                    else {
+                        makeToast("receive in play file: "+str);
+                        return;
+                    }
+
+                    Status.selectedFile_index = position;
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    makeToast(getResources().getString(R.string.fatalError) + " " + error.toString());
+                }
+            };
+
+            httpClient.playFile(deviceList.get(Status.selectedDevice_index), fileList.get(Status.selectedFile_index), playFileResponseHandler);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
         }
     };
 

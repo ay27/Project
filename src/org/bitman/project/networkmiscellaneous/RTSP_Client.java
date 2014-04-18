@@ -204,8 +204,8 @@ public class RTSP_Client {
 
         //sdpSegment is sdpfile
         try {
-			//sdpFile.write(sdpSegment.getBytes());
-			//sdpFile.close();
+			sdpFile.write(sdpSegment.getBytes());
+			sdpFile.close();
         	Log.i("sdp", sdpSegment);
 		} catch (Exception e) {
 			e.printStackTrace();

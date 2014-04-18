@@ -16,6 +16,7 @@ import java.lang.reflect.Modifier;
 public class AsyncInetClient {
 
     private static final String TAG = "AsyncInetClient";
+    public static final String StartOfRtsp = "rtsp://";
     private AsyncHttpClient client;
     private String url;
     private static AsyncInetClient instance = null;
@@ -48,8 +49,8 @@ public class AsyncInetClient {
             return this;
         }
 
-        public SendData setCityID(String cityID) {
-            CityID = cityID;
+        public SendData setCityID(int cityID) {
+            this.CityID = Integer.toString(cityID);
             return this;
         }
 
@@ -77,7 +78,6 @@ public class AsyncInetClient {
             for (int i = 0; i < fields.length; i++) {
                 String varName = fields[i].getName();
                 try {
-
                     String var = (String)fields[i].get(this);
                     int accessible = fields[i].getModifiers();
 
@@ -146,27 +146,27 @@ public class AsyncInetClient {
         sendMessage(Type.SearchCity, new SendData().setKeyword(keyword), httpResponseHandler);
     }
 
-    public void listPast(final String cityId, final ResponseHandlerInterface responseHandler) {
+    public void listPast(final int cityId, final ResponseHandlerInterface responseHandler) {
         sendMessage(Type.ListPast, new SendData().setCityID(cityId), responseHandler);
     }
 
-    public void listNow(final String cityId, final AsyncHttpResponseHandler httpResponseHandler) {
+    public void listNow(final int cityId, final AsyncHttpResponseHandler httpResponseHandler) {
         sendMessage(Type.ListNow, new SendData().setCityID(cityId), httpResponseHandler);
     }
 
-    public void listFile(final String cityId, final String deviceId, AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.ListFile, new SendData().setCityID(cityId).setDeviceId(deviceId), httpResponseHandler);
+    public void listFile(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.ListFile, new SendData().setDeviceId(deviceId), httpResponseHandler);
     }
 
-    public void playFile(final String filePath, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.PlayFile, new SendData().setFilePath(filePath), httpResponseHandler);
+    public void playFile(final String deviceId, final String filePath, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.PlayFile, new SendData().setDeviceId(deviceId).setFilePath(filePath), httpResponseHandler);
     }
 
     public void playNow(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
         sendMessage(Type.PlayNow, new SendData().setDeviceId(deviceId), httpResponseHandler);
     }
 
-    public void record(final String cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {
+    public void record(final int cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {
         sendMessage(Type.Record, new SendData().setCityID(cityId).setRtspUrl(RtspUrl), httpResponseHandler);
     }
 

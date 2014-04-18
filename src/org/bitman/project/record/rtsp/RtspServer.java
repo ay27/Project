@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import org.bitman.project.networkmiscellaneous.UPnPControlPoint;
+import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
 import org.bitman.project.record.Session;
 
 import java.io.BufferedReader;
@@ -423,6 +425,10 @@ public class RtspServer extends Service {
                 src = mSession.getServer_port();
                 destination = mSession.getDestination();
 
+                // TODO : test it
+                map_ports(src[0], p1);  // rtp port
+                map_ports(src[1], p2);  // rtcp port
+
                 Log.i(TAG, "ports: "+p1+" "+p2);
 //                mSession.getTrack().setDestinationPorts(p1, p2);
                 mSession.setClient_port(new int[]{p1, p2});
@@ -491,6 +497,16 @@ public class RtspServer extends Service {
 
         }
 
+    }
+
+    // TODO : test it
+    private void map_ports(int internalPort, int externalPort) {
+        Log.i(TAG, "map port: "+internalPort+" --"+externalPort);
+        UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+        boolean ok = false;
+        for (int i = 0; !ok; i++) {
+            ok = portMapper.AddPortMapping(internalPort, externalPort+i, 2, UPnPControlPoint.Protocol.UDP);
+        }
     }
 
     static class Request {

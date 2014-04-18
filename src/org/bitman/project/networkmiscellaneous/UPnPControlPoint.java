@@ -49,7 +49,7 @@ public abstract class UPnPControlPoint {
         Uninit, InitOk, DiscovereOK, ResloveDeviceOk, HighReady, Busy
     };
 
-    enum Protocol {
+    public enum Protocol {
 
         TCP, UDP
     };

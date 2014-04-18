@@ -164,7 +164,7 @@ public class UPnP_PortMapper {
         return descEIP.argsValueArray[0];
     }
 
-    static class UPnP_PM_Supplier {
+    public static class UPnP_PM_Supplier {
 
         private static UPnP_PortMapper instance = null;
 

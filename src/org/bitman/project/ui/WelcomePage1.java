@@ -117,7 +117,7 @@ public class WelcomePage1 extends Fragment {
             }
             else if (view.getId() == startButton.getId()) {
                 if (cityChoice) {
-                    httpClient.record(Integer.toString(cityListId.get(selectedCity)), ProjectApplication.instance.getRtspUrl(), recordResponseHandler);
+                    httpClient.record(cityListId.get(selectedCity), ProjectApplication.instance.getRtspUrl(), recordResponseHandler);
                 }
                 else {
                     makeToast(getResources().getString(R.string.youMustChooseACity));
