@@ -20,7 +20,7 @@ public class SOAPDescriptor {
     public String[] argsNameArray;
     public String[] argsValueArray;
     public String[] argsRelStaVarArray;
-    public UPnPControlPoint.Direction[] argsDirectionArray;
+    public Direction[] argsDirectionArray;
 
     public SOAPDescriptor(UPnPActionNode action) {
         Iterator<UPnPArgsNode> argsIterator = action.listArguments.iterator();
@@ -35,7 +35,7 @@ public class SOAPDescriptor {
         argsNameArray = new String[argsSum];
         argsValueArray = new String[argsSum];
         argsRelStaVarArray = new String[argsSum];
-        argsDirectionArray = new UPnPControlPoint.Direction[argsSum];
+        argsDirectionArray = new Direction[argsSum];
         while (argsIterator.hasNext()) {
             argsNode = argsIterator.next();
             argsNameArray[i] = argsNode.nameArg;

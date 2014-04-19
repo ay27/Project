@@ -11,6 +11,8 @@ import java.util.ArrayList;
  */
 public class JSONParser {
 
+    private JSONParser() { }
+
     public static void parseCity(final String data, final ArrayList<Integer> cityId, final ArrayList<String> cityName) throws JSONException {
         try {
             JSONArray array = new JSONArray(data);

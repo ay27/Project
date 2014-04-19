@@ -8,6 +8,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.http.GetIP;
+import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
 import org.bitman.project.record.VideoQuality;
 import org.bitman.project.record.rtsp.RtspServer;
 
@@ -47,6 +48,13 @@ public class ProjectApplication extends Application {
         sharedPreferences.registerOnSharedPreferenceChangeListener(changeListener);
 
         readPreference();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+            }
+        }).start();
     }
 
     public String getRtspUrl() {

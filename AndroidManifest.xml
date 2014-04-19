@@ -45,12 +45,8 @@
                   android:label="record"
 				>
         </activity>
-        <activity android:name="org.bitman.project.ui.PlayActivity"
-                  android:label="play">
-        </activity>
-        <activity android:name="org.bitman.project.ui.Play_VLC_Activity"
-                  android:label="vlc">
-        </activity>
+
+		<activity android:name=".ui.VideoPlayerActivity" />
 
 	    <service android:name = "org.bitman.project.record.rtsp.RtspServer" />
     </application>

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.Context;
 import android.net.LocalSocket;
 import android.util.Log;
 
@@ -200,12 +201,12 @@ public class RTSP_Client {
             sdpSegment = sdpSegment.substring(0, currentTrack.sdpOffset + 8) + currentTrack.localPort[0] + "/2" + sdpSegment.substring(currentTrack.sdpOffset + 9);
             lastChangeOffset = (currentTrack.localPort[0] + "").length() + 1;
         } 
-        
+
 
         //sdpSegment is sdpfile
         try {
-			sdpFile.write(sdpSegment.getBytes());
-			sdpFile.close();
+			//sdpFile.write(sdpSegment.getBytes());
+			//sdpFile.close();
         	Log.i("sdp", sdpSegment);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -288,7 +289,6 @@ public class RTSP_Client {
      * <br/>
      * Item 1 -- Offset
      *
-     * @param tagName - Tag's name
      * @param startOffset - Start Offset
      * @return [0] - type,[1] - offset
      */
@@ -322,12 +322,12 @@ public class RTSP_Client {
                 } while (streamRecvPort[0] + 1 != streamRecvPort[1]);
                 isMapSuccess = true;
                 if (isNeedPortMap) {
-                    isMapSuccess = isMapSuccess && portMapper.AddPortMapping(streamRecvPort[0], streamRecvPort[0], 3600, UPnPControlPoint.Protocol.UDP);
-                    isMapSuccess = isMapSuccess && portMapper.AddPortMapping(streamRecvPort[1], streamRecvPort[1], 3600, UPnPControlPoint.Protocol.UDP);
+                    isMapSuccess = isMapSuccess && portMapper.AddPortMapping(streamRecvPort[0], streamRecvPort[0], 3600, UPnP_PortMapper.Protocol.UDP);
+                    isMapSuccess = isMapSuccess && portMapper.AddPortMapping(streamRecvPort[1], streamRecvPort[1], 3600, UPnP_PortMapper.Protocol.UDP);
                 }
                 if (!isMapSuccess) {
-                    portMapper.DeletePortMapping(streamRecvPort[1], UPnPControlPoint.Protocol.UDP);
-                    portMapper.DeletePortMapping(streamRecvPort[1], UPnPControlPoint.Protocol.UDP);
+                    portMapper.DeletePortMapping(streamRecvPort[1], UPnP_PortMapper.Protocol.UDP);
+                    portMapper.DeletePortMapping(streamRecvPort[1], UPnP_PortMapper.Protocol.UDP);
                 }
             } while (!isMapSuccess);
             currentTrack.localPort = streamRecvPort;

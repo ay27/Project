@@ -21,10 +21,13 @@ public class UPnPArgsNode {
     /**
      * Arguments transport direction,In:Action->PC;Out:PC->Action.
      */
-    UPnPControlPoint.Direction direction;
+    Direction direction;
     /**
      * related state variable.
      */
     public String relatedStateVariable;
 }
 //class AUPnPstateVariable{}                                //Reserved for extention
+
+
+

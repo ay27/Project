@@ -38,19 +38,14 @@ public abstract class UPnPControlPoint {
     public abstract boolean SOAPCall(SOAPDescriptor descriptor) throws IOException;
 
     public abstract boolean EventSubscribe(GENADescriptor descriptor);
-
-    enum Direction {
-
-        in, out
-    };
-
-    enum Status {
-
-        Uninit, InitOk, DiscovereOK, ResloveDeviceOk, HighReady, Busy
-    };
-
-    public enum Protocol {
-
-        TCP, UDP
-    };
 }
+
+enum Status {
+
+    Uninit, InitOk, DiscovereOK, ResloveDeviceOk, HighReady, Busy
+};
+
+enum Direction {
+
+    in, out
+};

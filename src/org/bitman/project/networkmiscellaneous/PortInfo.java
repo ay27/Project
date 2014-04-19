@@ -15,10 +15,10 @@ public class PortInfo {
     public String localClient = "";
     public int intPort = 0;
     public int leaseDurationSeconds = 3600;
-    public UPnPControlPoint.Protocol protocol = UPnPControlPoint.Protocol.TCP;
+    public UPnP_PortMapper.Protocol protocol = UPnP_PortMapper.Protocol.TCP;
     public String description = "Default";
 
-    public PortInfo(String remoteHost, int extPort, UPnPControlPoint.Protocol protocol, int intPort, String localClient, String description, int leaseDurationSeconds) {
+    public PortInfo(String remoteHost, int extPort, UPnP_PortMapper.Protocol protocol, int intPort, String localClient, String description, int leaseDurationSeconds) {
         this.remoteHost = remoteHost;
         this.extPort = extPort;
         this.protocol = protocol;

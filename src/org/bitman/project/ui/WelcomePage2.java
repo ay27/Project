@@ -3,8 +3,9 @@ package org.bitman.project.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -166,23 +167,29 @@ public class WelcomePage2 extends Fragment {
         @Override
         public void onClick(View view) {
             if (view.getId() == searchButton.getId()) {
-                Editable value = addressEdit.getText();
-                if (value == null) {
-                    makeToast(getResources().getString(R.string.fatalError));
-                    return;
-                }
-                String str  = value.toString();
-                if (str == null || str.equals("")) {
-                    makeToast(getResources().getString(R.string.youMustInputSomething));
-                    return;
-                }
-                httpClient.searchCity(str, searchCityResponseHandler);
+
+                Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+                intent.putExtra("play_address", "rtsp://192.168.1.102:8554/");
+                startActivity(intent);
+
+//                Editable value = addressEdit.getText();
+//                if (value == null) {
+//                    makeToast(getResources().getString(R.string.fatalError));
+//                    return;
+//                }
+//                String str  = value.toString();
+//                if (str == null || str.equals("")) {
+//                    makeToast(getResources().getString(R.string.youMustInputSomething));
+//                    return;
+//                }
+//                httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == playButton.getId()) {
                 if (Status.rtspUrl != null) {
-                    Intent intent = new Intent(getActivity(), Play_VLC_Activity.class);
-                    intent.putExtra("rtsp_address", Status.rtspUrl);
-                    startActivity(intent);
+                    // TODO...
+//                    Intent intent = new Intent(getActivity(), Play_VLC_Activity.class);
+//                    intent.putExtra("rtsp_address", Status.rtspUrl);
+//                    startActivity(intent);
                 }
             }
         }
@@ -242,7 +249,7 @@ public class WelcomePage2 extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     String str = new String(responseBody);
                     try {
-                        JSONParser.parseFileList(str, fileList);
+                        org.bitman.project.ui.JSONParser.parseFileList(str, fileList);
                     } catch (JSONException e) {
                         makeToast("receive error in list file: "+str);
                         e.printStackTrace();
@@ -307,7 +314,7 @@ public class WelcomePage2 extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     String str = new String(responseBody);
                     try {
-                        JSONParser.parseCamList(str, deviceList);
+                        org.bitman.project.ui.JSONParser.parseCamList(str, deviceList);
                     } catch (JSONException e) {
                         makeToast("receive error in list device: "+str);
                         e.printStackTrace();

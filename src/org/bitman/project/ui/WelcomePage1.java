@@ -103,17 +103,21 @@ public class WelcomePage1 extends Fragment {
         public void onClick(View view) {
             if (view.getId() == searchButton.getId()) {
 
-                Editable value = addressEdit.getText();
-                if (value == null) {
-                    makeToast(getResources().getString(R.string.fatalError));
-                    return;
-                }
-                String str  = value.toString();
-                if (str == null || str.equals("")) {
-                    makeToast(getResources().getString(R.string.youMustInputSomething));
-                    return;
-                }
-                httpClient.searchCity(str, searchCityResponseHandler);
+                // TODO: test it
+                Intent intent = new Intent(getActivity(), RecordActivity.class);
+                startActivity(intent);
+//
+//                Editable value = addressEdit.getText();
+//                if (value == null) {
+//                    makeToast(getResources().getString(R.string.fatalError));
+//                    return;networkmiscellaneous
+//                }
+//                String str  = value.toString();
+//                if (str == null || str.equals("")) {
+//                    makeToast(getResources().getString(R.string.youMustInputSomething));
+//                    return;
+//                }
+//                httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == startButton.getId()) {
                 if (cityChoice) {

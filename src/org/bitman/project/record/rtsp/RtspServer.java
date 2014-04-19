@@ -2,10 +2,10 @@ package org.bitman.project.record.rtsp;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import org.bitman.project.networkmiscellaneous.UPnPControlPoint;
 import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
 import org.bitman.project.record.Session;
 
@@ -235,6 +235,10 @@ public class RtspServer extends Service {
         }
 
         public void run() {
+            // TODO:....
+            UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+            portMapper.AddPortMapping(8554, 8554, 3600, UPnP_PortMapper.Protocol.TCP);
+
             Log.i(TAG,"RTSP server listening on port "+mServer.getLocalPort());
             int cc = 0;
             while (!Thread.interrupted()) {
@@ -254,6 +258,15 @@ public class RtspServer extends Service {
 
         public void kill() {
             try {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+                        portMapper.DeleteExistedPortMapping();
+                    }
+                }).start();
+
                 mServer.close();
             } catch (IOException e) {}
             try {
@@ -505,7 +518,9 @@ public class RtspServer extends Service {
         UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
         boolean ok = false;
         for (int i = 0; !ok; i++) {
-            ok = portMapper.AddPortMapping(internalPort, externalPort+i, 2, UPnPControlPoint.Protocol.UDP);
+            ok = portMapper.AddPortMapping(internalPort, externalPort+i, 3600, UPnP_PortMapper.Protocol.UDP);
+            if (ok)
+                Log.i(TAG, "port map succeed in : "+internalPort+" -- "+externalPort+i);
         }
     }
 

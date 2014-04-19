@@ -5,12 +5,10 @@
 package org.bitman.project.networkmiscellaneous;
 
 import java.io.IOException;
-//import java.net.Inet4Address;
-//import java.net.InetAddress;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
-//import java.net.NetworkInterface;
-//import java.net.StandardProtocolFamily;
-//import java.net.SocketOptions;
+import java.net.NetworkInterface;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -23,7 +21,7 @@ import java.util.Vector;
 
 /**
  *
- * @author ���
+ * @author 骜
  */
 public class Module_UDPMul {
 
@@ -43,6 +41,7 @@ public class Module_UDPMul {
         addressDst = new InetSocketAddress(ipDst, portDst);
         addressLocal = new InetSocketAddress(0);
         selector = Selector.open();
+        channelUDP = DatagramChannel.open();
         channelUDP.socket().bind(addressLocal);      //bind to local:randomPORT
         channelUDP.configureBlocking(false);
         channelUDP.register(selector, SelectionKey.OP_READ);

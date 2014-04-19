@@ -16,16 +16,20 @@ public class OrgBitmanNetworkmiscellaneous {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, IllegalStateException, InterruptedException {
-
+        System.out.println("ok");
+        UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+        System.out.println("ok");
         UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+        System.out.println("ok");
         System.out.println("Extern IP:" + portMapper.GetExternalIPAddress());
         /*        for (int port = 30000;port < 30100;++port){
          portMapper.AddPortMapping(port, port, 3600, UPnPControlPoint.Protocol.TCP);
          portMapper.AddPortMapping(port, port, 3600, UPnPControlPoint.Protocol.UDP);
          }*/
-        portMapper.AddPortMapping(30000, 30000, 3600, UPnPControlPoint.Protocol.TCP);
+        portMapper.AddPortMapping(30000, 30000, 3600, UPnP_PortMapper.Protocol.TCP);
+        Thread.sleep(10000);
         UPnP_PortMapper.UPnP_PM_Supplier.ReleaseAllPort();
-        portMapper.AddPortMapping(30001, 30001, 3600, UPnPControlPoint.Protocol.UDP);
+        portMapper.AddPortMapping(30001, 30001, 3600, UPnP_PortMapper.Protocol.UDP);
         portMapper.DeleteExistedPortMapping();
 //        portMapper.AddPortMapping(8086, 8086, 3600, UPnPControlPoint.Protocol.TCP);
 //        portMapper.AddPortMapping(11117, 11117, 3600, Protocol.TCP);

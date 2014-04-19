@@ -23,6 +23,11 @@ public class UPnP_PortMapper {
     private SOAPDescriptor descDPM;
     private SOAPDescriptor descEIP;
 
+    public enum Protocol {
+
+        TCP, UDP
+    };
+
     private UPnP_PortMapper() throws IOException, IllegalStateException, InterruptedException {
         try {
             controlPoint = new Bitman_IGD_ControlPoint();
@@ -30,7 +35,7 @@ public class UPnP_PortMapper {
             controlPoint.DiscoverDevice();
             controlPoint.ResloveDevice();
             controlPoint.ResloveService();
-            if (controlPoint.getStatus() != UPnPControlPoint.Status.HighReady) {
+            if (controlPoint.getStatus() != Status.HighReady) {
                 throw new IllegalStateException("Illegal State.");
             }
             mappedList = new LinkedList<PortInfo>();
@@ -53,7 +58,7 @@ public class UPnP_PortMapper {
         }
     }
 
-    public synchronized boolean AddPortMapping(int internalPort, int externalPort, int leaseDurationSeconds, UPnPControlPoint.Protocol protocol) {
+    public synchronized boolean AddPortMapping(int internalPort, int externalPort, int leaseDurationSeconds, Protocol protocol) {
         //add to mapped list fist****
 
         descAPM.argsValueArray[0] = Utilities.getURL_IpAddress(descAPM.action.belongToService.belongToDevice.baseURL);
@@ -71,20 +76,20 @@ public class UPnP_PortMapper {
             if (controlPoint.SOAPCall(descAPM)) {
                 mappedList.add(new PortInfo(descAPM.argsValueArray[0], externalPort, protocol, internalPort, descAPM.argsValueArray[4], descAPM.argsValueArray[6], leaseDurationSeconds));
                 System.out.println("Request apply:" + descAPM.argsValueArray[0] + ":" + externalPort + "->" + descAPM.argsValueArray[4] + ":" + internalPort + " Protocol-" + protocol + "  Mapped,Description:" + descAPM.argsValueArray[6]);
-                DebugFileIO.println("Request apply:" + descAPM.argsValueArray[0] + ":" + externalPort + "->" + descAPM.argsValueArray[4] + ":" + internalPort + " Protocol-" + protocol + "  Mapped,Description:" + descAPM.argsValueArray[6]);
+//                DebugFileIO.println("Request apply:" + descAPM.argsValueArray[0] + ":" + externalPort + "->" + descAPM.argsValueArray[4] + ":" + internalPort + " Protocol-" + protocol + "  Mapped,Description:" + descAPM.argsValueArray[6]);
             } else {
-                DebugFileIO.println("Map port request fail,reason:UPnP Device refused");
+//                DebugFileIO.println("Map port request fail,reason:UPnP Device refused");
                 System.out.println("Map port Request fail,reason:UPnP Device refused");
                 return false;
             }
         } catch (IOException ex) {
             System.out.println("Map port request fail,reason:network");//debug
-            DebugFileIO.println("Map port request fail,reason:network");
+//            DebugFileIO.println("Map port request fail,reason:network");
             ex.printStackTrace();
             return false;
         } catch (IllegalStateException ex) {
             System.out.println("Map port request fail,reason:class ControlPoint internal error");//debug
-            DebugFileIO.println("Map port request fail,reason:class ControlPoint internal error");
+//            DebugFileIO.println("Map port request fail,reason:class ControlPoint internal error");
             ex.printStackTrace();
             return false;
         }
@@ -92,7 +97,7 @@ public class UPnP_PortMapper {
         return true;
     }
 
-    public synchronized boolean DeletePortMapping(int externalPort, UPnPControlPoint.Protocol protocol) {
+    public synchronized boolean DeletePortMapping(int externalPort, Protocol protocol) {
         Iterator<PortInfo> portIterator = mappedList.iterator();
         PortInfo port = null;
         while (portIterator.hasNext()) {
@@ -104,16 +109,16 @@ public class UPnP_PortMapper {
                 try {
                     if (controlPoint.SOAPCall(descDPM)) {
                         System.out.println("Request apply:" + port.remoteHost + ":" + port.extPort + "->" + port.localClient + ":" + port.intPort + " Protocol-" + port.protocol + "  Deleted,Description:" + port.description);
-                        DebugFileIO.println("Request apply:" + port.remoteHost + ":" + port.extPort + "->" + port.localClient + ":" + port.intPort + " Protocol-" + port.protocol + "  Deleted,Description:" + port.description);
+//                        DebugFileIO.println("Request apply:" + port.remoteHost + ":" + port.extPort + "->" + port.localClient + ":" + port.intPort + " Protocol-" + port.protocol + "  Deleted,Description:" + port.description);
                         portIterator.remove();
                     } else {
-                        DebugFileIO.println("Delete port request fail,reason:UPnP Device refused");
+//                        DebugFileIO.println("Delete port request fail,reason:UPnP Device refused");
                         System.out.println("Delete port request fail,reason:UPnP Device refused");
                         return false;
                     }
                 } catch (IOException ex) {
                     System.out.println("Delete port request fail,reason:network");//debug
-                    DebugFileIO.println("Delete port request fail,reason:network");
+//                    DebugFileIO.println("Delete port request fail,reason:network");
                     ex.printStackTrace();
                     return false;
                 }
@@ -121,6 +126,10 @@ public class UPnP_PortMapper {
             }
         }
         return true;
+    }
+
+    public synchronized LinkedList<PortInfo> GetExistedPortMapping() {
+        return new LinkedList<PortInfo>(mappedList);
     }
 
     public synchronized int DeleteExistedPortMapping() {
@@ -135,14 +144,14 @@ public class UPnP_PortMapper {
             try {
                 if (controlPoint.SOAPCall(descDPM)) {
                     System.out.println("Request apply:" + port.remoteHost + ":" + port.extPort + "->" + port.localClient + ":" + port.intPort + " Protocol-" + port.protocol + "  Deleted,Description:" + port.description);
-                    DebugFileIO.println("Request apply:" + port.remoteHost + ":" + port.extPort + "->" + port.localClient + ":" + port.intPort + " Protocol-" + port.protocol + "  Deleted,Description:" + port.description);
+//                    DebugFileIO.println("Request apply:" + port.remoteHost + ":" + port.extPort + "->" + port.localClient + ":" + port.intPort + " Protocol-" + port.protocol + "  Deleted,Description:" + port.description);
                     portIterator.remove();
                 } else {
                     ++failSum;
                 }
             } catch (IOException ex) {
                 System.out.println("request fail,reason:network");//debug
-                DebugFileIO.println("request fail,reason:network");
+//                DebugFileIO.println("request fail,reason:network");
                 ex.printStackTrace();
                 return -1;
             }
@@ -157,7 +166,7 @@ public class UPnP_PortMapper {
             }
         } catch (IOException ex) {
             System.out.println("request fail,reason:network");//debug
-            DebugFileIO.println("request fail,reason:network");
+//            DebugFileIO.println("request fail,reason:network");
             ex.printStackTrace();
             return null;
         }
@@ -172,7 +181,7 @@ public class UPnP_PortMapper {
             instance = null;
         }
 
-        public static UPnP_PortMapper getInstance() throws IllegalStateException {
+        synchronized public static UPnP_PortMapper getInstance() throws IllegalStateException {
             if (instance == null) {
                 try {
                     instance = new UPnP_PortMapper();
@@ -184,8 +193,8 @@ public class UPnP_PortMapper {
             }
             return instance;
         }
-        
-        public static int ReleaseAllPort(){
+
+        synchronized public static int ReleaseAllPort() {
             return instance.DeleteExistedPortMapping();
         }
     }

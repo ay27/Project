@@ -11,6 +11,7 @@ import android.view.*;
 import android.widget.*;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
+import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtsp.RtspServer;
 
@@ -39,6 +40,14 @@ public class RecordActivity extends FragmentActivity {
 
         CameraWorker cameraWorker = CameraWorker.getInstance();
         cameraWorker.setPreviewDisplay(holder);
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+//                portMapper.AddPortMapping(8554, 8554, 3600, UPnP_PortMapper.Protocol.TCP);
+//            }
+//        }).start();
     }
 
     @Override
@@ -52,6 +61,18 @@ public class RecordActivity extends FragmentActivity {
         super.onPause();
         mRtspServer.stop();
         unbindService(mRtspServiceConnection);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+//                portMapper.DeleteExistedPortMapping();
+//            }
+//        }).start();
     }
 
     private RtspServer mRtspServer;
