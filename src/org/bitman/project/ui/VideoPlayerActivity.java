@@ -21,9 +21,12 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import org.bitman.project.R;
+import org.bitman.project.networkmiscellaneous.RTSP_Client;
 import org.videolan.vlc.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -57,6 +60,9 @@ public class VideoPlayerActivity extends Activity implements
 
 	//private String[] mAudioTracks;
 
+    private File file;
+    private RTSP_Client client;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -88,15 +94,37 @@ public class VideoPlayerActivity extends Activity implements
 		try {
 			mLibVLC = LibVLC.getInstance();
 			if (mLibVLC != null) {
-                String path = getIntent().getStringExtra("play_address");
-				mLibVLC.readMedia(path, false);
-				handler.sendEmptyMessageDelayed(0, 1000);
+                final String path = getIntent().getStringExtra("play_address");
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        file = new File(getCacheDir(), "sdpfile.sdp");
+                        try {
+                            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+                            client = new RTSP_Client(path, randomAccessFile);
+                            client.Play();
+                            playHandler.sendEmptyMessage(1);
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
 			}
 		} catch (LibVlcException e) {
 			e.printStackTrace();
 		}
 
 	}
+
+    private Handler playHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            mLibVLC.readMedia(file.getAbsolutePath());
+            handler.sendEmptyMessageDelayed(0, 1000);
+        }
+    };
 
 	@Override
 	public void onClick(View v) {
@@ -451,7 +479,13 @@ public class VideoPlayerActivity extends Activity implements
 		EventManager em = EventManager.getInstance();
 		em.removeHandler(eventHandler);
 
-		super.onDestroy();
+        try {
+            client.Teardown();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        super.onDestroy();
 	};
 
 	/**

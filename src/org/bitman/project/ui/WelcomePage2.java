@@ -168,8 +168,8 @@ public class WelcomePage2 extends Fragment {
         public void onClick(View view) {
             if (view.getId() == searchButton.getId()) {
 
-                Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
-                intent.putExtra("play_address", "rtsp://192.168.1.102:8554/");
+                Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                intent.putExtra("play_address", "rtsp://192.168.0.103:8554/");
                 startActivity(intent);
 
 //                Editable value = addressEdit.getText();

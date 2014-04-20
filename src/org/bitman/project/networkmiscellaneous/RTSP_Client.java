@@ -4,29 +4,19 @@
  */
 package org.bitman.project.networkmiscellaneous;
 
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
+import android.util.Log;
+
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import android.content.Context;
-import android.net.LocalSocket;
-import android.util.Log;
 
 /**
  *
@@ -205,8 +195,8 @@ public class RTSP_Client {
 
         //sdpSegment is sdpfile
         try {
-			//sdpFile.write(sdpSegment.getBytes());
-			//sdpFile.close();
+			sdpFile.write(sdpSegment.getBytes());
+			sdpFile.close();
         	Log.i("sdp", sdpSegment);
 		} catch (Exception e) {
 			e.printStackTrace();
