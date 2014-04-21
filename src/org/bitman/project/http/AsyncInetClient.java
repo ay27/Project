@@ -1,8 +1,10 @@
 package org.bitman.project.http;
 
-import android.media.AsyncPlayer;
 import android.util.Log;
-import com.loopj.android.http.*;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.ResponseHandlerInterface;
 import org.apache.http.Header;
 import org.bitman.project.ProjectApplication;
 
@@ -21,13 +23,15 @@ public class AsyncInetClient {
     private String url;
     private static AsyncInetClient instance = null;
 
-    public static final String RecordOK = "Record_OK";
+    public static final String RecordOK = "record_OK";
+    public static final String CloseOK = "close_OK";
+    public static final String OnlineOK = "online_OK";
 
     /**
      * The Message-Type. The user's message must be based on in.
      */
     public static enum Type {
-        SearchCity, ListPast, ListNow, ListFile, PlayFile, PlayNow, Record, Close, Online
+        SearchCity, ListPast, ListNow, ListFile, PlayFile, PlayNow, Record, Close, Online, Add, Password, Login
     }
 
     public static class SendData {
@@ -39,9 +43,15 @@ public class AsyncInetClient {
         private String FilePath;
         private String RtspUrl;
         private String DeviceId;
+        private String UserName;
+        private String Passwd;
+        private String OldPasswd;
+        private String NewPasswd;
 
         public SendData() {
             IMEI = ProjectApplication.IMEI;
+            UserName = ProjectApplication.UserName;
+            Passwd = ProjectApplication.Password;
         }
 
         public SendData setDeviceId(String deviceId) {
@@ -69,6 +79,26 @@ public class AsyncInetClient {
             return this;
         }
 
+        public SendData setUserName(String userName) {
+            UserName = userName;
+            return this;
+        }
+
+        public SendData setPasswd(String passwd) {
+            Passwd = passwd;
+            return this;
+        }
+
+        public SendData setOldPasswd(String oldPasswd) {
+            OldPasswd = oldPasswd;
+            return this;
+        }
+
+        public SendData setNewPasswd(String newPasswd) {
+            NewPasswd = newPasswd;
+            return this;
+        }
+
         public RequestParams getParams() {
 
             // Use the java reflection.
@@ -87,17 +117,6 @@ public class AsyncInetClient {
                     Log.e(TAG, e.toString());
                 }
             }
-
-//            if (IMEI != null && !IMEI.equals(""))
-//                params.add("IMEI", IMEI);
-//            if (CityID!=null && !CityID.equals(""))
-//                params.add("CityID", CityID);
-//            if (Keyword!=null && !Keyword.equals(""))
-//                params.add("Keyword", Keyword);
-//            if (FilePath!=null && !FilePath.equals(""))
-//                params.add("FilePath", FilePath);
-//            if (RtspUrl!=null && !RtspUrl.equals(""))
-//                params.add("RtspUrl", RtspUrl);
 
             return params;
         }
@@ -176,6 +195,37 @@ public class AsyncInetClient {
 
     public void online(final AsyncHttpResponseHandler httpResponseHandler) {
         sendMessage(Type.Online, new SendData(), httpResponseHandler);
+    }
+
+    /**
+     * Remember that set the ProjectApplication's UserName & Password if the receive is OK.
+     * @param userName
+     * @param passwd
+     * @param httpResponseHandler
+     */
+    public void addUser(final String userName, final String passwd, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Add, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
+    }
+
+    /**
+     * Remember that set the ProjectApplication's UserName & Password if the receive is OK.
+     * @param userName
+     * @param oldPasswd
+     * @param newPasswd
+     * @param httpResponseHandler
+     */
+    public void rePasswd(final String userName, final String oldPasswd, final String newPasswd, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Password, new SendData().setUserName(userName).setOldPasswd(oldPasswd).setNewPasswd(newPasswd), httpResponseHandler);
+    }
+
+    /**
+     * Remember that set the ProjectApplication's UserName & Password if the receive is OK.
+     * @param userName
+     * @param passwd
+     * @param httpResponseHandler
+     */
+    public void login(final String userName, final String passwd, final AsyncHttpResponseHandler httpResponseHandler) {
+        sendMessage(Type.Login, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
     }
 
     public void sendMessage(final Type type,

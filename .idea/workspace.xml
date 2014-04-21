@@ -15,20 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a8dd9b02-2a89-4df3-9488-7f22d5454bd0" name="Default" comment="Edit http/WorkThread.java&#10;Before move to intellij idea.&#10;&#10;# Please enter the commit message for your changes. Lines starting&#10;# with '#' will be ignored, and an empty message aborts the commit.&#10;# On branch master&#10;# Changes to be committed:&#10;#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)&#10;#&#10;#&#9;modified:   .classpath&#10;#&#9;modified:   .project&#10;#&#9;modified:   .settings/org.eclipse.jdt.core.prefs&#10;#&#9;modified:   AndroidManifest.xml&#10;#&#9;modified:   bin/AndroidManifest.xml&#10;#&#9;modified:   bin/Project.apk&#10;#&#9;modified:   bin/classes.dex&#10;#&#9;modified:   bin/classes/org/bitman/project/http/GetIP.class&#10;#&#9;new file:   bin/classes/org/bitman/project/http/GetIP_Test.class&#10;#&#9;modified:   bin/classes/org/bitman/project/http/HttpServer.class&#10;#&#9;new file:   bin/classes/org/bitman/project/http/HttpServer_Test.class&#10;#&#9;modified:   bin/classes/org/bitman/project/http/WorkThread.class&#10;#&#9;modified:   bin/classes/org/bitman/project/http/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/camera/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/rtp/readme.txt&#10;#&#9;modified:   bin/classes/org/bitman/project/record/rtsp/readme.txt&#10;#&#9;new file:   bin/dexedLibs/android-support-v4-d66afdfe0fc4bac78930a6ba15123399.jar&#10;#&#9;new file:   bin/jarlist.cache&#10;#&#9;modified:   bin/resources.ap_&#10;#&#9;new file:   hs_err_pid366.log&#10;#&#9;new file:   hs_err_pid368.log&#10;#&#9;modified:   project.properties&#10;#&#9;modified:   res/layout/play_layout.xml&#10;#&#9;modified:   res/layout/play_vlc_layout.xml&#10;#&#9;modified:   res/layout/record_layout.xml&#10;#&#9;modified:   res/layout/welcome_layout.xml&#10;#&#9;modified:   res/menu/welcome.xml&#10;#&#9;modified:   res/values/strings.xml&#10;#&#9;modified:   res/values/styles.xml&#10;#&#9;modified:   res/xml/preferences.xml&#10;#&#9;modified:   src/org/bitman/project/http/GetIP.java&#10;#&#9;new file:   src/org/bitman/project/http/GetIP_Test.java&#10;#&#9;modified:   src/org/bitman/project/http/HttpServer.java&#10;#&#9;new file:   src/org/bitman/project/http/HttpServer_Test.java&#10;#&#9;modified:   src/org/bitman/project/http/SendOnline.java&#10;#&#9;modified:   src/org/bitman/project/http/WorkThread.java&#10;#&#9;modified:   src/org/bitman/project/http/readme.txt&#10;#&#9;modified:   src/org/bitman/project/preference_manager/PreferenceManager.java&#10;#&#9;modified:   src/org/bitman/project/record/Session.java&#10;#&#9;modified:   src/org/bitman/project/record/VideoQuality.java&#10;#&#9;modified:   src/org/bitman/project/record/camera/CameraWorker.java&#10;#&#9;modified:   src/org/bitman/project/record/camera/readme.txt&#10;#&#9;modified:   src/org/bitman/project/record/readme.txt&#10;#&#9;modified:   src/org/bitman/project/record/rtp/RTCP_SenderReport.java&#10;#&#9;modified:   src/org/bitman/project/record/rtp/RTP_Socket.java&#10;#&#9;modified:   src/org/bitman/project/record/rtp/Sender.java&#10;#&#9;modified:   src/org/bitman/project/record/rtp/readme.txt&#10;#&#9;modified:   src/org/bitman/project/record/rtsp/RTSP_Server.java&#10;#&#9;modified:   src/org/bitman/project/record/rtsp/readme.txt&#10;#&#9;modified:   src/org/bitman/project/ui/OptionActivity.java&#10;#&#9;modified:   src/org/bitman/project/ui/PlayActivity.java&#10;#&#9;modified:   src/org/bitman/project/ui/Play_VLC_Activity.java&#10;#&#9;modified:   src/org/bitman/project/ui/RecordActivity.java&#10;#&#9;modified:   src/org/bitman/project/ui/WelcomeActivity.java&#10;#&#10;">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/res/layout/play_layout.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/res/layout/play_vlc_layout.xml" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/org/bitman/project/http/GetIP.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/http/IP_Utilities.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Link.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Link.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Session.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Session.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/PlayerActivity.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/PlayerActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/record/Session.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/record/Session.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage1.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage1.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/player.xml" afterPath="$PROJECT_DIR$/res/layout/player.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/xml/preferences.xml" afterPath="$PROJECT_DIR$/res/xml/preferences.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java" afterPath="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Project.iws" />
@@ -135,36 +126,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="WelcomePage1.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage1.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="95" column="0" selection-start="3498" selection-end="3498" vertical-scroll-proportion="0.0" vertical-offset="2090" max-vertical-offset="4708">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProjectApplication.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="59" column="13" selection-start="1924" selection-end="1924" vertical-scroll-proportion="0.0" vertical-offset="1298" max-vertical-offset="2794">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WelcomePage2.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="180" column="17" selection-start="7813" selection-end="7813" vertical-scroll-proportion="0.7824268" vertical-offset="2838" max-vertical-offset="8140">
-              <folding>
-                <element signature="e#7720#7765#0" expanded="true" />
-                <element signature="e#7945#8001#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Module_TCP_Session.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Session.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -174,10 +135,19 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="ProjectApplication.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="95" column="0" selection-start="3441" selection-end="3441" vertical-scroll-proportion="0.0" vertical-offset="1232" max-vertical-offset="2464">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="PlayerActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/PlayerActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="152" column="0" selection-start="4346" selection-end="4346" vertical-scroll-proportion="0.0" vertical-offset="1968" max-vertical-offset="3102">
+            <state line="148" column="9" selection-start="4272" selection-end="4272" vertical-scroll-proportion="0.0" vertical-offset="2014" max-vertical-offset="3102">
               <folding />
             </state>
           </provider>
@@ -207,7 +177,7 @@
       <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="51" selection-start="2136" selection-end="2136" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1364">
+            <state line="9" column="0" selection-start="282" selection-end="282" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1364">
               <folding />
             </state>
           </provider>
@@ -216,7 +186,18 @@
       <file leaf-file-name="SettingsActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="47" selection-start="1116" selection-end="1116" vertical-scroll-proportion="0.0" vertical-offset="616" max-vertical-offset="2398">
+            <state line="57" column="0" selection-start="2360" selection-end="2360" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1826">
+              <folding>
+                <element signature="e#378#410#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WelcomeActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="8" selection-start="894" selection-end="894" vertical-scroll-proportion="0.4489796" vertical-offset="0" max-vertical-offset="2112">
               <folding />
             </state>
           </provider>
@@ -226,6 +207,15 @@
         <entry file="file://$PROJECT_DIR$/res/xml/preferences.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state line="38" column="0" selection-start="1480" selection-end="1480" vertical-scroll-proportion="0.0" vertical-offset="403" max-vertical-offset="968">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AsyncInetClient.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="0" selection-start="1131" selection-end="1131" vertical-scroll-proportion="0.0" vertical-offset="572" max-vertical-offset="5236">
               <folding />
             </state>
           </provider>
@@ -244,8 +234,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_UDPMul.java" />
-        <option value="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/UPnP_PortMapper.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/PortInfo.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/OrgBitmanNetworkmiscellaneous.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/ui/RecordActivity.java" />
@@ -288,13 +276,15 @@
         <option value="$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Link.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Session.java" />
-        <option value="$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java" />
         <option value="$PROJECT_DIR$/res/xml/preferences.xml" />
-        <option value="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" />
         <option value="$PROJECT_DIR$/res/layout/player.xml" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/ui/PlayerActivity.java" />
         <option value="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java" />
+        <option value="$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java" />
+        <option value="$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java" />
+        <option value="$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java" />
       </list>
     </option>
   </component>
@@ -302,6 +292,8 @@
     <treeState />
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="1440" />
+    <option name="y" value="-180" />
     <option name="width" value="1920" />
     <option name="height" value="1080" />
   </component>
@@ -1233,12 +1225,12 @@
       <workItem from="1397994698534" duration="216000" />
       <workItem from="1397997523665" duration="1330000" />
       <workItem from="1398061602160" duration="4661000" />
-      <workItem from="1398070381889" duration="161000" />
+      <workItem from="1398070381889" duration="3420000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="254252000" />
+    <option name="totallyTimeSpent" value="257511000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1261,7 +1253,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
+    <frame x="1440" y="-180" width="1920" height="1080" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1286,7 +1278,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15601704" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32418698" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32418698" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1349,20 +1341,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="131" column="15" selection-start="3884" selection-end="3884" vertical-scroll-proportion="0.0" vertical-offset="2882" max-vertical-offset="4950">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtp/RTCPSenderReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="0" selection-start="354" selection-end="354" vertical-scroll-proportion="0.0" vertical-offset="352" max-vertical-offset="2992">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/networkmiscellaneous/Module_TCP_Link.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="97" column="17" selection-start="3557" selection-end="3557" vertical-scroll-proportion="0.0" vertical-offset="2134" max-vertical-offset="4092">
@@ -1373,10 +1351,7 @@
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="173" column="0" selection-start="7454" selection-end="7454" vertical-scroll-proportion="0.0" vertical-offset="3806" max-vertical-offset="8558">
-          <folding>
-            <element signature="e#7720#7765#0" expanded="true" />
-            <element signature="e#7945#8001#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1425,10 +1400,7 @@
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="192" column="17" selection-start="8380" selection-end="8380" vertical-scroll-proportion="0.0" vertical-offset="4224" max-vertical-offset="8118">
-          <folding>
-            <element signature="e#7720#7765#0" expanded="true" />
-            <element signature="e#7945#8001#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1563,20 +1535,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/VideoPlayerActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="5" selection-start="4598" selection-end="4598" vertical-scroll-proportion="0.0" vertical-offset="1320" max-vertical-offset="10714">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="131" column="15" selection-start="3884" selection-end="3884" vertical-scroll-proportion="0.0" vertical-offset="2034" max-vertical-offset="4444">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/record/rtsp/RtspServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="515" column="0" selection-start="18944" selection-end="18944" vertical-scroll-proportion="0.0" vertical-offset="10428" max-vertical-offset="13222">
@@ -1612,13 +1570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="47" selection-start="1116" selection-end="1116" vertical-scroll-proportion="0.0" vertical-offset="403" max-vertical-offset="2090">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/res/xml/preferences.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="38" column="0" selection-start="1480" selection-end="1480" vertical-scroll-proportion="0.0" vertical-offset="403" max-vertical-offset="968">
@@ -1640,13 +1591,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="13" selection-start="1924" selection-end="1924" vertical-scroll-proportion="0.0" vertical-offset="689" max-vertical-offset="2420">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/player.xml">
       <provider editor-type-id="android-designer">
         <state />
@@ -1657,27 +1601,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+    <entry file="jar://$PROJECT_DIR$/../../javaLibrary/android-async-http-1.4.4.jar!/com/loopj/android/http/AsyncHttpResponseHandler.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="51" selection-start="2136" selection-end="2136" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1364">
+        <state line="6" column="13" selection-start="165" selection-end="165" vertical-scroll-proportion="0.121145375" vertical-offset="0" max-vertical-offset="2860">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/PlayerActivity.java">
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/http/AsyncInetClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="152" column="0" selection-start="4346" selection-end="4346" vertical-scroll-proportion="0.0" vertical-offset="1968" max-vertical-offset="3102">
+        <state line="35" column="0" selection-start="1131" selection-end="1131" vertical-scroll-proportion="0.0" vertical-offset="572" max-vertical-offset="5236">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="0" selection-start="282" selection-end="282" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1364">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomePage2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="180" column="17" selection-start="7813" selection-end="7813" vertical-scroll-proportion="0.7824268" vertical-offset="2838" max-vertical-offset="8140">
+        <state line="164" column="0" selection-start="7083" selection-end="7083" vertical-scroll-proportion="-0.18410042" vertical-offset="3454" max-vertical-offset="8140">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/VideoPlayerActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="152" column="5" selection-start="4598" selection-end="4598" vertical-scroll-proportion="0.0" vertical-offset="1320" max-vertical-offset="10714">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/PlayerActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="148" column="9" selection-start="4272" selection-end="4272" vertical-scroll-proportion="0.0" vertical-offset="2014" max-vertical-offset="3102">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/SettingsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="0" selection-start="2360" selection-end="2360" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1826">
           <folding>
-            <element signature="e#7720#7765#0" expanded="true" />
-            <element signature="e#7945#8001#0" expanded="true" />
+            <element signature="e#378#410#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ProjectApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="95" column="0" selection-start="3441" selection-end="3441" vertical-scroll-proportion="0.0" vertical-offset="1232" max-vertical-offset="2464">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/bitman/project/ui/WelcomeActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="8" selection-start="894" selection-end="894" vertical-scroll-proportion="0.4489796" vertical-offset="0" max-vertical-offset="2112">
+          <folding />
         </state>
       </provider>
     </entry>

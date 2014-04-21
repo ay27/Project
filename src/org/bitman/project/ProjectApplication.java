@@ -28,7 +28,9 @@ public class ProjectApplication extends Application {
     private SharedPreferences sharedPreferences;
     private VideoQuality videoQuality = VideoQuality.getInstance();
 
-    public static String IMEI;
+    public static String IMEI = null;
+    public static String UserName = null;
+    public static String Password = null;
 
     @Override
     public void onCreate()
@@ -88,6 +90,9 @@ public class ProjectApplication extends Application {
 
         String ip = sharedPreferences.getString("server_address", "127.0.0.1");
         AsyncInetClient.getInstance().setServer(getPath(ip));
+
+        UserName = sharedPreferences.getString("UserName", null);
+        Password = sharedPreferences.getString("Password", null);
 
     }
 

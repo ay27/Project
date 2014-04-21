@@ -1,7 +1,10 @@
 package org.bitman.project.ui;
 
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.util.Log;
 import org.bitman.project.R;
 import org.bitman.project.http.IP_Utilities;
@@ -19,8 +22,6 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
-
-//        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
 
         final ListPreference videoResolution = (ListPreference) findPreference("video_resolution");
         final ListPreference videoBitrate = (ListPreference) findPreference("video_bitrate");
@@ -49,13 +50,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         videoResolution.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-//                SharedPreferences.Editor editor = settings.edit();
-//                Pattern pattern = Pattern.compile("([0-9]+)x([0-9]+)");
-//                Matcher matcher = pattern.matcher((String)newValue);
-//                matcher.find();
-//                editor.putInt("video_resX", Integer.parseInt(matcher.group(1)));
-//                editor.putInt("video_resY", Integer.parseInt(matcher.group(2)));
-//                editor.commit();
+
                 videoResolution.setSummary(newValue+"px");
                 return true;
             }
@@ -98,6 +93,5 @@ public class SettingsActivity extends PreferenceActivity {
         });
 
     }
-
 
 }

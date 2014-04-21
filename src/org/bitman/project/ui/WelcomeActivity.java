@@ -1,7 +1,7 @@
 package org.bitman.project.ui;
 
 import android.content.Intent;
-import android.os.*;
+import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.ToggleButton;
 import org.bitman.project.R;
 
 public class WelcomeActivity extends FragmentActivity {
@@ -27,6 +25,8 @@ public class WelcomeActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.welcome_layout);
+
+        getActionBar().setTitle("user ay27");
 
         SectionPagerAdapter mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.welcome_pager);
