@@ -26,6 +26,9 @@ public class AsyncInetClient {
     public static final String RecordOK = "record_OK";
     public static final String CloseOK = "close_OK";
     public static final String OnlineOK = "online_OK";
+    public static final String LoginOK = "login_OK";
+    public static final String AddUserOK = "add_OK";
+    public static final String UpdateOK = "password_OK";
 
     /**
      * The Message-Type. The user's message must be based on in.
@@ -50,8 +53,8 @@ public class AsyncInetClient {
 
         public SendData() {
             IMEI = ProjectApplication.IMEI;
-            UserName = ProjectApplication.UserName;
-            Passwd = ProjectApplication.Password;
+            UserName = ProjectApplication.getUserName();
+            Passwd = ProjectApplication.getPassword();
         }
 
         public SendData setDeviceId(String deviceId) {

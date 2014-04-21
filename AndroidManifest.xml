@@ -46,7 +46,7 @@
 				>
         </activity>
 
-		<activity android:name=".ui.VideoPlayerActivity" />
+		<activity android:name=".ui.UserActivity" />
 		<activity android:name=".ui.PlayerActivity" />
 
 	    <service android:name = "org.bitman.project.record.rtsp.RtspServer" />

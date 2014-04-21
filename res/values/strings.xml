@@ -160,4 +160,22 @@
 	<string name="time_0" translatable="false">0:00</string>
 	<string name="speed_placeholder" translatable="false">1.00x</string>
 
+
+	<string name="user_page1_title">Login</string>
+	<string name="user_page2_title">Sign Up</string>
+	<string name="user_page3_title">Update</string>
+	<string name="user_page_userName">UserName</string>
+	<string name="user_page_passwd">Password</string>
+	<string name="user_page_confirm">Confirm</string>
+	<string name="user_page_signup">注册</string>
+	<string name="user_page_newPasswd">NewPasswd</string>
+	<string name="user_page_renewPasswd">更新密码</string>
+	<string name="inputYourUserName">请输入你的用户名</string>
+	<string name="inputSuitableUserName">请输入正确格式的用户名</string>
+	<string name="inputYourUserPasswd">请输入用户密码</string>
+	<string name="inputSuitableUserPasswd">请输入正确格式的用户密码</string>
+	<string name="inputYourUserPasswdAgain">请再次输入用户密码</string>
+	<string name="inputSamePasswd">请输入相同的密码</string>
+	<string name="inputNewPasswd">请输入新密码</string>
+
 </resources>

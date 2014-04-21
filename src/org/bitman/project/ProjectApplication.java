@@ -29,8 +29,8 @@ public class ProjectApplication extends Application {
     private VideoQuality videoQuality = VideoQuality.getInstance();
 
     public static String IMEI = null;
-    public static String UserName = null;
-    public static String Password = null;
+    private static String UserName = null;
+    private static String Password = null;
 
     @Override
     public void onCreate()
@@ -123,4 +123,23 @@ public class ProjectApplication extends Application {
             }
         }
     };
+
+    public static String getUserName() {
+        return UserName;
+    }
+
+    public static String getPassword() {
+        return Password;
+    }
+
+    public static void setUser(String userName, String password) {
+        UserName = userName;
+        Password = password;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("UserName", UserName);
+        editor.putString("Password", Password);
+        editor.commit();
+    }
 }

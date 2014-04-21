@@ -14,19 +14,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 
 public class WelcomeActivity extends FragmentActivity {
 
     private static final String TAG = "WelcomeActivity";
 
-    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.welcome_layout);
 
-        getActionBar().setTitle("user ay27");
+        if (ProjectApplication.getUserName()==null || ProjectApplication.getUserName().equals("") || ProjectApplication.getPassword()==null || ProjectApplication.getPassword().equals("")) {
+            Intent intent = new Intent(WelcomeActivity.this, UserActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+        getActionBar().setTitle("user "+ ProjectApplication.getUserName());
 
         SectionPagerAdapter mAdapter = new SectionPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.welcome_pager);
