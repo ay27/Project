@@ -1,9 +1,6 @@
 package org.bitman.project.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -18,7 +15,6 @@ import org.apache.http.Header;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 import org.bitman.project.http.AsyncInetClient;
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -103,21 +99,21 @@ public class WelcomePage1 extends Fragment {
         public void onClick(View view) {
             if (view.getId() == searchButton.getId()) {
 
-                // TODO: test it
-                Intent intent = new Intent(getActivity(), RecordActivity.class);
-                startActivity(intent);
+//                // TODO: test it
+//                Intent intent = new Intent(getActivity(), RecordActivity.class);
+//                startActivity(intent);
 //
-//                Editable value = addressEdit.getText();
-//                if (value == null) {
-//                    makeToast(getResources().getString(R.string.fatalError));
-//                    return;networkmiscellaneous
-//                }
-//                String str  = value.toString();
-//                if (str == null || str.equals("")) {
-//                    makeToast(getResources().getString(R.string.youMustInputSomething));
-//                    return;
-//                }
-//                httpClient.searchCity(str, searchCityResponseHandler);
+                Editable value = addressEdit.getText();
+                if (value == null) {
+                    makeToast(getResources().getString(R.string.fatalError));
+                    return;
+                }
+                String str  = value.toString();
+                if (str == null || str.equals("")) {
+                    makeToast(getResources().getString(R.string.youMustInputSomething));
+                    return;
+                }
+                httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == startButton.getId()) {
                 if (cityChoice) {

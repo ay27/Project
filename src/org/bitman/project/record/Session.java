@@ -3,7 +3,7 @@ package org.bitman.project.record;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import org.bitman.project.ProjectApplication;
-import org.bitman.project.http.GetIP;
+import org.bitman.project.http.IP_Utilities;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtp.AbstractPacketizer;
 import org.bitman.project.record.rtp.H264Packetizer;
@@ -32,7 +32,7 @@ public class Session {
 
 
     public Session() {
-        localAddress = GetIP.getLocalIpAddress(true);
+        localAddress = IP_Utilities.getLocalIpAddress(true);
         long uptime = System.currentTimeMillis();
         TimeStamp = (uptime/1000)<<32 & (((uptime-((uptime/1000)*1000))>>32)/1000);
 

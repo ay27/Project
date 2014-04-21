@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
-import org.bitman.project.http.GetIP;
+import org.bitman.project.http.IP_Utilities;
 import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
 import org.bitman.project.record.VideoQuality;
 import org.bitman.project.record.rtsp.RtspServer;
@@ -52,14 +52,18 @@ public class ProjectApplication extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+                try {
+                    UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
 
     public String getRtspUrl() {
         try {
-            String ip = GetIP.getLocalIpAddress(true).getHostAddress();
+            String ip = IP_Utilities.getLocalIpAddress(true).getHostAddress();
             return "rtsp://"+ip+ ":"+ PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance).getString("rtsp_port", "8554");
         } catch (Exception e) {
             return null;
@@ -67,7 +71,7 @@ public class ProjectApplication extends Application {
     }
 
     private String getPath(String ip) {
-        return "http://"+ip+":8080/Servlet/";
+        return "http://"+ip+":8080/zlw/Servlet/WebPlayer";
     }
 
     private void readPreference() {

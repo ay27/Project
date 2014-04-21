@@ -2,7 +2,6 @@ package org.bitman.project.record.rtsp;
 
 import android.app.Service;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -237,7 +236,10 @@ public class RtspServer extends Service {
         public void run() {
             // TODO:....
             UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
-            portMapper.AddPortMapping(8554, 8554, 3600, UPnP_PortMapper.Protocol.TCP);
+            if (!portMapper.AddPortMapping(mPort, mPort, 3600, UPnP_PortMapper.Protocol.TCP)) {
+                Log.e(TAG, "add port mapping failed in the rtsp port: "+mPort);
+                return;
+            }
 
             Log.i(TAG,"RTSP server listening on port "+mServer.getLocalPort());
             int cc = 0;

@@ -1,12 +1,10 @@
 package org.bitman.project.ui;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import android.util.Log;
-import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
-import org.bitman.project.http.GetIP;
+import org.bitman.project.http.IP_Utilities;
 import org.bitman.project.record.VideoQuality;
 
 
@@ -28,26 +26,26 @@ public class SettingsActivity extends PreferenceActivity {
         final ListPreference videoBitrate = (ListPreference) findPreference("video_bitrate");
         final ListPreference videoFramerate = (ListPreference) findPreference("video_framerate");
         final EditTextPreference rtsp_port = (EditTextPreference) findPreference("rtsp_port");
-        final EditTextPreference server_ip = (EditTextPreference) findPreference("server_ip");
+        final EditTextPreference server_address = (EditTextPreference) findPreference("server_address");
 
         videoResolution.setEnabled(true);
         videoBitrate.setEnabled(true);
         videoFramerate.setEnabled(true);
         rtsp_port.setEnabled(true);
-        server_ip.setEnabled(true);
+        server_address.setEnabled(true);
 
         VideoQuality videoQuality = VideoQuality.getInstance();
         // set the default value
         videoFramerate.setValue(String.valueOf(videoQuality.framerate));
         videoBitrate.setValue(String.valueOf(videoQuality.bitrate));
-        videoResolution.setValue(videoQuality.resX+"x"+videoQuality.resY);
+        videoResolution.setValue(videoQuality.resX + "x" + videoQuality.resY);
 
         // set the summary
         videoResolution.setSummary(videoResolution.getValue()+"px");
         videoFramerate.setSummary(videoFramerate.getValue()+"fps");
         videoBitrate.setSummary(videoBitrate.getValue()+"kbps");
         rtsp_port.setSummary(rtsp_port.getText());
-        server_ip.setSummary(server_ip.getText());
+        server_address.setSummary(server_address.getText());
 
         videoResolution.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -89,12 +87,12 @@ public class SettingsActivity extends PreferenceActivity {
             }
         });
 
-        server_ip.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        server_address.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (!GetIP.isIpAddress((String) newValue))
+                if (!IP_Utilities.isIpAddress((String) newValue))
                     return false;
-                server_ip.setSummary((String)newValue);
+                server_address.setSummary((String) newValue);
                 return true;
             }
         });

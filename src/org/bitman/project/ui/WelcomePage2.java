@@ -3,6 +3,7 @@ package org.bitman.project.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,28 +169,29 @@ public class WelcomePage2 extends Fragment {
         public void onClick(View view) {
             if (view.getId() == searchButton.getId()) {
 
-                Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                intent.putExtra("play_address", "rtsp://192.168.0.103:8554/");
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), PlayerActivity.class);
+////                intent.putExtra("play_address", "rtsp://"+addressEdit.getText().toString()+":8554/");
+//                intent.putExtra("play_address", "rtsp://192.168.1.108:8554/");
+//                startActivity(intent);
 
-//                Editable value = addressEdit.getText();
-//                if (value == null) {
-//                    makeToast(getResources().getString(R.string.fatalError));
-//                    return;
-//                }
-//                String str  = value.toString();
-//                if (str == null || str.equals("")) {
-//                    makeToast(getResources().getString(R.string.youMustInputSomething));
-//                    return;
-//                }
-//                httpClient.searchCity(str, searchCityResponseHandler);
+                Editable value = addressEdit.getText();
+                if (value == null) {
+                    makeToast(getResources().getString(R.string.fatalError));
+                    return;
+                }
+                String str  = value.toString();
+                if (str == null || str.equals("")) {
+                    makeToast(getResources().getString(R.string.youMustInputSomething));
+                    return;
+                }
+                httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == playButton.getId()) {
                 if (Status.rtspUrl != null) {
                     // TODO...
-//                    Intent intent = new Intent(getActivity(), Play_VLC_Activity.class);
-//                    intent.putExtra("rtsp_address", Status.rtspUrl);
-//                    startActivity(intent);
+                    Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                    intent.putExtra("play_address", Status.rtspUrl);
+                    startActivity(intent);
                 }
             }
         }

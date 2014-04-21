@@ -30,7 +30,7 @@ public class Module_TCP_Link {
     private int portDst;
     private InetSocketAddress addressDst;
     private boolean isConnected;
-    private static final int REPLY_TIME_WAIT = 1000;
+    private static final int REPLY_TIME_WAIT = 500;
     private static final int RECV_TIMEOUT = 3000;
 
     public Module_TCP_Link(String TargetAddress, int TargetPort) throws IOException,IllegalStateException {
