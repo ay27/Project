@@ -26,7 +26,9 @@ public class WelcomeActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.welcome_layout);
 
-        if (ProjectApplication.getUserName()==null || ProjectApplication.getUserName().equals("") || ProjectApplication.getPassword()==null || ProjectApplication.getPassword().equals("")) {
+//        ProjectApplication.IMEI = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+
+        if ((ProjectApplication.getUserName()==null) || (ProjectApplication.getUserName().equals("")) || (ProjectApplication.getPassword()==null) || (ProjectApplication.getPassword().equals(""))) {
             Intent intent = new Intent(WelcomeActivity.this, UserActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

@@ -11,9 +11,11 @@ import android.view.*;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import org.bitman.project.R;
+import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.networkmiscellaneous.RTSP_Client;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.UUID;
 
@@ -79,7 +81,7 @@ public class PlayerActivity extends Activity{
                 player.setDisplay(playerHolder);
                 player.setDataSource(file.getAbsolutePath());
                 new Thread(timeUpdate).start();
-                player.prepare();
+                player.prepareAsync();
                 player.start();
             } catch (Exception e)
             {
@@ -159,6 +161,18 @@ public class PlayerActivity extends Activity{
 
     @Override
     protected void onDestroy() {
+
+        AsyncInetClient.getInstance().close(null);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        client.Teardown();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
 
         if (player.isPlaying())
             player.stop();

@@ -17,7 +17,7 @@ public class JSONParser {
         try {
             JSONArray array = new JSONArray(data);
             for (int i = 0; i < array.length(); i++) {
-                JSONArray temp = new JSONArray(array.getJSONArray(i));
+                JSONArray temp = array.getJSONArray(i);
                 cityId.add(temp.getInt(0));
                 cityName.add(temp.getString(1));
             }

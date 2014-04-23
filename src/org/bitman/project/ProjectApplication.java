@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.http.IP_Utilities;
@@ -28,16 +27,14 @@ public class ProjectApplication extends Application {
     private SharedPreferences sharedPreferences;
     private VideoQuality videoQuality = VideoQuality.getInstance();
 
-    public static String IMEI = null;
-    private static String UserName = null;
-    private static String Password = null;
+    public static String IMEI = "TESTTESTTEST";
+    private static String UserName = "admin";
+    private static String Password = "admin";
 
     @Override
     public void onCreate()
     {
         instance = this;
-
-        IMEI = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
 
         Locale.setDefault(Locale.CHINA);
         Configuration config = new Configuration();
@@ -73,7 +70,7 @@ public class ProjectApplication extends Application {
     }
 
     private String getPath(String ip) {
-        return "http://"+ip+":8080/zlw/Servlet/WebPlayer";
+        return "http://"+ip+":8080/zlw/Servlet/Play";
     }
 
     private void readPreference() {
@@ -91,8 +88,8 @@ public class ProjectApplication extends Application {
         String ip = sharedPreferences.getString("server_address", "127.0.0.1");
         AsyncInetClient.getInstance().setServer(getPath(ip));
 
-        UserName = sharedPreferences.getString("UserName", null);
-        Password = sharedPreferences.getString("Password", null);
+//        UserName = sharedPreferences.getString("UserName", null);
+//        Password = sharedPreferences.getString("Password", null);
 
     }
 

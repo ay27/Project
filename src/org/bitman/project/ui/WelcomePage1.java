@@ -47,7 +47,7 @@ public class WelcomePage1 extends Fragment {
 
     // some flags
     private int selectedCity = -1;
-    private boolean cityChoice = false;
+//    private boolean cityChoice = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,9 +86,9 @@ public class WelcomePage1 extends Fragment {
         /* ************************* end of register some listener to the view ************************ */
 
         /* ******************* set the visibility *************************** */
-        chooseCityLayout.setVisibility(View.INVISIBLE);
-        timeLayout.setVisibility(View.INVISIBLE);
-        startButton.setVisibility(View.INVISIBLE);
+//        chooseCityLayout.setVisibility(View.INVISIBLE);
+//        timeLayout.setVisibility(View.INVISIBLE);
+//        startButton.setVisibility(View.INVISIBLE);
         /* ********************* end of set the visibility ***************** */
 
         return root;
@@ -116,7 +116,7 @@ public class WelcomePage1 extends Fragment {
                 httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == startButton.getId()) {
-                if (cityChoice) {
+                if (selectedCity != -1) {
                     httpClient.record(cityListId.get(selectedCity), ProjectApplication.instance.getRtspUrl(), recordResponseHandler);
                 }
                 else {
@@ -158,7 +158,8 @@ public class WelcomePage1 extends Fragment {
                 return;
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.id.welcome_page1_chooseCity_spinner, cityListName);
+            ArrayAdapter<String> adapter;// = new ArrayAdapter<String>(getActivity(), R.id.welcome_page1_chooseCity_spinner, cityListName);
+            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, cityListName);
             chooseCitySpinner.setAdapter(adapter);
             chooseCitySpinner.setOnItemSelectedListener(chooseCitySpinnerListener);
             chooseCitySpinner.setVisibility(View.VISIBLE);

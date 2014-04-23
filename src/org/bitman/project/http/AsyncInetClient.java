@@ -9,7 +9,6 @@ import org.apache.http.Header;
 import org.bitman.project.ProjectApplication;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 /**
  * Proudly to use Intellij IDEA.
@@ -23,12 +22,12 @@ public class AsyncInetClient {
     private String url;
     private static AsyncInetClient instance = null;
 
-    public static final String RecordOK = "record_OK";
-    public static final String CloseOK = "close_OK";
-    public static final String OnlineOK = "online_OK";
-    public static final String LoginOK = "login_OK";
-    public static final String AddUserOK = "add_OK";
-    public static final String UpdateOK = "password_OK";
+    public static final String RecordOK = "Record_OK";
+    public static final String CloseOK = "Close_OK";
+    public static final String OnlineOK = "Online_OK";
+    public static final String LoginOK = "Login_OK";
+    public static final String AddUserOK = "Add_OK";
+    public static final String UpdateOK = "Password_OK";
 
     /**
      * The Message-Type. The user's message must be based on in.
@@ -38,14 +37,14 @@ public class AsyncInetClient {
     }
 
     public static class SendData {
-        private static final String TAG = "SendData";
+//        private static final String TAG = "SendData";
 
         private String IMEI;
         private String CityID;
         private String Keyword;
-        private String FilePath;
+        private String FileName;
         private String RtspUrl;
-        private String DeviceId;
+        private String DeviceID;
         private String UserName;
         private String Passwd;
         private String OldPasswd;
@@ -57,8 +56,8 @@ public class AsyncInetClient {
             Passwd = ProjectApplication.getPassword();
         }
 
-        public SendData setDeviceId(String deviceId) {
-            this.DeviceId = deviceId;
+        public SendData setDeviceID(String deviceID) {
+            this.DeviceID = deviceID;
             return this;
         }
 
@@ -72,8 +71,8 @@ public class AsyncInetClient {
             return this;
         }
 
-        public SendData setFilePath(String filePath) {
-            FilePath = filePath;
+        public SendData setFileName(String fileName) {
+            FileName = fileName;
             return this;
         }
 
@@ -112,9 +111,9 @@ public class AsyncInetClient {
                 String varName = fields[i].getName();
                 try {
                     String var = (String)fields[i].get(this);
-                    int accessible = fields[i].getModifiers();
+//                    int accessible = fields[i].getModifiers();
 
-                    if (Modifier.isPublic(accessible) && var!=null && !var.equals(""))
+                    if (var!=null && !var.equals(""))
                         params.add(varName, var);
                 } catch (IllegalAccessException e) {
                     Log.e(TAG, e.toString());
@@ -177,15 +176,15 @@ public class AsyncInetClient {
     }
 
     public void listFile(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.ListFile, new SendData().setDeviceId(deviceId), httpResponseHandler);
+        sendMessage(Type.ListFile, new SendData().setDeviceID(deviceId), httpResponseHandler);
     }
 
     public void playFile(final String deviceId, final String filePath, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.PlayFile, new SendData().setDeviceId(deviceId).setFilePath(filePath), httpResponseHandler);
+        sendMessage(Type.PlayFile, new SendData().setDeviceID(deviceId).setFileName(filePath), httpResponseHandler);
     }
 
     public void playNow(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.PlayNow, new SendData().setDeviceId(deviceId), httpResponseHandler);
+        sendMessage(Type.PlayNow, new SendData().setDeviceID(deviceId), httpResponseHandler);
     }
 
     public void record(final int cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {

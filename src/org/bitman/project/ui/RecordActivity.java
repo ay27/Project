@@ -7,18 +7,25 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
-import android.view.*;
-import android.widget.*;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.widget.TextView;
+import android.widget.Toast;
 import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
-import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
+import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtsp.RtspServer;
+
+import java.util.concurrent.Semaphore;
 
 
 public class RecordActivity extends FragmentActivity {
 
     private static final String TAG = "RecordActivity";
+
+    private Semaphore onlineSemaphore;
+    private AsyncInetClient httpClient = AsyncInetClient.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +48,28 @@ public class RecordActivity extends FragmentActivity {
         CameraWorker cameraWorker = CameraWorker.getInstance();
         cameraWorker.setPreviewDisplay(holder);
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
-//                portMapper.AddPortMapping(8554, 8554, 3600, UPnP_PortMapper.Protocol.TCP);
-//            }
-//        }).start();
+        onlineSemaphore = new Semaphore(0);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (onlineSemaphore.tryAcquire()) {
+                    httpClient.online(null);
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
+        onlineSemaphore.release();
     }
 
     @Override
@@ -61,6 +77,12 @@ public class RecordActivity extends FragmentActivity {
         super.onPause();
         mRtspServer.stop();
         unbindService(mRtspServiceConnection);
+        try {
+            onlineSemaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        httpClient.close(null);
     }
 
     @Override

@@ -114,28 +114,30 @@ public class WelcomePage2 extends Fragment {
         return root;
     }
 
+    private long nowID = 0;
+
     /* ************************ set the Visibility dynamic & register the Listener dynamic ******************** */
-    private void handleUIVisibility(View view) {
-        if (view.getId() == searchButton.getId()) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), chooseCitySpinner.getId(), cityName);
+    private void handleUIVisibility() {
+        if (nowID == searchButton.getId()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, cityName);
             chooseCitySpinner.setAdapter(adapter);
             chooseCitySpinner.setOnItemSelectedListener(chooseCitySpinnerListener);
             chooseCityLayout.setVisibility(View.VISIBLE);
         }
-        else if (view.getId() == chooseCitySpinner.getId()) {
+        else if (nowID == chooseCitySpinner.getId()) {
             modeGroup.setOnCheckedChangeListener(modeChangeListener);
             chooseModeLayout.setVisibility(View.VISIBLE);
         }
-        else if (view.getId() == modeGroup.getId()) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), chooseDeviceSpinner.getId(), deviceList);
+        else if (nowID == modeGroup.getId()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, deviceList);
             chooseDeviceSpinner.setAdapter(adapter);
             chooseDeviceSpinner.setOnItemSelectedListener(chooseDeviceListener);
             chooseDeviceLayout.setVisibility(View.VISIBLE);
         }
-        else if (view.getId() == chooseDeviceLayout.getId()) {
+        else if (nowID == chooseDeviceLayout.getId()) {
             if (Status.selectedMode_id == modeChooseOld.getId()) {
 //                if (Status.selectedPhone) {
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), chooseFileSpinner.getId(), fileList);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, fileList);
                 chooseFileSpinner.setAdapter(adapter);
                 chooseFileSpinner.setOnItemSelectedListener(chooseFileListener);
                 chooseFileLayout.setVisibility(View.VISIBLE);
@@ -150,8 +152,10 @@ public class WelcomePage2 extends Fragment {
                 playButton.setVisibility(View.VISIBLE);
             }
         }
-        else if (view.getId() == chooseFileLayout.getId())
+        else if (nowID == chooseFileLayout.getId()) {
+            playButton.setOnClickListener(buttonClickListener);
             playButton.setVisibility(View.VISIBLE);
+        }
     }
 
 //    private MyTimePicker.CallbackListener pickTimeCallback = new MyTimePicker.CallbackListener() {
@@ -187,16 +191,58 @@ public class WelcomePage2 extends Fragment {
                 httpClient.searchCity(str, searchCityResponseHandler);
             }
             else if (view.getId() == playButton.getId()) {
-                if (Status.rtspUrl != null) {
-                    // TODO...
-                    Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                    intent.putExtra("play_address", Status.rtspUrl);
-                    startActivity(intent);
-                }
+                if (Status.selectedMode_id == modeChooseOld.getId())
+                    httpClient.playFile(deviceList.get(Status.selectedDevice_index), fileList.get(Status.selectedFile_index), playFileResponseHandler);
+                else
+                    httpClient.playNow(deviceList.get(Status.selectedDevice_index), playNowResponseListener);
             }
         }
     };
 
+    AsyncHttpResponseHandler playFileResponseHandler = new AsyncHttpResponseHandler() {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            String str = new String(responseBody);
+            if (str.startsWith(AsyncInetClient.StartOfRtsp)) {
+                Status.rtspUrl = str;
+
+                Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                intent.putExtra("play_address", Status.rtspUrl);
+                startActivity(intent);
+            }
+            else {
+                makeToast("receive in play file: "+str);
+                return;
+            }
+
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            makeToast(getResources().getString(R.string.fatalError) + " " + error.toString());
+        }
+    };
+
+    AsyncHttpResponseHandler playNowResponseListener = new AsyncHttpResponseHandler() {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            String str = new String(responseBody);
+            if (str.startsWith(AsyncInetClient.StartOfRtsp)) {
+                Status.rtspUrl = str;
+
+                Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                intent.putExtra("play_address", Status.rtspUrl);
+                startActivity(intent);
+            }
+            else
+                makeToast("receive: "+str);
+        }
+
+        @Override
+        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            makeToast(error.toString());
+        }
+    };
 
     private AsyncHttpResponseHandler searchCityResponseHandler = new AsyncHttpResponseHandler() {
         @Override
@@ -212,7 +258,8 @@ public class WelcomePage2 extends Fragment {
             }
 
             // TODO: test it, maybe it's a fault.
-            handleUIVisibility(getView());
+            nowID = searchButton.getId();
+            handleUIVisibility();
         }
 
         @Override
@@ -233,7 +280,8 @@ public class WelcomePage2 extends Fragment {
             }
 
             // TODO: test it
-            handleUIVisibility(getView());
+            nowID = chooseCitySpinner.getId();
+            handleUIVisibility();
         }
 
         @Override
@@ -242,6 +290,7 @@ public class WelcomePage2 extends Fragment {
         }
     };
 
+
     private AdapterView.OnItemSelectedListener chooseDeviceListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, final int position, long id) {
@@ -249,6 +298,7 @@ public class WelcomePage2 extends Fragment {
             AsyncHttpResponseHandler listFileResponseHandler = new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    fileList = new ArrayList<String>();
                     String str = new String(responseBody);
                     try {
                         org.bitman.project.ui.JSONParser.parseFileList(str, fileList);
@@ -265,7 +315,8 @@ public class WelcomePage2 extends Fragment {
                         return;
                     }
 
-                    handleUIVisibility(getView());
+                    nowID = chooseDeviceLayout.getId();
+                    handleUIVisibility();
                 }
 
                 @Override
@@ -274,29 +325,14 @@ public class WelcomePage2 extends Fragment {
                 }
             };
 
-            AsyncHttpResponseHandler playFileResponseListener = new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    String str = new String(responseBody);
-                    if (str.startsWith(AsyncInetClient.StartOfRtsp)) {
-                        Status.rtspUrl = str;
-                        handleUIVisibility(getView());
-                    }
-                    else
-                        makeToast("receive: "+str);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    makeToast(error.toString());
-                }
-            };
+            Status.selectedDevice_index = position;
 
             if (Status.selectedMode_id == modeChooseOld.getId()) {
-                httpClient.listFile(deviceList.get(Status.selectedDevice_index), listFileResponseHandler);
+                httpClient.listFile(deviceList.get(position), listFileResponseHandler);
             }
-            else if (Status.selectedMode_id == modeChooseNow.getId()) {
-                httpClient.playNow(deviceList.get(Status.selectedDevice_index), playFileResponseListener);
+            else {
+                nowID = chooseDeviceLayout.getId();
+                handleUIVisibility();
             }
         }
 
@@ -314,6 +350,7 @@ public class WelcomePage2 extends Fragment {
             AsyncHttpResponseHandler listDeviceResponseHandler = new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    deviceList = new ArrayList<String>();
                     String str = new String(responseBody);
                     try {
                         org.bitman.project.ui.JSONParser.parseCamList(str, deviceList);
@@ -324,7 +361,9 @@ public class WelcomePage2 extends Fragment {
                     }
 
                     Status.selectedMode_id = radioGroup.getCheckedRadioButtonId();
-                    handleUIVisibility(getView());
+
+                    nowID = modeGroup.getId();
+                    handleUIVisibility();
 
                 }
 
@@ -347,29 +386,11 @@ public class WelcomePage2 extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, final int position, long id) {
 
-            AsyncHttpResponseHandler playFileResponseHandler = new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    String str = new String(responseBody);
-                    if (str.startsWith(AsyncInetClient.StartOfRtsp)) {
-                        Status.rtspUrl = str;
-                        handleUIVisibility(getView());
-                    }
-                    else {
-                        makeToast("receive in play file: "+str);
-                        return;
-                    }
+            Status.selectedFile_index = position;
 
-                    Status.selectedFile_index = position;
-                }
+            nowID = chooseFileLayout.getId();
+            handleUIVisibility();
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    makeToast(getResources().getString(R.string.fatalError) + " " + error.toString());
-                }
-            };
-
-            httpClient.playFile(deviceList.get(Status.selectedDevice_index), fileList.get(Status.selectedFile_index), playFileResponseHandler);
         }
 
         @Override
