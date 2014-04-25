@@ -177,5 +177,6 @@
 	<string name="inputYourUserPasswdAgain">请再次输入用户密码</string>
 	<string name="inputSamePasswd">请输入相同的密码</string>
 	<string name="inputNewPasswd">请输入新密码</string>
+	<string name="cannotPlayTheVideo">无法播放该视频！</string>
 
 </resources>

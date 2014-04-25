@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.bitman.project.R;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.networkmiscellaneous.RTSP_Client;
@@ -31,6 +32,8 @@ public class PlayerActivity extends Activity{
     private RTSP_Client client;
 
     private ProgressDialog pd;
+
+    private boolean isPlaying = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,6 @@ public class PlayerActivity extends Activity{
 		super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		setContentView(R.layout.player);
@@ -56,7 +58,7 @@ public class PlayerActivity extends Activity{
 
         final String path = getIntent().getStringExtra("play_address");
 
-        pd = ProgressDialog.show(this, "waitting", "please wait until the video arrive.", true, true);
+        pd = ProgressDialog.show(this, "waitting", "please wait until the video arrive...", true, true);
 
         new Thread(new Runnable() {
             @Override
@@ -72,7 +74,29 @@ public class PlayerActivity extends Activity{
                 }
             }
         }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(20*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                cancelHandler.sendEmptyMessage(1);
+            }
+        }).start();
 	}
+
+    private Handler cancelHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (!isPlaying) {
+                Toast.makeText(PlayerActivity.this, getString(R.string.cannotPlayTheVideo), Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+        }
+    };
 
     private Handler playHandler = new Handler() {
         @Override
@@ -103,6 +127,7 @@ public class PlayerActivity extends Activity{
 				} catch (InterruptedException e) {
 				}
 			}
+            isPlaying = true;
             pd.dismiss();
 			changeSize.sendMessage(new Message());
 			while (true)
@@ -162,7 +187,7 @@ public class PlayerActivity extends Activity{
     @Override
     protected void onDestroy() {
 
-        AsyncInetClient.getInstance().close(null);
+        AsyncInetClient.getInstance().close(AsyncInetClient.Type.PlayFile, null);
             new Thread(new Runnable() {
                 @Override
                 public void run() {

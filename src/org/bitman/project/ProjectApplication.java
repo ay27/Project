@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.http.IP_Utilities;
@@ -28,8 +29,10 @@ public class ProjectApplication extends Application {
     private VideoQuality videoQuality = VideoQuality.getInstance();
 
     public static String IMEI = "TESTTESTTEST";
-    private static String UserName = "admin";
-    private static String Password = "admin";
+    private static String UserName;
+    private static String Password;
+
+    private AsyncInetClient httpClient = AsyncInetClient.getInstance();
 
     @Override
     public void onCreate()
@@ -42,6 +45,7 @@ public class ProjectApplication extends Application {
         getBaseContext().getResources().updateConfiguration(config,
                 getBaseContext().getResources().getDisplayMetrics());
 
+        ProjectApplication.IMEI = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
         sharedPreferences.registerOnSharedPreferenceChangeListener(changeListener);
@@ -69,7 +73,11 @@ public class ProjectApplication extends Application {
         }
     }
 
-    private String getPath(String ip) {
+    private String getRecordPath(String ip) {
+        return "http://"+ip+":8080/zlw/Servlet/Record";
+    }
+
+    private String getPlayPath(String ip) {
         return "http://"+ip+":8080/zlw/Servlet/Play";
     }
 
@@ -86,10 +94,10 @@ public class ProjectApplication extends Application {
         RtspServer.setRtspPort(Integer.parseInt(sharedPreferences.getString("rtsp_port", "8554")));
 
         String ip = sharedPreferences.getString("server_address", "127.0.0.1");
-        AsyncInetClient.getInstance().setServer(getPath(ip));
+        httpClient.setServer(getRecordPath(ip), getPlayPath(ip));
 
-//        UserName = sharedPreferences.getString("UserName", null);
-//        Password = sharedPreferences.getString("Password", null);
+        UserName = sharedPreferences.getString("UserName", null);
+        Password = sharedPreferences.getString("Password", null);
 
     }
 
@@ -116,7 +124,7 @@ public class ProjectApplication extends Application {
             }
             else if (key.equals("server_address")) {
                 String ip = sharedPreferences.getString("server_address", "127.0.0.1");
-                AsyncInetClient.getInstance().setServer(getPath(ip));
+                httpClient.setServer(getRecordPath(ip), getPlayPath(ip));
             }
         }
     };

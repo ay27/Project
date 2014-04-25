@@ -28,7 +28,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="org.bitman.project.ui.WelcomeActivity"
+            android:name=".ui.welcome.WelcomeActivity"
             android:label="@string/app_name"
 			android:launchMode="singleInstance"
 				>
@@ -46,7 +46,7 @@
 				>
         </activity>
 
-		<activity android:name=".ui.UserActivity" />
+		<activity android:name=".ui.user.UserActivity" />
 		<activity android:name=".ui.PlayerActivity" />
 
 	    <service android:name = "org.bitman.project.record.rtsp.RtspServer" />

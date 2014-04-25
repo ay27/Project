@@ -77,15 +77,6 @@
 				/>
 	</LinearLayout>
 
-	<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:text="@string/inputAddressHint"
-			android:textColor="@color/red"
-			android:id="@+id/welcome_page2_hint"
-			android:gravity="center"
-			android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"/>
 	<LinearLayout
 			android:orientation="horizontal"
 			android:layout_width="fill_parent"

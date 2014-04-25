@@ -19,7 +19,7 @@ public class AsyncInetClient {
     private static final String TAG = "AsyncInetClient";
     public static final String StartOfRtsp = "rtsp://";
     private AsyncHttpClient client;
-    private String url;
+    private String recordUrl, playUrl;
     private static AsyncInetClient instance = null;
 
     public static final String RecordOK = "Record_OK";
@@ -149,8 +149,8 @@ public class AsyncInetClient {
         client.setTimeout(timeOut);
     }
 
-    public void setServer(final String url) {
-        this.url = url;
+    public void setServer(final String record, final String play) {
+        recordUrl = record; playUrl = play;
     }
 
     /**
@@ -164,39 +164,42 @@ public class AsyncInetClient {
     }
 
     public void searchCity(final String keyword, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.SearchCity, new SendData().setKeyword(keyword), httpResponseHandler);
+        sendMessage(playUrl, Type.SearchCity, new SendData().setKeyword(keyword), httpResponseHandler);
     }
 
     public void listPast(final int cityId, final ResponseHandlerInterface responseHandler) {
-        sendMessage(Type.ListPast, new SendData().setCityID(cityId), responseHandler);
+        sendMessage(playUrl, Type.ListPast, new SendData().setCityID(cityId), responseHandler);
     }
 
     public void listNow(final int cityId, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.ListNow, new SendData().setCityID(cityId), httpResponseHandler);
+        sendMessage(playUrl, Type.ListNow, new SendData().setCityID(cityId), httpResponseHandler);
     }
 
     public void listFile(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.ListFile, new SendData().setDeviceID(deviceId), httpResponseHandler);
+        sendMessage(playUrl, Type.ListFile, new SendData().setDeviceID(deviceId), httpResponseHandler);
     }
 
     public void playFile(final String deviceId, final String filePath, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.PlayFile, new SendData().setDeviceID(deviceId).setFileName(filePath), httpResponseHandler);
+        sendMessage(playUrl, Type.PlayFile, new SendData().setDeviceID(deviceId).setFileName(filePath), httpResponseHandler);
     }
 
     public void playNow(final String deviceId, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.PlayNow, new SendData().setDeviceID(deviceId), httpResponseHandler);
+        sendMessage(playUrl, Type.PlayNow, new SendData().setDeviceID(deviceId), httpResponseHandler);
     }
 
     public void record(final int cityId, final String RtspUrl, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Record, new SendData().setCityID(cityId).setRtspUrl(RtspUrl), httpResponseHandler);
+        sendMessage(recordUrl, Type.Record, new SendData().setCityID(cityId).setRtspUrl(RtspUrl), httpResponseHandler);
     }
 
-    public void close(final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Close, new SendData(), httpResponseHandler);
+    public void close(final Type fromType, final AsyncHttpResponseHandler httpResponseHandler) {
+        if (fromType == Type.Record)
+            sendMessage(recordUrl, Type.Close, new SendData(), httpResponseHandler);
+        else
+            sendMessage(playUrl, Type.Close, new SendData(), httpResponseHandler);
     }
 
     public void online(final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Online, new SendData(), httpResponseHandler);
+        sendMessage(playUrl, Type.Online, new SendData(), httpResponseHandler);
     }
 
     /**
@@ -206,7 +209,7 @@ public class AsyncInetClient {
      * @param httpResponseHandler
      */
     public void addUser(final String userName, final String passwd, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Add, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
+        sendMessage(playUrl, Type.Add, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
     }
 
     /**
@@ -217,7 +220,7 @@ public class AsyncInetClient {
      * @param httpResponseHandler
      */
     public void rePasswd(final String userName, final String oldPasswd, final String newPasswd, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Password, new SendData().setUserName(userName).setOldPasswd(oldPasswd).setNewPasswd(newPasswd), httpResponseHandler);
+        sendMessage(playUrl, Type.Password, new SendData().setUserName(userName).setOldPasswd(oldPasswd).setNewPasswd(newPasswd), httpResponseHandler);
     }
 
     /**
@@ -227,10 +230,10 @@ public class AsyncInetClient {
      * @param httpResponseHandler
      */
     public void login(final String userName, final String passwd, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(Type.Login, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
+        sendMessage(playUrl, Type.Login, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
     }
 
-    public void sendMessage(final Type type,
+    public void sendMessage(final String url, final Type type,
                             final SendData data,
                             final ResponseHandlerInterface responseHandler) {
 
