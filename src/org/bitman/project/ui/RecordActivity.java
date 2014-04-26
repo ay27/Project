@@ -17,20 +17,21 @@ import org.bitman.project.R;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.record.camera.CameraWorker;
 import org.bitman.project.record.rtsp.RtspServer;
+import org.bitman.project.ui.utilities.OnlineSender;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Semaphore;
 
 
 public class RecordActivity extends FragmentActivity {
 
     private static final String TAG = "RecordActivity";
 
-    private Semaphore onlineSemaphore;
     private AsyncInetClient httpClient = AsyncInetClient.getInstance();
 
     private int time = 0;
+
+    private OnlineSender sender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +57,8 @@ public class RecordActivity extends FragmentActivity {
         CameraWorker cameraWorker = CameraWorker.getInstance();
         cameraWorker.setPreviewDisplay(holder);
 
-        onlineSemaphore = new Semaphore(0);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (onlineSemaphore.tryAcquire()) {
-                    httpClient.online(null);
-                    try {
-                        Thread.sleep(30);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+        sender = new OnlineSender(AsyncInetClient.Type.Record);
     }
 
     private void scheduleTime(final long time)
@@ -98,7 +86,7 @@ public class RecordActivity extends FragmentActivity {
     public void onResume() {
         super.onResume();
         bindService(new Intent(this, RtspServer.class), mRtspServiceConnection, Context.BIND_AUTO_CREATE);
-        onlineSemaphore.release();
+        sender.start();
     }
 
     @Override
@@ -106,11 +94,7 @@ public class RecordActivity extends FragmentActivity {
         super.onPause();
         mRtspServer.stop();
         unbindService(mRtspServiceConnection);
-        try {
-            onlineSemaphore.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sender.stopSending();
         httpClient.close(AsyncInetClient.Type.Record, null);
     }
 

@@ -19,7 +19,7 @@ public class AsyncInetClient {
     private static final String TAG = "AsyncInetClient";
     public static final String StartOfRtsp = "rtsp://";
     private AsyncHttpClient client;
-    private String recordUrl, playUrl;
+    private String recordUrl, playUrl, userUrl;
     private static AsyncInetClient instance = null;
 
     public static final String RecordOK = "Record_OK";
@@ -46,14 +46,14 @@ public class AsyncInetClient {
         private String RtspUrl;
         private String DeviceID;
         private String UserName;
-        private String Passwd;
+        private String Password;
         private String OldPasswd;
         private String NewPasswd;
 
         public SendData() {
             IMEI = ProjectApplication.IMEI;
             UserName = ProjectApplication.getUserName();
-            Passwd = ProjectApplication.getPassword();
+            Password = ProjectApplication.getPassword();
         }
 
         public SendData setDeviceID(String deviceID) {
@@ -86,8 +86,8 @@ public class AsyncInetClient {
             return this;
         }
 
-        public SendData setPasswd(String passwd) {
-            Passwd = passwd;
+        public SendData setPassword(String password) {
+            Password = password;
             return this;
         }
 
@@ -149,8 +149,8 @@ public class AsyncInetClient {
         client.setTimeout(timeOut);
     }
 
-    public void setServer(final String record, final String play) {
-        recordUrl = record; playUrl = play;
+    public void setServer(final String record, final String play, final String user) {
+        recordUrl = record; playUrl = play; userUrl = user;
     }
 
     /**
@@ -198,8 +198,11 @@ public class AsyncInetClient {
             sendMessage(playUrl, Type.Close, new SendData(), httpResponseHandler);
     }
 
-    public void online(final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(playUrl, Type.Online, new SendData(), httpResponseHandler);
+    public void online(final Type fromType, final AsyncHttpResponseHandler httpResponseHandler) {
+        if (fromType == Type.Record)
+            sendMessage(recordUrl, Type.Online, new SendData(), httpResponseHandler);
+        else
+            sendMessage(playUrl, Type.Online, new SendData(), httpResponseHandler);
     }
 
     /**
@@ -209,7 +212,7 @@ public class AsyncInetClient {
      * @param httpResponseHandler
      */
     public void addUser(final String userName, final String passwd, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(playUrl, Type.Add, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
+        sendMessage(userUrl, Type.Add, new SendData().setUserName(userName).setPassword(passwd), httpResponseHandler);
     }
 
     /**
@@ -220,7 +223,7 @@ public class AsyncInetClient {
      * @param httpResponseHandler
      */
     public void rePasswd(final String userName, final String oldPasswd, final String newPasswd, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(playUrl, Type.Password, new SendData().setUserName(userName).setOldPasswd(oldPasswd).setNewPasswd(newPasswd), httpResponseHandler);
+        sendMessage(userUrl, Type.Password, new SendData().setUserName(userName).setOldPasswd(oldPasswd).setNewPasswd(newPasswd), httpResponseHandler);
     }
 
     /**
@@ -230,7 +233,7 @@ public class AsyncInetClient {
      * @param httpResponseHandler
      */
     public void login(final String userName, final String passwd, final AsyncHttpResponseHandler httpResponseHandler) {
-        sendMessage(playUrl, Type.Login, new SendData().setUserName(userName).setPasswd(passwd), httpResponseHandler);
+        sendMessage(userUrl, Type.Login, new SendData().setUserName(userName).setPassword(passwd), httpResponseHandler);
     }
 
     public void sendMessage(final String url, final Type type,

@@ -146,7 +146,7 @@ public class WelcomePage1 extends Fragment {
             chooseCitySpinner.setAdapter(adapter);
             chooseCitySpinner.setOnItemSelectedListener(chooseCitySpinnerListener);
 
-            chooseCitySpinner.setVisibility(View.VISIBLE);
+            chooseCityLayout.setVisibility(View.VISIBLE);
             timeLayout.setVisibility(View.INVISIBLE);
             startButton.setVisibility(View.INVISIBLE);
         }

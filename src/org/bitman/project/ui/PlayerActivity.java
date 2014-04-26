@@ -14,6 +14,7 @@ import android.widget.Toast;
 import org.bitman.project.R;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.networkmiscellaneous.RTSP_Client;
+import org.bitman.project.ui.utilities.OnlineSender;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,8 @@ public class PlayerActivity extends Activity{
     private ProgressDialog pd;
 
     private boolean isPlaying = false;
+
+    private OnlineSender sender;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,21 @@ public class PlayerActivity extends Activity{
                 cancelHandler.sendEmptyMessage(1);
             }
         }).start();
+
+        sender = new OnlineSender(AsyncInetClient.Type.PlayFile);
 	}
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sender.stopSending();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sender.start();
+    }
 
     private Handler cancelHandler = new Handler() {
         @Override
@@ -109,6 +126,7 @@ public class PlayerActivity extends Activity{
                 player.start();
             } catch (Exception e)
             {
+                e.printStackTrace();
                 Log.e(TAG, e.toString());
             }
 
@@ -125,18 +143,19 @@ public class PlayerActivity extends Activity{
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
+                    e.printStackTrace();
 				}
 			}
             isPlaying = true;
             pd.dismiss();
 			changeSize.sendMessage(new Message());
-			while (true)
+			while (player.isPlaying())
 			try {
 				Thread.sleep(1000);
 				playedTime++;
 				changeTime.sendMessage(new Message());
 			} catch (Exception e) {
-				
+				e.printStackTrace();
 			}
 		}
 	};
