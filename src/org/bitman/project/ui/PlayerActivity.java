@@ -19,7 +19,6 @@ import org.bitman.project.ui.utilities.OnlineSender;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.UUID;
 
 public class PlayerActivity extends Activity{
 	public static final String TAG = "PlayerActivity";
@@ -66,7 +65,9 @@ public class PlayerActivity extends Activity{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                file = new File(getExternalCacheDir(), UUID.randomUUID().toString().substring(0, 5)+".sdp");
+                file = new File(getExternalCacheDir(), "sdp");
+                if (file.exists())
+                    file.delete();
                 try {
                     RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
                     client = new RTSP_Client(path, randomAccessFile);

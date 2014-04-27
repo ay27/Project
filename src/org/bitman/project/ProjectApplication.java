@@ -1,24 +1,17 @@
 package org.bitman.project;
 
 import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.http.IP_Utilities;
 import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
 import org.bitman.project.record.VideoQuality;
 import org.bitman.project.record.rtsp.RtspServer;
+import org.bitman.project.ui.utilities.UniqueUserId;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,36 +66,8 @@ public class ProjectApplication extends Application {
     }
 
     private void setMyIMEI() {
-        String deviceId = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getDeviceId();
-        String  hardwareId = "35" + Build.BOARD.length()%10+ Build.BRAND.length()%10 + Build.CPU_ABI.length()%10 + Build.DEVICE.length()%10 + Build.DISPLAY.length()%10 + Build.HOST.length()%10 + Build.ID.length()%10 + Build.MANUFACTURER.length()%10 + Build.MODEL.length()%10 + Build.PRODUCT.length()%10 + Build.TAGS.length()%10 + Build.TYPE.length()%10 + Build.USER.length()%10;
-        String secureId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        String WLAN_MAC = ((WifiManager)getSystemService(Context.WIFI_SERVICE)).getConnectionInfo().getMacAddress();
-        String bluetoothMAC = BluetoothAdapter.getDefaultAdapter().getAddress();
-
-        String longId = deviceId+hardwareId+secureId+WLAN_MAC+bluetoothMAC;
-        MessageDigest m;
-        try {
-            m = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return;
-        }
-        m.update(longId.getBytes(), 0, longId.length());
-        // get md5 byt
-        byte p_md5Data[] = m.digest();
-        // create a hex string
-        String m_szUniqueID = "";
-        for (int i=0;i<p_md5Data.length;i++) {
-            int b =  (0xFF & p_md5Data[i]);
-            // if it is a single digit, make sure it have 0 in front (proper padding)
-            if (b <= 0xF)
-                m_szUniqueID+="0";
-            // add number to string
-            m_szUniqueID+=Integer.toHexString(b);
-        }
-        IMEI = m_szUniqueID.toUpperCase().substring(0, 15);
-        System.out.println("IMEI = "+IMEI);
-
+        IMEI = UniqueUserId.getInstance().getId();
+        System.out.println(IMEI);
     }
 
     public String getRtspUrl() {

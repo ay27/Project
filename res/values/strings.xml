@@ -72,5 +72,6 @@
 	<string name="inputSamePasswd">请输入相同的密码</string>
 	<string name="inputNewPasswd">请输入新密码</string>
 	<string name="cannotPlayTheVideo">无法播放该视频！</string>
+	<string name="logout">log out</string>
 
 </resources>

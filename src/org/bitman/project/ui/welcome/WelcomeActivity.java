@@ -79,9 +79,10 @@ public class WelcomeActivity extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.menu_welcome, menu);
         MenuItemCompat.setShowAsAction(menu.findItem(R.id.quit), 1);
         MenuItemCompat.setShowAsAction(menu.findItem(R.id.options), 1);
+        MenuItemCompat.setShowAsAction(menu.findItem(R.id.logout), 1);
         return true;
     }
 
@@ -96,6 +97,12 @@ public class WelcomeActivity extends FragmentActivity {
                 return true;
             case R.id.quit:
                 this.onBackPressed();
+                return true;
+            case R.id.logout:
+                ProjectApplication.setUser(null, null);
+                intent = new Intent(WelcomeActivity.this, UserActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
