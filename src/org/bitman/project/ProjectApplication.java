@@ -147,14 +147,20 @@ public class ProjectApplication extends Application {
         return Password;
     }
 
-    public static void setUser(String userName, String password) {
+    public static void setUser(String userName, String password, boolean remember) {
         UserName = userName;
         Password = password;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ProjectApplication.instance);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("UserName", UserName);
-        editor.putString("Password", Password);
+        if (remember) {
+            editor.putString("UserName", UserName);
+            editor.putString("Password", Password);
+        }
+        else {
+//            editor.putString("UserName", null);
+//            editor.putString("Password", null);
+        }
         editor.commit();
     }
 }

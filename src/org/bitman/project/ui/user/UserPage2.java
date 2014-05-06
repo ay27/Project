@@ -108,7 +108,7 @@ public class UserPage2 extends Fragment {
                 toastMessage("error in sign up, receive: "+receive);
                 return;
             }
-            ProjectApplication.setUser(userNameStr, passwdStr);
+            ProjectApplication.setUser(userNameStr, passwdStr, true);
             Intent intent = new Intent(getActivity(), WelcomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

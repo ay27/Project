@@ -33,7 +33,8 @@ public class AsyncInetClient {
      * The Message-Type. The user's message must be based on in.
      */
     public static enum Type {
-        SearchCity, ListPast, ListNow, ListFile, PlayFile, PlayNow, Record, Close, Online, Add, Password, Login
+        SearchCity, ListPast, ListNow, ListFile, PlayFile, PlayNow, Record, Close, Online, Add, Password, Login,
+//        AddMobile, RemoveMobile
     }
 
     public static class SendData {
@@ -205,6 +206,14 @@ public class AsyncInetClient {
             sendMessage(playUrl, Type.Online, new SendData(), httpResponseHandler);
     }
 
+//    public void addMobile() {
+//        sendMessage(userUrl, Type.AddMobile, new SendData(), null);
+//    }
+//
+//    public void removeMobile() {
+//        sendMessage(userUrl, Type.RemoveMobile, new SendData(), null);
+//    }
+
     /**
      * Remember that set the ProjectApplication's UserName & Password if the receive is OK.
      * @param userName
@@ -270,7 +279,7 @@ public class AsyncInetClient {
 
         @Override
         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-            Log.e(TAG + " OnFailure", "receive some data from server: " + new String(responseBody));
+            Log.e(TAG + " OnFailure", "receive some data from server: " + error.toString());
         }
     };
 

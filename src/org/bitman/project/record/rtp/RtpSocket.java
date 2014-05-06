@@ -267,7 +267,7 @@ public class RtpSocket implements Runnable {
 					initoffset = true;
 				}
 				value -= (now - start) - duration;
-				Log.i(TAG, "sum1: "+duration/1000000+" sum2: "+(now-start)/1000000+" drift: "+((now-start)-duration)/1000000+" v: "+value/1000000);
+//				Log.i(TAG, "sum1: "+duration/1000000+" sum2: "+(now-start)/1000000+" drift: "+((now-start)-duration)/1000000+" v: "+value/1000000);
 			}
 			if (c<40) {
 				// We ignore the first 20 measured values because they may not be accurate

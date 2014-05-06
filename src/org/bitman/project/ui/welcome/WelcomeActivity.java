@@ -28,11 +28,15 @@ public class WelcomeActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.welcome_layout);
 
-        if ((ProjectApplication.getUserName()==null) || (ProjectApplication.getUserName().equals("")) || (ProjectApplication.getPassword()==null) || (ProjectApplication.getPassword().equals(""))) {
-            Intent intent = new Intent(WelcomeActivity.this, UserActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
+//        if ((ProjectApplication.getUserName()==null) || (ProjectApplication.getUserName().equals("")) || (ProjectApplication.getPassword()==null) || (ProjectApplication.getPassword().equals(""))) {
+//            Intent intent = new Intent(WelcomeActivity.this, UserActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        }
+
+//        AsyncInetClient.getInstance().login(ProjectApplication.getUserName(), ProjectApplication.getPassword(), loginHandler);
+
+//        AsyncInetClient.getInstance().addMobile();
 
         getActionBar().setTitle("user "+ ProjectApplication.getUserName());
 
@@ -40,6 +44,29 @@ public class WelcomeActivity extends FragmentActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.welcome_pager);
         viewPager.setAdapter(mAdapter);
 	}
+
+//    private AsyncHttpResponseHandler loginHandler = new AsyncHttpResponseHandler() {
+//        @Override
+//        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+//            String str = new String(responseBody);
+//            if (!str.startsWith(AsyncInetClient.LoginOK)) {
+//                Toast.makeText(WelcomeActivity.this, getString(R.string.failedToLogin), Toast.LENGTH_SHORT).show();
+//                ProjectApplication.setUser(null, null);
+//                Intent intent = new Intent(WelcomeActivity.this, UserActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                startActivity(intent);
+//            }
+//        }
+//
+//        @Override
+//        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+//            Toast.makeText(WelcomeActivity.this, getString(R.string.failedToLogin), Toast.LENGTH_SHORT).show();
+//            ProjectApplication.setUser(null, null);
+//            Intent intent = new Intent(WelcomeActivity.this, UserActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//        }
+//    };
 
     class SectionPagerAdapter extends FragmentPagerAdapter {
 
@@ -99,7 +126,7 @@ public class WelcomeActivity extends FragmentActivity {
                 this.onBackPressed();
                 return true;
             case R.id.logout:
-                ProjectApplication.setUser(null, null);
+                ProjectApplication.setUser(null, null, false);
                 intent = new Intent(WelcomeActivity.this, UserActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

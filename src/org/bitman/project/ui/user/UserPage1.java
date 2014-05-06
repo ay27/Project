@@ -8,9 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.*;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.apache.http.Header;
 import org.bitman.project.ProjectApplication;
@@ -29,6 +27,8 @@ public class UserPage1 extends Fragment {
 
     private EditText userName, passwd;
     private Button logIn;
+    private CheckBox rememberPasswd;
+    private boolean remember = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,11 +37,22 @@ public class UserPage1 extends Fragment {
         userName = (EditText)root.findViewById(R.id.user_page1_username_edit);
         passwd = (EditText)root.findViewById(R.id.user_page1_passwd_edit);
         logIn = (Button)root.findViewById(R.id.user_page1_login);
-
+        rememberPasswd = (CheckBox) root.findViewById(R.id.user_page1_remember_passwd);
+        rememberPasswd.setOnCheckedChangeListener(rememberPasswdListener);
         logIn.setOnClickListener(clickListener);
+
+        userName.setText(ProjectApplication.getUserName());
+        passwd.setText(ProjectApplication.getPassword());
 
         return root;
     }
+
+    private CompoundButton.OnCheckedChangeListener rememberPasswdListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            remember = b;
+        }
+    };
 
     private String userNameStr, passwdStr;
     private View.OnClickListener clickListener = new View.OnClickListener() {
@@ -91,7 +102,7 @@ public class UserPage1 extends Fragment {
                 toastMessage("error in login receive: "+receive);
                 return;
             }
-            ProjectApplication.setUser(userNameStr, passwdStr);
+            ProjectApplication.setUser(userNameStr, passwdStr, remember);
             Intent intent = new Intent(getActivity(), WelcomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

@@ -17,7 +17,6 @@ import org.bitman.project.networkmiscellaneous.RTSP_Client;
 import org.bitman.project.ui.utilities.OnlineSender;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class PlayerActivity extends Activity{
@@ -65,7 +64,7 @@ public class PlayerActivity extends Activity{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                file = new File(getExternalCacheDir(), "sdp");
+                file = new File(getExternalCacheDir(), "file.sdp");
                 if (file.exists())
                     file.delete();
                 try {
@@ -201,23 +200,22 @@ public class PlayerActivity extends Activity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        AsyncInetClient.getInstance().close(AsyncInetClient.Type.PlayFile, null);
         onDestroy();
     }
 
     @Override
     protected void onDestroy() {
-
-        AsyncInetClient.getInstance().close(AsyncInetClient.Type.PlayFile, null);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        client.Teardown();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        client.Teardown();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
 
         if (player.isPlaying())
             player.stop();

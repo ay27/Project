@@ -50,7 +50,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 
 	public void run() {
 		long duration = 0;
-		Log.d(TAG,"H264 packetizer started !");
+//		Log.d(TAG,"H264 packetizer started !");
 		stats.reset();
 		// This will skip the MPEG4 header if this step fails we can't stream anything :(
 		try {
@@ -86,13 +86,13 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 				stats.push(duration);
 				// Computes the average duration of a NAL unit
 				delay = stats.average();
-				Log.i(TAG,"duration: "+duration/1000000+" delay: "+delay/1000000);
+//				Log.i(TAG,"duration: "+duration/1000000+" delay: "+delay/1000000);
 
 			}
 		} catch (IOException e) {
 		} catch (InterruptedException e) {}
 
-		Log.d(TAG,"H264 packetizer stopped !");
+//		Log.d(TAG,"H264 packetizer stopped !");
 
 	}
 
@@ -108,7 +108,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 
 		// Read NAL unit length (4 bytes) and NAL unit header (1 byte)
 		fill(header,0,5);
-		Log.i(TAG, "NAL header: "+header[0]+header[1]+header[2]+header[3]+header[4]);
+//		Log.i(TAG, "NAL header: "+header[0]+header[1]+header[2]+header[3]+header[4]);
 		naluLength = header[3]&0xFF | (header[2]&0xFF)<<8 | (header[1]&0xFF)<<16 | (header[0]&0xFF)<<24;
 		//naluLength = is.available();
 
@@ -120,8 +120,8 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 		// Updates the timestamp
 		ts += delay;
 
-		Log.i(TAG, Long.toString(ts));
-		Log.i(TAG,"- Nal unit length: " + naluLength + " delay: "+delay/1000000+" type: "+type);
+//		Log.i(TAG, Long.toString(ts));
+//		Log.i(TAG,"- Nal unit length: " + naluLength + " delay: "+delay/1000000+" type: "+type);
 
 		// Small NAL unit => Single NAL unit 
 		if (naluLength<=MAXPACKETSIZE-rtphl-2) {
@@ -131,7 +131,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 			socket.updateTimestamp(ts);
 			socket.markNextPacket();
 			super.send(naluLength+rtphl);
-			Log.i(TAG,"----- Single NAL unit - len:"+len+" delay: "+delay);
+//			Log.i(TAG,"----- Single NAL unit - len:"+len+" delay: "+delay);
 		}
 		// Large NAL unit => Split nal unit 
 		else {
@@ -159,7 +159,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable {
 				super.send(len+rtphl+2);
 				// Switch start bit
 				header[1] = (byte) (header[1] & 0x7F); 
-				Log.i(TAG,"----- FU-A unit, sum:"+sum);
+//				Log.i(TAG,"----- FU-A unit, sum:"+sum);
 			}
 		}
 	}

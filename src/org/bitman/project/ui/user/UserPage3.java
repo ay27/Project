@@ -121,7 +121,7 @@ public class UserPage3 extends Fragment {
                 toastMessage("error in sign up, receive: "+receive);
                 return;
             }
-            ProjectApplication.setUser(userNameStr, newPasswdStr);
+            ProjectApplication.setUser(userNameStr, newPasswdStr, true);
             Intent intent = new Intent(getActivity(), WelcomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

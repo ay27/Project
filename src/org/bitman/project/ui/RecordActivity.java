@@ -4,8 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
+import android.os.*;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -33,11 +32,15 @@ public class RecordActivity extends FragmentActivity {
 
     private OnlineSender sender;
 
+    private RecordActivity mySelf;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.record_layout);
+
+        mySelf = this;
 
         time = getIntent().getIntExtra("record_time", 0);
         scheduleTime(time*1000);
@@ -71,7 +74,7 @@ public class RecordActivity extends FragmentActivity {
             @Override
             public void run() {
                 try {
-                    onBackPressed();
+                    closeHandler.sendEmptyMessage(0);
                 } catch (Exception e) {
                     Log.e("schedule", e.toString());
                     Toast.makeText(RecordActivity.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -80,6 +83,13 @@ public class RecordActivity extends FragmentActivity {
         };
         timer.schedule(task, time);
     }
+
+    private Handler closeHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            mySelf.onBackPressed();
+        }
+    };
 
 
     @Override
@@ -92,6 +102,17 @@ public class RecordActivity extends FragmentActivity {
     @Override
     public void onPause() {
         super.onPause();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         mRtspServer.stop();
         unbindService(mRtspServiceConnection);
         sender.stopSending();
