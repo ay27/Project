@@ -264,7 +264,7 @@ public class RtspServer extends Service {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println("delete port mapping");
+                        Log.i(TAG, "delete port mapping");
                         UPnP_PortMapper portMapper = UPnP_PortMapper.UPnP_PM_Supplier.getInstance();
                         portMapper.DeleteExistedPortMapping();
                     }

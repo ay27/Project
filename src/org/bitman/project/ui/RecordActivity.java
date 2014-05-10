@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.bitman.project.ProjectApplication;
@@ -37,6 +38,7 @@ public class RecordActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.record_layout);
 
@@ -100,23 +102,22 @@ public class RecordActivity extends FragmentActivity {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onBackPressed() {
+
+        sender.stopSending();
+        httpClient.close(AsyncInetClient.Type.Record, null);
+
+//        mRtspServer.stop();
+//        unbindService(mRtspServiceConnection);
+
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        android.os.Process.killProcess(android.os.Process.myPid());
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        mRtspServer.stop();
-        unbindService(mRtspServiceConnection);
-        sender.stopSending();
-        httpClient.close(AsyncInetClient.Type.Record, null);
+        android.os.Process.killProcess(android.os.Process.myPid());
+
     }
 
     private RtspServer mRtspServer;

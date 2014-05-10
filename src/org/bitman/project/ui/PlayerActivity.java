@@ -180,7 +180,7 @@ public class PlayerActivity extends Activity{
 		@Override
 		public void handleMessage(Message msg) {
 			
-			String time = ""+(playedTime/60/60)+":"+(playedTime/60)+":"+(playedTime%60);
+			String time = ""+(playedTime/60/60)+":"+((playedTime/60)%60)+":"+(playedTime%60);
 			timeText.setText(time);
 			
 		}
