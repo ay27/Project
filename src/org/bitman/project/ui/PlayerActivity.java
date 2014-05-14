@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import org.bitman.project.R;
 import org.bitman.project.http.AsyncInetClient;
-import org.bitman.project.networkmiscellaneous.RTSP_Client;
+import org.bitman.project.UPnP.RTSP_Client;
 import org.bitman.project.ui.utilities.OnlineSender;
 
 import java.io.File;

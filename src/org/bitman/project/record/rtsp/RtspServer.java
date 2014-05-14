@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
+import org.bitman.project.UPnP.UPnP_PortMapper;
 import org.bitman.project.record.Session;
 
 import java.io.BufferedReader;

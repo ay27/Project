@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import org.bitman.project.http.AsyncInetClient;
 import org.bitman.project.http.IP_Utilities;
-import org.bitman.project.networkmiscellaneous.UPnP_PortMapper;
+import org.bitman.project.UPnP.UPnP_PortMapper;
 import org.bitman.project.record.VideoQuality;
 import org.bitman.project.record.rtsp.RtspServer;
 import org.bitman.project.ui.utilities.UniqueUserId;

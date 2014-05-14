@@ -35,4 +35,12 @@
                 />
     </PreferenceCategory>
 
+	<PreferenceCategory android:title="手机ID">
+		<EditTextPreference
+				android:defaultValue="null"
+				android:key="phone_id"
+				android:title="ID"
+				/>
+	</PreferenceCategory>
+
 </PreferenceScreen>

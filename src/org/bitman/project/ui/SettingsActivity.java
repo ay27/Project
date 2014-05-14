@@ -6,6 +6,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
+import org.bitman.project.ProjectApplication;
 import org.bitman.project.R;
 import org.bitman.project.http.IP_Utilities;
 import org.bitman.project.record.VideoQuality;
@@ -28,12 +29,14 @@ public class SettingsActivity extends PreferenceActivity {
         final ListPreference videoFramerate = (ListPreference) findPreference("video_framerate");
         final EditTextPreference rtsp_port = (EditTextPreference) findPreference("rtsp_port");
         final EditTextPreference server_address = (EditTextPreference) findPreference("server_address");
+        final EditTextPreference phoneId = (EditTextPreference) findPreference("phone_id");
 
         videoResolution.setEnabled(true);
         videoBitrate.setEnabled(true);
         videoFramerate.setEnabled(true);
         rtsp_port.setEnabled(true);
         server_address.setEnabled(true);
+        phoneId.setEnabled(false);
 
         VideoQuality videoQuality = VideoQuality.getInstance();
         // set the default value
@@ -48,10 +51,13 @@ public class SettingsActivity extends PreferenceActivity {
         rtsp_port.setSummary(rtsp_port.getText());
         server_address.setSummary(server_address.getText());
 
+        phoneId.setSummary(ProjectApplication.IMEI);
+        phoneId.setText(ProjectApplication.IMEI);
+
         videoResolution.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-                videoResolution.setSummary(newValue+"px");
+                videoResolution.setSummary(newValue + "px");
                 return true;
             }
         });
